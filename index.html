@@ -123,6 +123,7 @@
   .app-head{padding:6px 20px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
   .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin:0 0 5px;}
   .app-head h2{font-family:var(--font-display);font-size:25px;letter-spacing:-0.02em;line-height:1.08;margin:0;}
+  .app-note{font-size:11.5px;color:var(--faint);margin:6px 0 0;line-height:1.4;}
   .icon-btn{width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--fg);flex:0 0 auto;}
   .icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
@@ -134,8 +135,8 @@
   .search input::placeholder{color:var(--faint);}
 
   /* filter chips */
-  .filters{display:flex;gap:8px;padding:0 20px 14px;flex-wrap:wrap;}
-  .chip{padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12.5px;font-weight:500;letter-spacing:.01em;cursor:pointer;transition:.15s;}
+  .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px 14px;}
+  .chip{display:inline-flex;align-items:center;justify-content:center;padding:7px 6px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12.5px;font-weight:500;letter-spacing:.01em;cursor:pointer;transition:.15s;white-space:nowrap;}
   .chip .k{font-family:var(--font-mono);font-weight:700;color:var(--fg);margin-right:5px;}
   .chip.on{background:var(--fg);border-color:var(--fg);color:var(--on-accent);}
   .chip.on .k{color:var(--on-accent);}
@@ -321,8 +322,8 @@
   .dim .dtop{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;font-family:var(--font-mono);letter-spacing:.03em;}
   .dim .track{position:relative;height:8px;border-radius:999px;background:color-mix(in srgb,var(--fg) 8%,var(--surface));}
   .dim .track .a,.dim .track .b{position:absolute;top:50%;width:15px;height:15px;border-radius:50%;transform:translate(-50%,-50%);border:2.5px solid var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.15);}
-  .dim .track .a{background:var(--c-infp);}
-  .dim .track .b{background:var(--c-entj);}
+  .dim .track .a{background:var(--cmp-me,var(--c-infp));}
+  .dim .track .b{background:var(--cmp-ta,var(--c-entj));}
   .dim .same{font-size:10px;color:var(--success);font-weight:600;}
   .dim .diff{font-size:10px;color:var(--warn);font-weight:600;}
 
@@ -483,10 +484,10 @@
   #page-functions{padding:0;display:none;flex-direction:column;}
   #page-functions.active{display:flex;}
   .fx-head{padding:18px 18px 12px;flex:none;}
-  .fx-head h2{font-size:20px;font-weight:800;letter-spacing:-.01em;margin:2px 0 4px;}
+  .fx-head h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:2px 0 4px;}
   .fx-head p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0;}
   .fx-seg{display:inline-flex;background:var(--hair);border-radius:999px;padding:3px;margin-top:12px;gap:2px;}
-  .fx-seg button{border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:700;color:var(--muted);padding:6px 16px;border-radius:999px;cursor:pointer;transition:.2s;}
+  .fx-seg button{border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:500;color:var(--muted);padding:6px 16px;border-radius:999px;cursor:pointer;transition:.2s;}
   .fx-seg button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 4px rgba(0,0,0,.08);}
   .fx-view{flex:1 1 auto;overflow:auto;-webkit-overflow-scrolling:touch;padding:2px 16px 16px;}
   .fx-view[hidden]{display:none;}
@@ -494,12 +495,12 @@
   /* 功能速查卡片 */
   .fn-quick{display:flex;flex-direction:column;gap:10px;}
   .fnq{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--fx-hue);border-radius:16px;padding:12px 14px;}
-  .fnq .badge{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-mono);font-weight:800;font-size:16px;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
+  .fnq .badge{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-mono);font-weight:600;font-size:16px;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
   .fnq[data-att="e"] .badge{background:color-mix(in srgb,var(--fx-hue) 8%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 60%,var(--true-black));}
   .fnq .body{flex:1;min-width:0;}
   .fnq .ttl{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
-  .fnq .ttl b{font-size:14px;font-weight:800;}
-  .fnq .ttl .att{font-size:10.5px;font-weight:700;color:var(--fx-hue);}
+  .fnq .ttl b{font-size:14px;font-weight:600;}
+  .fnq .ttl .att{font-size:10.5px;font-weight:500;color:var(--fx-hue);}
   .fnq .desc{font-size:13px;color:var(--fg);margin:3px 0 0;line-height:1.5;}
   .fnq .quote{display:inline-block;margin-top:7px;font-size:12px;color:var(--fg);background:color-mix(in srgb,var(--fx-hue) 12%,var(--surface));border-radius:8px;padding:3px 10px;}
   .fnq .quote::before{content:'“';opacity:.6;} .fnq .quote::after{content:'”';opacity:.6;}
@@ -508,14 +509,14 @@
   .fx-legend i{width:11px;height:11px;border-radius:3px;}
   .fx-table{border-collapse:separate;border-spacing:0;font-size:11px;width:max-content;min-width:100%;}
   .fx-table th,.fx-table td{padding:0;text-align:center;white-space:nowrap;}
-  .fx-table thead th{position:sticky;top:0;z-index:3;background:var(--surface);color:var(--muted);font-weight:600;font-size:10.5px;padding:7px 6px;border-bottom:1px solid var(--line);}
+  .fx-table thead th{position:sticky;top:0;z-index:3;background:var(--surface);color:var(--muted);font-weight:500;font-size:10.5px;padding:7px 6px;border-bottom:1px solid var(--line);}
   .fx-table thead th.corner{left:0;z-index:5;text-align:left;padding-left:10px;color:var(--fg);}
   .fx-tp{position:sticky;left:0;z-index:2;background:var(--surface);text-align:left;padding:0 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line-soft);}
-  .fx-tp b{display:block;font-size:11.5px;font-weight:600;line-height:1.15;color:var(--fg);}
+  .fx-tp b{display:block;font-size:11.5px;font-weight:500;line-height:1.15;color:var(--fg);}
   .fx-tp small{display:block;font-size:10px;color:var(--muted);}
   .fx-tp i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--tc);margin-right:4px;vertical-align:middle;}
   .fx-cell{padding:6px 4px;border-bottom:1px solid var(--line-soft);}
-  .fx-fn{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 8px;border-radius:8px;font-weight:600;font-size:11.5px;font-family:var(--font-mono);letter-spacing:.02em;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
+  .fx-fn{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 8px;border-radius:8px;font-weight:400;font-size:11.5px;font-family:var(--font-mono);letter-spacing:.02em;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
   .fx-fn[data-att="e"]{background:color-mix(in srgb,var(--fx-hue) 8%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 64%,var(--true-black));}
   .fx-table tbody tr:hover .fx-tp,.fx-table tbody tr:hover .fx-cell{background:color-mix(in srgb,var(--tc) 8%,var(--surface));}
   @media (max-width:480px){
@@ -562,13 +563,13 @@
             </div>
             <div class="filters" data-component="DimensionFilter" role="group" aria-label="维度筛选">
               <button class="chip" data-dim="E"><span class="k">E</span>外向</button>
-              <button class="chip" data-dim="I"><span class="k">I</span>内向</button>
               <button class="chip" data-dim="N"><span class="k">N</span>直觉</button>
-              <button class="chip" data-dim="S"><span class="k">S</span>实感</button>
               <button class="chip" data-dim="T"><span class="k">T</span>思考</button>
+              <button class="chip" data-dim="P"><span class="k">P</span>知觉</button>
+              <button class="chip" data-dim="I"><span class="k">I</span>内向</button>
+              <button class="chip" data-dim="S"><span class="k">S</span>实感</button>
               <button class="chip" data-dim="F"><span class="k">F</span>情感</button>
               <button class="chip" data-dim="J"><span class="k">J</span>判断</button>
-              <button class="chip" data-dim="P"><span class="k">P</span>知觉</button>
             </div>
             <div id="groups"></div>
           </main>
@@ -603,7 +604,7 @@
           </main>
           <main class="content page" id="page-people" data-component="PeopleScreen">
             <div class="app-head">
-              <div><p class="eyebrow">我标注的人 · 5</p><h2>我的人脉</h2></div>
+              <div><p class="eyebrow">我标注的人 · 5</p><h2>我的人脉</h2><p class="app-note">以下均为示意用户，仅作演示</p></div>
             </div>
             <button class="addbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>标注一个新的人</button>
             <div class="ai-entry" data-component="AIGuessEntry" role="button" tabindex="0">
@@ -627,7 +628,7 @@
             <form class="ai-form" onsubmit="return false">
               <div class="field">
                 <label for="apName">名字 / 昵称</label>
-                <input class="ti" id="apName" type="text" placeholder="如：张磊、林悦" autocomplete="off" />
+                <input class="ti" id="apName" type="text" placeholder="如：团团、桃桃" autocomplete="off" />
               </div>
               <div class="field" id="apRelField">
                 <label for="apRel">关系备注 <em>· 可选</em></label>
@@ -704,153 +705,65 @@
             </div>
 
             <div class="vs-wrap" data-component="PairPicker">
-              <div class="vs-people">
-                <div class="vs-card" style="--tc:var(--c-infp)">
-                  <div class="av">我</div>
-                  <div class="who">我</div>
-                  <div class="ty">INFP</div>
-                  <div class="role">调停者</div>
-                </div>
-                <div class="vs-x"><span>×</span></div>
-                <div class="vs-card" style="--tc:var(--c-entj)">
-                  <div class="av">磊</div>
-                  <div class="who">张磊</div>
-                  <div class="ty">ENTJ</div>
-                  <div class="role">我的老板</div>
-                </div>
-              </div>
+              <div class="vs-people" id="cmpPeople"></div>
             </div>
 
             <div class="score" data-component="CompatibilityScore">
-              <div class="ring" style="--val:72"><div class="inner"><b class="num">72</b><small>兼容分</small></div></div>
+              <div class="ring" id="cmpRing" style="--val:72"><div class="inner"><b class="num" id="cmpScore">72</b><small>兼容分</small></div></div>
               <div class="sx">
-                <b>互补型搭档</b>
-                <p>理想主义者遇上执行者：你重意义与价值，他重目标与效率。方向一致时非常互补，但节奏和沟通方式差异明显。</p>
+                <b id="cmpVerdict">互补型搭档</b>
+                <p id="cmpVerdictP"></p>
               </div>
             </div>
 
             <div class="relcard k-rel" data-component="RelationArchetype">
               <div class="rh">
                 <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.3-8.5C1 8 2.8 4.5 6 4.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.2 0 5 3.5 3.3 7C19 15.65 12 20 12 20z"/></svg></span>
-                <div><div class="rk">关系类型</div><div class="rn">互补拍档 · 镜像成长</div></div>
+                <div><div class="rk">关系类型</div><div class="rn" id="cmpArch">互补拍档 · 镜像成长</div></div>
               </div>
-              <p>你们像镜子的两面：你以 <b>Fi 主导</b>、他以 <b>Te 主导</b>，恰好互为对方的劣势功能。方向一致时，一个把握意义与人心，一个负责决断与推进，是少见的“互相补课”关系。</p>
+              <p id="cmpArchP"></p>
             </div>
 
-            <div class="fnmatch" data-component="CognitiveFunctionMatch">
+            <div class="fnmatch" id="cmpFnMatch" data-component="CognitiveFunctionMatch">
               <div class="sec-title"><span class="bar"></span>认知功能匹配</div>
               <p class="rel-lead">MBTI 相处的深层逻辑藏在<b>认知功能</b>里。把两人四条功能轴对齐，就能看清谁在哪一环更强、又如何补位。</p>
-              <div class="fmlegend" aria-hidden>
-                <span><i style="background:var(--c-infp)"></i>我 · INFP</span>
-                <span><i style="background:var(--c-entj)"></i>张磊 · ENTJ</span>
-              </div>
-
-              <div class="fmitem">
-                <div class="fmrow">
-                  <div class="fmside">
-                    <span class="fmbadge a">Fi</span>
-                    <div class="fmmeta"><div class="fc">内向情感</div><div class="fl">主导① · 我</div></div>
-                  </div>
-                  <div class="fmtrack"><span class="mk" style="left:22%"></span></div>
-                  <div class="fmside r">
-                    <span class="fmbadge b">Fi</span>
-                    <div class="fmmeta"><div class="fc">内向情感</div><div class="fl">劣势④ · 张磊</div></div>
-                  </div>
-                </div>
-                <p class="fmnote">价值与真诚是你的底色；他 Fi 最弱——<b>你能帮他看见人的感受</b>。</p>
-              </div>
-
-              <div class="fmitem">
-                <div class="fmrow">
-                  <div class="fmside">
-                    <span class="fmbadge a">Ne</span>
-                    <div class="fmmeta"><div class="fc">外向直觉</div><div class="fl">辅助② · 我</div></div>
-                  </div>
-                  <div class="fmtrack"><span class="mk" style="left:50%"></span></div>
-                  <div class="fmside r">
-                    <span class="fmbadge b">Ni</span>
-                    <div class="fmmeta"><div class="fc">内向直觉</div><div class="fl">辅助② · 张磊</div></div>
-                  </div>
-                </div>
-                <p class="fmnote">你发散(Ne)找可能、他收敛(Ni)定愿景，<b>都靠直觉，方向天然合拍</b>。</p>
-              </div>
-
-              <div class="fmitem">
-                <div class="fmrow">
-                  <div class="fmside">
-                    <span class="fmbadge a">Si</span>
-                    <div class="fmmeta"><div class="fc">内向感觉</div><div class="fl">第三③ · 我</div></div>
-                  </div>
-                  <div class="fmtrack"><span class="mk" style="left:48%"></span></div>
-                  <div class="fmside r">
-                    <span class="fmbadge b">Se</span>
-                    <div class="fmmeta"><div class="fc">外向感觉</div><div class="fl">第三③ · 张磊</div></div>
-                  </div>
-                </div>
-                <p class="fmnote">细节(Si)与当下行动(Se)都不是你俩强项，<b>需互相提醒把事做实</b>。</p>
-              </div>
-
-              <div class="fmitem">
-                <div class="fmrow">
-                  <div class="fmside">
-                    <span class="fmbadge a">Te</span>
-                    <div class="fmmeta"><div class="fc">外向思考</div><div class="fl">劣势④ · 我</div></div>
-                  </div>
-                  <div class="fmtrack"><span class="mk" style="left:80%"></span></div>
-                  <div class="fmside r">
-                    <span class="fmbadge b">Te</span>
-                    <div class="fmmeta"><div class="fc">外向思考</div><div class="fl">主导① · 张磊</div></div>
-                  </div>
-                </div>
-                <p class="fmnote">他用 Te 高效决断、推进落地；你的 Te 偏弱，<b>正好被他补位</b>。</p>
-              </div>
+              <div class="fmlegend" id="cmpLegend" aria-hidden></div>
+              <div id="cmpFns"></div>
             </div>
 
             <div class="dims" data-component="DimensionCompare">
               <div class="sec-title"><span class="bar"></span>四维差异</div>
-              <div class="dim"><div class="dtop"><span>I 内向 · 我</span><span class="diff">相反</span><span>E 外向 · 张磊</span></div><div class="track"><span class="a" style="left:22%"></span><span class="b" style="left:82%"></span></div></div>
-              <div class="dim"><div class="dtop"><span>N 直觉 · 我</span><span class="same">一致</span><span>N 直觉 · 张磊</span></div><div class="track"><span class="a" style="left:30%"></span><span class="b" style="left:40%"></span></div></div>
-              <div class="dim"><div class="dtop"><span>F 情感 · 我</span><span class="diff">相反</span><span>T 思考 · 张磊</span></div><div class="track"><span class="a" style="left:20%"></span><span class="b" style="left:84%"></span></div></div>
-              <div class="dim"><div class="dtop"><span>P 知觉 · 我</span><span class="diff">相反</span><span>J 判断 · 张磊</span></div><div class="track"><span class="a" style="left:24%"></span><span class="b" style="left:80%"></span></div></div>
+              <div id="cmpDims"></div>
             </div>
 
             <div class="relcard k-val" data-component="SharedValues">
               <div class="rh">
                 <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 2 15 8l6 .9-4.5 4.3L17.6 20 12 16.9 6.4 20l1.1-6.8L3 8.9 9 8z"/></svg></span>
-                <div><div class="rk">共有价值</div><div class="rn">成长与真诚</div></div>
+                <div><div class="rk">共有价值</div><div class="rn" id="cmpValT">成长与真诚</div></div>
               </div>
-              <p>你们都反感虚伪，也都想把想法真正实现。你在意价值与初心，他在意目标与结果——当彼此认可对方的出发点，就能既走得快、又走得远。</p>
+              <p id="cmpValP"></p>
             </div>
 
             <div class="relcard k-com" data-component="CommunicationStyle">
               <div class="rh">
                 <span class="ric"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.6A8.4 8.4 0 1 1 21 11.5z"/></svg></span>
-                <div><div class="rk">沟通方式</div><div class="rn">直接 × 委婉</div></div>
+                <div><div class="rk">沟通方式</div><div class="rn" id="cmpComT">直接 × 委婉</div></div>
               </div>
-              <p>他习惯直给结论、就事论事；你习惯照顾感受、迂回表达。看懂这层差异后，你可以“先结论再感受”，他可以在结论前先留一句肯定。</p>
+              <p id="cmpComP"></p>
             </div>
 
             <div class="insight" data-component="RelationInsights">
               <div class="ins up">
                 <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14" transform="rotate(180 12 20)"/></svg></span><b>合作优势</b></div>
-                <ul>
-                  <li>他擅长<b>定方向、推进度</b>，能把你天马行空的创意真正落地。</li>
-                  <li>你能补充<b>人文视角与价值判断</b>，提醒团队关注人的感受与长期意义。</li>
-                </ul>
+                <ul id="cmpUp"></ul>
               </div>
               <div class="ins warn">
                 <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span><b>潜在摩擦</b></div>
-                <ul>
-                  <li>他直接、结果导向的表达，可能让你感到<b>被催促或被否定</b>。</li>
-                  <li>你偏好慢思考与和谐，容易被误读为<b>拖延或态度不明确</b>。</li>
-                </ul>
+                <ul id="cmpWarn"></ul>
               </div>
               <div class="ins tip">
                 <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2.5h6c0-1.3.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span><b>沟通建议</b></div>
-                <ul>
-                  <li>汇报时<b>先给结论和进度</b>，再补充过程和思考。</li>
-                  <li>主动确认 deadline，把价值观诉求<b>翻译成对目标的贡献</b>来表达。</li>
-                </ul>
+                <ul id="cmpTip"></ul>
               </div>
             </div>
             <p class="subhint">分析基于类型倾向，仅供相处参考，真实的人远比标签丰富。</p>
@@ -964,16 +877,16 @@
             <div class="fx-head">
               <p class="eyebrow">认知功能 · 荣格八维</p>
               <h2>八维功能</h2>
-              <p>先看懂 8 个功能各自在做什么，再横向对比 16 型的完整功能栈。</p>
+              <p>先横向对比 16 型的完整功能栈，也能逐个看懂 8 个功能各自在做什么。</p>
               <div class="fx-seg" id="fxSeg">
-                <button class="on" data-view="fxRef">功能速查</button>
-                <button data-view="fxTable">全表对比</button>
+                <button class="on" data-view="fxTable">全表对比</button>
+                <button data-view="fxRef">功能速查</button>
               </div>
             </div>
-            <section class="fx-view" id="fxRef">
+            <section class="fx-view" id="fxRef" hidden>
               <div class="fn-quick" id="fnQuick"></div>
             </section>
-            <section class="fx-view" id="fxTable" hidden>
+            <section class="fx-view" id="fxTable">
               <div class="fx-legend" id="fxLegend"></div>
               <table class="fx-table"><thead id="fxHead"></thead><tbody id="fxBody"></tbody></table>
             </section>
@@ -1256,10 +1169,10 @@
   // ── people list ──
   const SELF={init:'我',name:'我',rel:'本人 · 也是 INFP',type:'INFP',self:true};
   const CONTACTS=[
-    {init:'磊',name:'张磊',rel:'我的老板',type:'ENTJ'},
-    {init:'工',name:'王工',rel:'同事 · 后端',type:'ISTP'},
-    {init:'悦',name:'林悦',rel:'好友',type:'ENFP'},
-    {init:'妈',name:'妈妈',rel:'家人',type:'ISFJ'}
+    {init:'团',name:'团团',rel:'我的老板',type:'ENTJ'},
+    {init:'布',name:'阿布',rel:'同事 · 后端',type:'ISTP'},
+    {init:'桃',name:'桃桃',rel:'好友',type:'ENFP'},
+    {init:'糯',name:'糯米',rel:'家人',type:'ISFJ'}
   ];
   const pl=document.getElementById('peopleList');
   const peopleCountEl=document.querySelector('#page-people .eyebrow');
@@ -1267,6 +1180,158 @@
   let setFormType=null;
   let startMbtiTest=null;
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+  // ── 关系配对：按 我 × TA 动态生成 ──
+  const CMP_AXES=[
+    {idx:0,a:'E',b:'I'},
+    {idx:1,a:'N',b:'S'},
+    {idx:2,a:'T',b:'F'},
+    {idx:3,a:'J',b:'P'}
+  ];
+  const LETTER_CN={E:'外向',I:'内向',N:'直觉',S:'实感',T:'思考',F:'情感',J:'判断',P:'知觉'};
+  const POS_LABEL=['主导①','辅助②','第三③','劣势④'];
+  const famCn=f=>({N:'直觉',S:'实感',T:'思考',F:'情感'})[f.charAt(0)];
+  const attCn=f=>f.charAt(1)==='i'?'向内':'向外';
+  let currentComparePerson=CONTACTS[0];
+
+  function renderCompare(person){
+    currentComparePerson=person;
+    const meCode=SELF.type, taCode=person.type;
+    const me=T[meCode], ta=T[taCode];
+    const meTc='var(--c-'+meCode.toLowerCase()+')';
+    const taTc='var(--c-'+taCode.toLowerCase()+')';
+    const cmpPage=document.getElementById('page-compare');
+    if(cmpPage){cmpPage.style.setProperty('--cmp-me',meTc);cmpPage.style.setProperty('--cmp-ta',taTc);}
+    const fnMatch=document.getElementById('cmpFnMatch');
+    if(fnMatch){fnMatch.style.setProperty('--tca',meTc);fnMatch.style.setProperty('--tcb',taTc);}
+
+    // vs 卡片
+    const peopleEl=document.getElementById('cmpPeople');
+    if(peopleEl){
+      peopleEl.innerHTML=
+        '<div class="vs-card" style="--tc:'+meTc+'"><div class="av">'+esc(SELF.init)+'</div><div class="who">'+esc(SELF.name)+'</div><div class="ty">'+meCode+'</div><div class="role">'+me.nick+'</div></div>'
+        +'<div class="vs-x"><span>×</span></div>'
+        +'<div class="vs-card" style="--tc:'+taTc+'"><div class="av">'+esc(person.init)+'</div><div class="who">'+esc(person.name)+'</div><div class="ty">'+taCode+'</div><div class="role">'+esc(person.rel||ta.nick)+'</div></div>';
+    }
+
+    // 四维一致性
+    const same=CMP_AXES.map(ax=>meCode[ax.idx]===taCode[ax.idx]);
+    // 共享认知功能（前四功能）
+    const shared=me.stack.filter(f=>ta.stack.indexOf(f)>=0);
+    const sharedN=shared.length; // 0 / 2 / 4
+    const meDom=me.stack[0], taDom=ta.stack[0];
+
+    // 兼容分
+    let score=46+sharedN*9;
+    if(same[1])score+=6; if(!same[0])score+=5; if(!same[3])score+=2; if(same[2])score+=4;
+    score=Math.max(48,Math.min(95,score));
+    const ring=document.getElementById('cmpRing');if(ring)ring.style.setProperty('--val',score);
+    const scoreEl=document.getElementById('cmpScore');if(scoreEl)scoreEl.textContent=score;
+
+    const tier=sharedN===4?'twin':(sharedN===2?'comp':'contrast');
+    const verdict={twin:'同频共鸣型',comp:'互补搭档型',contrast:'差异互补型'}[tier];
+    const verdictP={
+      twin:'你们用着几乎相同的一套认知功能，看世界、做决定的方式高度一致，沟通几乎没有翻译成本，很容易惺惺相惜。',
+      comp:'你们共享 '+shared.join('、')+' 两个功能，又各有侧重。方向一致时非常互补，但节奏和表达方式会有明显差异。',
+      contrast:'你们几乎不共享核心认知功能，看待同一件事的角度差别很大。需要多一点耐心，但也能彼此打开全新的视野。'
+    }[tier];
+    const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    setTxt('cmpVerdict',verdict);
+    setTxt('cmpVerdictP',verdictP);
+
+    // 关系类型
+    const archName={twin:'同频共鸣 · 心有灵犀',comp:'互补拍档 · 镜像成长',contrast:'差异互补 · 拓展视野'}[tier];
+    setTxt('cmpArch',archName);
+    const archP={
+      twin:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，四个核心功能完全相同，只是排序略有差别，天然懂彼此的关注点。',
+      comp:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，像镜子的两面——一个人的强项常是另一个人的盲区，正好互相补位。',
+      contrast:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，两套思路差异很大。理解彼此需要更多解释，但一旦对齐，看问题会更完整。'
+    }[tier];
+    setTxt('cmpArchP',archP);
+
+    // 图例
+    const legend=document.getElementById('cmpLegend');
+    if(legend){
+      legend.innerHTML='<span><i style="background:'+meTc+'"></i>'+esc(SELF.name)+' · '+meCode+'</span>'
+        +'<span><i style="background:'+taTc+'"></i>'+esc(person.name)+' · '+taCode+'</span>';
+    }
+
+    // 认知功能匹配（逐位对齐）
+    const fnsEl=document.getElementById('cmpFns');
+    if(fnsEl){
+      let html='';
+      for(let i=0;i<4;i++){
+        const mf=me.stack[i], tf=ta.stack[i];
+        const isSame=mf===tf, isFam=mf.charAt(0)===tf.charAt(0);
+        let note, mk;
+        if(isSame){ note='你们都把 <b>'+FUNC[mf].cn+'（'+mf+'）</b> 放在同一位置，这一环天然同频。'; mk=50; }
+        else if(isFam){ note='同属<b>'+famCn(mf)+'</b>，你'+attCn(mf)+'、TA '+attCn(tf)+'，视角互补。'; mk=42; }
+        else { note='你靠 <b>'+FUNC[mf].cn+'</b>、TA 靠 <b>'+FUNC[tf].cn+'</b>，关注点不同，需要互相补位。'; mk=28; }
+        html+='<div class="fmitem"><div class="fmrow">'
+          +'<div class="fmside"><span class="fmbadge a">'+mf+'</span><div class="fmmeta"><div class="fc">'+FUNC[mf].cn+'</div><div class="fl">'+POS_LABEL[i]+' · '+esc(SELF.name)+'</div></div></div>'
+          +'<div class="fmtrack"><span class="mk" style="left:'+mk+'%"></span></div>'
+          +'<div class="fmside r"><span class="fmbadge b">'+tf+'</span><div class="fmmeta"><div class="fc">'+FUNC[tf].cn+'</div><div class="fl">'+POS_LABEL[i]+' · '+esc(person.name)+'</div></div></div>'
+          +'</div><p class="fmnote">'+note+'</p></div>';
+      }
+      fnsEl.innerHTML=html;
+    }
+
+    // 四维差异
+    const dimsEl=document.getElementById('cmpDims');
+    if(dimsEl){
+      dimsEl.innerHTML=CMP_AXES.map(ax=>{
+        const ml=meCode[ax.idx], tl=taCode[ax.idx];
+        const agree=ml===tl;
+        const mx=(ml===ax.a)?24:80, tx=(tl===ax.a)?20:84;
+        return '<div class="dim"><div class="dtop">'
+          +'<span>'+ml+' '+LETTER_CN[ml]+' · '+esc(SELF.name)+'</span>'
+          +'<span class="'+(agree?'same':'diff')+'">'+(agree?'一致':'相反')+'</span>'
+          +'<span>'+tl+' '+LETTER_CN[tl]+' · '+esc(person.name)+'</span></div>'
+          +'<div class="track"><span class="a" style="left:'+mx+'%"></span><span class="b" style="left:'+tx+'%"></span></div></div>';
+      }).join('');
+    }
+
+    // 共有价值
+    if(sharedN>0){
+      setTxt('cmpValT','相通的思考底色');
+      setTxt('cmpValP','你们都在用 '+shared.join(' 和 ')+'，在这些环节上容易达成共识，也更能理解对方为什么这么想。');
+    }else{
+      setTxt('cmpValT','目标先于方式');
+      setTxt('cmpValP','你们的共同点更多在「想要什么」而不是「怎么想」。先对齐目标，再尊重彼此不同的路径，就能各展所长。');
+    }
+
+    // 沟通方式（看 T/F）
+    const meTF=meCode[2], taTF=taCode[2];
+    const shortW=l=>l==='T'?'直接':'委婉';
+    setTxt('cmpComT',shortW(meTF)+' × '+shortW(taTF));
+    if(meTF===taTF){
+      setTxt('cmpComP','你们的决策语言相近，都偏'+(meTF==='T'?'理性与结果':'感受与价值')+'，沟通时比较容易同频，也要小心一起忽略了另一面。');
+    }else{
+      setTxt('cmpComP','你偏'+(meTF==='T'?'就事论事':'照顾感受')+'，TA 偏'+(taTF==='T'?'就事论事':'照顾感受')+'。记得先接住对方的出发点，再表达自己的立场。');
+    }
+
+    // 洞察三栏
+    const up=[], warn=[], tip=[];
+    if(same[1])up.push('你们看待信息的方式相近（都偏'+(meCode[1]==='N'?'直觉与可能性':'事实与细节')+'），容易在同一个频道上讨论。');
+    if(!same[2])up.push('一个把握逻辑与效率、一个照顾人和意义，一起决策会更周全。');
+    if(!same[3])up.push('一个善于规划推进、一个灵活随机应变，节奏上正好互补。');
+    if(!same[0])up.push('一个在人群中充电、一个在独处中回血，能提醒彼此张弛有度。');
+    if(up.length<2)up.push('目标一致时，你们各自的强项能叠加成更强的组合。');
+
+    if(!same[0])warn.push('社交与独处的能量节奏不同，长时间相处需要互相体谅。');
+    if(!same[3])warn.push('对「先定计划」还是「随心而动」的偏好相反，容易在要不要提前敲定上拉扯。');
+    if(!same[2])warn.push('一个重结果、一个重感受，同一句话可能被对方误读成冷漠或啰嗦。');
+    if(sharedN===0)warn.push('底层思路差异较大，很多事需要额外的解释成本。');
+    if(!warn.length)warn.push('你们太相似，可能会一起放大同一个盲区，缺少不同视角的提醒。');
+
+    tip.push('多说一句「我是这么想的，因为…」，把各自的出发点讲清楚。');
+    if(!same[2])tip.push(meTF==='T'?'表达时先肯定对方的感受，再给结论会更顺。':'需要推进时，直接给出清晰的结论和时间点。');
+    else tip.push('定期同步进度和感受，别把「默契」当成理所当然。');
+
+    const fillUl=(id,arr)=>{const el=document.getElementById(id);if(el)el.innerHTML=arr.slice(0,3).map(x=>'<li>'+x+'</li>').join('');};
+    fillUl('cmpUp',up); fillUl('cmpWarn',warn); fillUl('cmpTip',tip);
+  }
+
   function makeCard(p,self){
     const t=T[p.type];const tc='var(--c-'+p.type.toLowerCase()+')';
     const card=document.createElement('div');card.className='pcard'+(self?' self':'');card.style.setProperty('--tc',tc);
@@ -1279,7 +1344,7 @@
       +'<div class="pr">'+esc(p.rel)+'</div><div class="pmini">'+t.nick+' · '+t.keys.join(' / ')+'</div></div>'
       +'<div class="pacts">'+editBtn+cta+'</div>'
       +(p.note?'<div class="pnote">'+esc(p.note)+'</div>':'');
-    const go=()=>{ if(self){selectType(p.type,null);showPage('page-detail');}else{showPage('page-compare');} };
+    const go=()=>{ if(self){selectType(p.type,null);showPage('page-detail');}else{renderCompare(p);showPage('page-compare');} };
     const btn=card.querySelector('.pcta');if(btn)btn.addEventListener('click',e=>{e.stopPropagation();go();});
     const ed=card.querySelector('.pedit');if(ed)ed.addEventListener('click',e=>{e.stopPropagation();if(openPersonEditor)openPersonEditor(p,self);});
     card.addEventListener('click',go);
