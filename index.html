@@ -199,8 +199,10 @@
   .fn .fdesc{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.4;}
 
   /* ── people screen ── */
-  .addbtn{margin:2px 20px 16px;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 40px);min-height:48px;border-radius:14px;border:1.5px dashed color-mix(in srgb,var(--primary) 55%,var(--border));background:var(--primary-soft);color:color-mix(in srgb,var(--primary) 72%,var(--true-black));font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
-  .addbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .addbtn{margin:0;flex:none;align-self:center;display:flex;width:fit-content;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 15px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--primary) 42%,var(--border));background:var(--primary-soft);color:color-mix(in srgb,var(--primary) 72%,var(--true-black));font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;}
+  .addbtn:hover{border-color:color-mix(in srgb,var(--primary) 60%,var(--border));transform:translateY(-1px);}
+  .addbtn:active{transform:scale(.97);}
+  .addbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .pgroup{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.04em;padding:10px 20px 8px;}
   .pcard{--tc:var(--accent);display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:13px;margin:0 20px 12px;padding:14px;background:var(--surface);border:1px solid var(--hair);border-radius:18px;box-shadow:0 10px 22px -18px color-mix(in srgb,var(--tc) 60%,transparent);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease;}
   .pcard:hover{transform:translateY(-1px);box-shadow:0 16px 30px -18px color-mix(in srgb,var(--tc) 66%,transparent);}
@@ -220,11 +222,24 @@
   .pcard .pedit:hover{color:color-mix(in srgb,var(--tc) 70%,var(--true-black));border-color:color-mix(in srgb,var(--tc) 34%,var(--border));}
   .pcard .pedit:active{transform:scale(.92);}
   .pcard .pnote{grid-column:2 / -1;font-size:11px;color:var(--muted);margin-top:8px;padding:6px 10px;border-radius:9px;line-height:1.45;background:color-mix(in srgb,var(--tc) 8%,var(--surface));border-left:2px solid color-mix(in srgb,var(--tc) 42%,transparent);}
+  /* 左滑删除 */
+  .pswipe{--tc:var(--accent);position:relative;margin:0 20px 12px;border-radius:18px;overflow:hidden;box-shadow:0 10px 22px -18px color-mix(in srgb,var(--tc) 60%,transparent);}
+  .pswipe .pswipe-del{position:absolute;top:0;right:0;bottom:0;width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--danger),color-mix(in srgb,var(--danger) 74%,var(--true-black)));}
+  .pswipe .pswipe-del svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .pswipe .pswipe-del:active{filter:brightness(.94);}
+  .pswipe .pcard{margin:0;box-shadow:none;position:relative;z-index:1;background:var(--surface);transition:transform .22s cubic-bezier(.22,.61,.36,1);touch-action:pan-y;}
+  .pswipe .pcard:hover{transform:none;box-shadow:none;}
+  .pswipe.open .pcard{transform:translateX(-88px);}
 
   /* ── 新增联系人 ── */
   .aptype{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
   .aptype button{--tc:var(--accent);font-family:var(--font-mono);font-weight:700;font-size:12.5px;padding:9px 0;border-radius:10px;border:1.5px solid color-mix(in srgb,var(--tc) 36%,var(--border));background:var(--surface);color:color-mix(in srgb,var(--tc) 78%,var(--true-black));cursor:pointer;transition:.15s;}
   .aptype button.on{background:linear-gradient(135deg,var(--tc),color-mix(in srgb,var(--tc) 72%,var(--shade)));color:var(--on-accent);border-color:transparent;}
+  .apkind{display:flex;flex-wrap:wrap;gap:8px;}
+  .apkind button{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+  .apkind button svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .apkind button:hover{border-color:color-mix(in srgb,var(--primary) 40%,var(--border));color:var(--fg);}
+  .apkind button.on{background:var(--primary-soft);border-color:color-mix(in srgb,var(--primary) 45%,var(--border));color:color-mix(in srgb,var(--primary) 78%,var(--true-black));}
   .ap-ai{margin:2px 20px 2px;font-size:12.5px;color:var(--muted);}
   .ap-ai a{color:var(--primary);font-weight:600;cursor:pointer;}
   .ap-del{display:block;margin:10px 20px 6px;width:calc(100% - 40px);min-height:44px;border-radius:12px;border:1px solid color-mix(in srgb,var(--danger) 40%,var(--border));background:color-mix(in srgb,var(--danger) 9%,var(--surface));color:color-mix(in srgb,var(--danger) 82%,var(--true-black));font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s;}
@@ -306,11 +321,11 @@
   .vs-card .ty{font-family:var(--font-mono);font-weight:700;font-size:13px;letter-spacing:.04em;color:color-mix(in srgb,var(--tc) 74%,var(--true-black));margin-top:2px;}
   .vs-card .role{font-size:11px;color:var(--faint);margin-top:2px;}
   .vs-x{display:grid;place-items:center;}
-  .vs-x span{width:38px;height:38px;border-radius:50%;background:var(--fg);color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-size:15px;}
+  .vs-x span{width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--fg) 5%,var(--surface));border:1px solid var(--hair);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;line-height:1;}
 
   .score{margin:18px 20px 4px;background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:18px;display:flex;align-items:center;gap:16px;}
-  .ring{--val:72;width:82px;height:82px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:conic-gradient(var(--primary) calc(var(--val)*1%),color-mix(in srgb,var(--fg) 8%,var(--surface)) 0);}
-  .ring .inner{width:62px;height:62px;border-radius:50%;background:var(--surface);display:grid;place-items:center;flex-direction:column;text-align:center;}
+  .ring{--val:72;width:82px;height:82px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--primary) calc(var(--val)*1%),color-mix(in srgb,var(--fg) 8%,var(--surface)) 0);}
+  .ring .inner{width:62px;height:62px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
   .ring .inner b{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1;}
   .ring .inner small{font-size:9px;color:var(--faint);letter-spacing:.06em;}
   .score .sx b{font-size:14px;font-weight:700;}
@@ -346,7 +361,7 @@
   @keyframes spin{to{transform:rotate(360deg);}}
 
   /* ── AI 推测：入口卡 ── */
-  .ai-entry{margin:2px 20px 14px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:linear-gradient(135deg,var(--seed-primary),var(--seed-accent));color:var(--on-accent);cursor:pointer;position:relative;overflow:hidden;box-shadow:0 14px 26px -14px color-mix(in srgb,var(--seed-accent) 70%,transparent);}
+  .ai-entry{margin:2px 20px 12px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:linear-gradient(135deg,var(--seed-primary),var(--seed-accent));color:var(--on-accent);cursor:pointer;position:relative;overflow:hidden;box-shadow:0 14px 26px -14px color-mix(in srgb,var(--seed-accent) 70%,transparent);}
   .ai-entry .spark{position:absolute;right:-14px;top:-18px;width:92px;height:92px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none;}
   .ai-entry .aicon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:0 0 auto;position:relative;z-index:1;}
   .ai-entry .aicon svg{width:22px;height:22px;stroke:var(--on-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
@@ -355,7 +370,7 @@
   .ai-entry .atx span{font-size:11.5px;color:rgba(255,255,255,.86);}
   .ai-entry .arw{flex:0 0 auto;position:relative;z-index:1;opacity:.9;}
   .ai-entry .arw svg{width:18px;height:18px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .test-entry{margin:-6px 20px 14px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--hair);cursor:pointer;transition:.15s;}
+  .test-entry{margin:0 20px 18px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--hair);cursor:pointer;transition:.15s;}
   .test-entry:hover{border-color:color-mix(in srgb,var(--g-nf) 40%,var(--border));transform:translateY(-1px);}
   .test-entry .aicon{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--g-nf) 14%,var(--surface));display:grid;place-items:center;flex:0 0 auto;}
   .test-entry .aicon svg{width:20px;height:20px;stroke:color-mix(in srgb,var(--g-nf) 78%,var(--true-black));fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
@@ -501,6 +516,7 @@
   .fnq .ttl{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
   .fnq .ttl b{font-size:14px;font-weight:600;}
   .fnq .ttl .att{font-size:10.5px;font-weight:500;color:var(--fx-hue);}
+  .fnq .ttl .tag{font-size:10px;font-weight:500;color:var(--muted);background:color-mix(in srgb,var(--fx-hue) 10%,var(--surface));border-radius:6px;padding:2px 7px;letter-spacing:.02em;}
   .fnq .desc{font-size:13px;color:var(--fg);margin:3px 0 0;line-height:1.5;}
   .fnq .quote{display:inline-block;margin-top:7px;font-size:12px;color:var(--fg);background:color-mix(in srgb,var(--fx-hue) 12%,var(--surface));border-radius:8px;padding:3px 10px;}
   .fnq .quote::before{content:'“';opacity:.6;} .fnq .quote::after{content:'”';opacity:.6;}
@@ -518,11 +534,84 @@
   .fx-cell{padding:6px 4px;border-bottom:1px solid var(--line-soft);}
   .fx-fn{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 8px;border-radius:8px;font-weight:400;font-size:11.5px;font-family:var(--font-mono);letter-spacing:.02em;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
   .fx-fn[data-att="e"]{background:color-mix(in srgb,var(--fx-hue) 8%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 64%,var(--true-black));}
+  .fx-fn{cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;}
+  .fx-fn:hover{transform:translateY(-1px);box-shadow:0 3px 10px -4px color-mix(in srgb,var(--fx-hue) 60%,transparent);}
+  .fx-fn:active{transform:translateY(0);}
+  .fx-fn:focus-visible{outline:2px solid color-mix(in srgb,var(--fx-hue) 60%,var(--surface));outline-offset:1px;}
   .fx-table tbody tr:hover .fx-tp,.fx-table tbody tr:hover .fx-cell{background:color-mix(in srgb,var(--tc) 8%,var(--surface));}
   @media (max-width:480px){
     .fx-fn{min-width:30px;padding:4px 6px;font-size:11px;}
     .fx-table th,.fx-table thead th{font-size:10px;}
   }
+
+  /* 点功能字母弹出的解读底卡 */
+  .fnsheet{position:absolute;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s ease;}
+  .fnsheet.show{opacity:1;pointer-events:auto;}
+  .fnsheet .scrim{position:absolute;inset:0;background:color-mix(in srgb,var(--true-black) 40%,transparent);backdrop-filter:blur(2px);}
+  .fnsheet .card{position:relative;width:100%;max-height:80%;overflow-y:auto;background:var(--surface);border-radius:24px 24px 0 0;padding:14px 20px 22px;box-shadow:0 -14px 44px -14px color-mix(in srgb,var(--true-black) 34%,transparent);transform:translateY(18px);transition:transform .24s ease;}
+  .fnsheet.show .card{transform:translateY(0);}
+  .fnsheet .grip{width:38px;height:4px;border-radius:99px;background:var(--border);margin:0 auto 16px;}
+  .fns-head{display:flex;align-items:center;gap:13px;}
+  .fns-fn{flex:0 0 auto;width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:18px;font-weight:500;letter-spacing:.02em;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
+  .fns-fn[data-att="e"]{background:color-mix(in srgb,var(--fx-hue) 8%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 62%,var(--true-black));}
+  .fns-h-txt h3{margin:0;font-size:16px;font-weight:600;color:var(--fg);line-height:1.3;}
+  .fns-h-txt h3 b{font-weight:600;color:color-mix(in srgb,var(--tc) 78%,var(--true-black));}
+  .fns-h-txt p{margin:4px 0 0;font-size:12px;color:var(--muted);}
+  .fns-pos{margin:16px 0 0;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:11.5px;font-weight:500;color:color-mix(in srgb,var(--tc) 82%,var(--true-black));background:color-mix(in srgb,var(--tc) 13%,var(--surface));}
+  .fns-body{margin:14px 0 0;display:grid;gap:14px;}
+  .fns-sub{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--muted);}
+  .fns-sub::before{content:"";width:10px;height:2px;border-radius:2px;background:color-mix(in srgb,var(--tc,var(--primary)) 55%,var(--surface));}
+  .fns-block .fns-sub::before{background:color-mix(in srgb,var(--fx-hue) 62%,var(--surface));}
+  .fns-block.pos .fns-sub::before{background:color-mix(in srgb,var(--tc) 62%,var(--surface));}
+  .fns-block p{margin:6px 0 0;font-size:13.5px;line-height:1.75;color:var(--fg);font-weight:300;}
+  .fns-block p b{font-weight:500;color:color-mix(in srgb,var(--fx-hue) 70%,var(--true-black));}
+  .fns-meta{margin:16px 0 0;display:grid;gap:8px;}
+  .fns-meta .row{display:flex;gap:10px;font-size:12px;line-height:1.55;padding:10px 13px;border-radius:13px;background:color-mix(in srgb,var(--fg) 4%,var(--surface));}
+  .fns-meta .row .k{flex:0 0 auto;color:var(--muted);width:48px;}
+  .fns-meta .row .v{color:var(--fg);font-weight:300;}
+  .fns-close{margin:18px 0 0;width:100%;padding:11px;border:none;border-radius:13px;background:color-mix(in srgb,var(--fg) 6%,var(--surface));color:var(--muted);font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;}
+  .fns-close:hover{background:color-mix(in srgb,var(--fg) 9%,var(--surface));}
+
+  /* 点类型名弹出的「这是什么样的人」类型卡 */
+  .fx-tp{cursor:pointer;}
+  .fx-table tbody tr:hover .fx-tp b{color:color-mix(in srgb,var(--tc) 72%,var(--fg));}
+  .fx-tp:focus-visible{outline:2px solid color-mix(in srgb,var(--tc) 55%,var(--surface));outline-offset:-2px;}
+  .tps-head{display:flex;align-items:center;gap:13px;}
+  .tps-emblem{flex:0 0 auto;width:54px;height:54px;border-radius:15px;background-color:color-mix(in srgb,var(--tc) 12%,var(--surface));background-image:var(--spr,none);background-size:200% 200%;background-position:var(--spr-pos,0% 0%);background-repeat:no-repeat;}
+  .tps-h-txt h3{margin:0;font-size:17px;font-weight:600;letter-spacing:.02em;color:color-mix(in srgb,var(--tc) 78%,var(--true-black));}
+  .tps-h-txt p{margin:4px 0 0;font-size:12px;color:var(--muted);}
+  .tps-line{margin:14px 0 0;font-size:13.5px;line-height:1.7;color:var(--fg);font-weight:300;}
+  .tps-sec{margin:16px 0 0;}
+  .tps-tags{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:7px;}
+  .tps-stack{margin:8px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+  .tps-stack .st{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 4px;border-radius:12px;background:color-mix(in srgb,var(--fx-hue) 12%,var(--surface));}
+  .tps-stack .st .fn{font-family:var(--font-mono);font-size:14px;font-weight:500;color:color-mix(in srgb,var(--fx-hue) 72%,var(--true-black));}
+  .tps-stack .st .lv{font-size:10px;color:var(--muted);}
+  #tpCta{background:color-mix(in srgb,var(--tc) 14%,var(--surface));color:color-mix(in srgb,var(--tc) 82%,var(--true-black));font-weight:500;margin-top:16px;}
+  #tpCta:hover{background:color-mix(in srgb,var(--tc) 20%,var(--surface));}
+
+  /* ── 账号登录浮层 ── */
+  .auth-ov{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;justify-content:center;padding:0 30px;background:var(--surface);}
+  .auth-ov.show{display:flex;}
+  .auth-ov .abrand{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:28px;}
+  .auth-ov .alogo{width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:var(--primary-soft);color:var(--primary);}
+  .auth-ov .alogo svg{width:29px;height:29px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .auth-ov h2{font-family:var(--font-display);font-size:21px;font-weight:700;color:var(--fg);text-align:center;margin:0;letter-spacing:-0.01em;}
+  .auth-ov .asub{font-size:12.5px;color:var(--muted);text-align:center;margin-top:7px;line-height:1.55;}
+  .auth-ov .afield{margin-bottom:12px;}
+  .auth-ov label{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin:0 0 6px 2px;}
+  .auth-ov input{width:100%;box-sizing:border-box;height:46px;padding:0 14px;border-radius:13px;border:1px solid var(--border);background:color-mix(in srgb,var(--fg) 3%,var(--surface));color:var(--fg);font:inherit;font-size:15px;transition:.15s;}
+  .auth-ov input:focus{outline:none;border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-soft);}
+  .auth-ov .aprimary{width:100%;height:48px;margin-top:8px;border:none;border-radius:14px;background:var(--primary);color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;}
+  .auth-ov .aprimary:hover{filter:brightness(1.06);}
+  .auth-ov .aprimary:disabled{opacity:.55;cursor:default;}
+  .auth-ov .aswitch{margin-top:16px;text-align:center;font-size:12.5px;color:var(--muted);}
+  .auth-ov .aswitch b{color:var(--primary);font-weight:600;cursor:pointer;}
+  .auth-ov .amsg{min-height:18px;margin-top:12px;text-align:center;font-size:12px;line-height:1.5;color:var(--danger);}
+  .auth-ov .amsg.ok{color:color-mix(in srgb,var(--primary) 80%,var(--true-black));}
+  .auth-logout{display:flex;align-items:center;gap:5px;flex:none;align-self:flex-start;margin-top:2px;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--hair);background:transparent;color:var(--muted);font:inherit;font-size:11.5px;font-weight:600;cursor:pointer;transition:.15s;}
+  .auth-logout:hover{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--border));}
+  .auth-logout svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 
   /* 手机端全屏：去掉外框/刘海/侧键 */
   @media (max-width:480px){
@@ -550,6 +639,7 @@
           <main class="content page active" id="page-explore" data-component="ExploreScreen">
             <div class="app-head">
               <div><p class="eyebrow">发现你的人格</p><h2>16 型图鉴</h2></div>
+              <button class="auth-logout" id="authLogout" type="button" style="display:none"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>退出</button>
             </div>
             <div class="ai-entry" data-component="AIGuessEntry" role="button" tabindex="0">
               <span class="spark" aria-hidden></span>
@@ -604,9 +694,9 @@
           </main>
           <main class="content page" id="page-people" data-component="PeopleScreen">
             <div class="app-head">
-              <div><p class="eyebrow">我标注的人 · 5</p><h2>我的人脉</h2><p class="app-note">以下均为示意用户，仅作演示</p></div>
+              <div><p class="eyebrow">我标注的人 · 5</p><h2>我的人脉</h2></div>
+              <button class="addbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>标注一个新的人</button>
             </div>
-            <button class="addbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>标注一个新的人</button>
             <div class="ai-entry" data-component="AIGuessEntry" role="button" tabindex="0">
               <span class="spark" aria-hidden></span>
               <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span>
@@ -633,6 +723,10 @@
               <div class="field" id="apRelField">
                 <label for="apRel">关系备注 <em>· 可选</em></label>
                 <input class="ti" id="apRel" type="text" placeholder="如：我的老板、大学同学" autocomplete="off" />
+              </div>
+              <div class="field" id="apKindField">
+                <label>你们的关系 <em>· 影响配对解读</em></label>
+                <div class="apkind" id="apKind"></div>
               </div>
               <div class="field">
                 <label>TA 的 MBTI 类型</label>
@@ -716,9 +810,17 @@
               </div>
             </div>
 
+            <div class="relcard k-rel" id="cmpRelLens" data-component="RelationLens">
+              <div class="rh">
+                <span class="ric" id="cmpLensIc"></span>
+                <div><div class="rk" id="cmpLensKicker">这段关系</div><div class="rn" id="cmpLensName">伴侣</div></div>
+              </div>
+              <p id="cmpLensP"></p>
+            </div>
+
             <div class="relcard k-rel" data-component="RelationArchetype">
               <div class="rh">
-                <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.3-8.5C1 8 2.8 4.5 6 4.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.2 0 5 3.5 3.3 7C19 15.65 12 20 12 20z"/></svg></span>
+                <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
                 <div><div class="rk">关系类型</div><div class="rn" id="cmpArch">互补拍档 · 镜像成长</div></div>
               </div>
               <p id="cmpArchP"></p>
@@ -888,6 +990,7 @@
             </section>
             <section class="fx-view" id="fxTable">
               <div class="fx-legend" id="fxLegend"></div>
+              <p class="helper" style="padding:0 2px 8px;margin:0;">点左侧类型名看「这是什么样的人」，点任意功能字母看它在这个类型第几位、什么意思。</p>
               <table class="fx-table"><thead id="fxHead"></thead><tbody id="fxBody"></tbody></table>
             </section>
           </main>
@@ -898,11 +1001,54 @@
           <button class="tab" data-target="page-functions"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg>八维</button>
           <button class="tab" data-target="page-aiin"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>AI 推测</button>
         </nav>
+        <div class="fnsheet" id="fnSheet" aria-hidden="true">
+          <div class="scrim" data-close></div>
+          <div class="card" role="dialog" aria-modal="true" aria-labelledby="fnSheetTitle">
+            <div class="grip"></div>
+            <div class="fns-head">
+              <span class="fns-fn" id="fnSheetBadge"></span>
+              <div class="fns-h-txt"><h3 id="fnSheetTitle"></h3><p id="fnSheetSub"></p></div>
+            </div>
+            <div class="fns-pos" id="fnSheetPos"></div>
+            <div class="fns-body" id="fnSheetBody"></div>
+            <div class="fns-meta" id="fnSheetMeta"></div>
+            <button class="fns-close" id="fnSheetClose" type="button" data-close>收起</button>
+          </div>
+        </div>
+        <div class="fnsheet" id="tpSheet" aria-hidden="true">
+          <div class="scrim" data-close></div>
+          <div class="card" role="dialog" aria-modal="true" aria-labelledby="tpTitle">
+            <div class="grip"></div>
+            <div class="tps-head">
+              <span class="tps-emblem" id="tpEmblem" aria-hidden="true"></span>
+              <div class="tps-h-txt"><h3 id="tpTitle"></h3><p id="tpSub"></p></div>
+            </div>
+            <p class="tps-line" id="tpLine"></p>
+            <div class="tps-sec"><span class="fns-sub">关键词</span><div class="tps-tags" id="tpKeys"></div></div>
+            <div class="tps-sec"><span class="fns-sub">擅长</span><div class="tps-tags" id="tpGood"></div></div>
+            <div class="tps-sec"><span class="fns-sub">留意</span><div class="tps-tags" id="tpWatch"></div></div>
+            <div class="tps-sec"><span class="fns-sub">功能栈 · 前四位</span><div class="tps-stack" id="tpStack"></div></div>
+            <button class="fns-close" id="tpCta" type="button">查看完整解读 →</button>
+            <button class="fns-close" type="button" data-close>收起</button>
+          </div>
+        </div>
+        <div class="auth-ov" id="authOverlay" aria-hidden="true">
+          <div class="abrand">
+            <span class="alogo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.35-9.5-8.5C.9 9.6 2.4 5.5 6 5c2-.3 3.6.9 4.5 2.2C11.4 5.9 13 4.7 15 5c3.6.5 5.1 4.6 3.5 7.5C19 16.65 12 21 12 21z"/></svg></span>
+            <div><h2 id="authTitle">登录同步你的人脉</h2><p class="asub" id="authSub">用邮箱登录，你的类型和标注会存到云端，换设备打开也还在。</p></div>
+          </div>
+          <div class="afield"><label for="authEmail">邮箱</label><input id="authEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+          <div class="afield"><label for="authPass">密码</label><input id="authPass" type="password" autocomplete="current-password" placeholder="至少 6 位" /></div>
+          <button class="aprimary" id="authPrimary" type="button">登录</button>
+          <div class="aswitch" id="authSwitch">还没有账号？<b>注册一个</b></div>
+          <div class="amsg" id="authMsg"></div>
+        </div>
         <div class="home-indicator"></div>
       </div>
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
   const FUNC = {
@@ -1073,14 +1219,14 @@
   const POS8 = ['主导','辅助','第三','劣势','第五','第六','第七','第八'];
   // 8 个功能的「一句话理解」与口头禅（功能速查）
   const FN_REF = {
-    Ni:{line:'向内收敛到一个答案',quote:'我就是知道会怎样'},
-    Ne:{line:'向外发散看到 N 种可能',quote:'如果这样呢？那样呢？'},
-    Si:{line:'调取过去经验作为参照',quote:'上次是这样的'},
-    Se:{line:'活在当下，敏锐感知环境',quote:'现在发生了什么'},
-    Fi:{line:'内在价值判断',quote:'这对我来说重要不重要'},
-    Fe:{line:'感知群体情绪、维护和谐',quote:'大家感受怎么样'},
-    Ti:{line:'内部逻辑推演',quote:'这个逻辑自洽吗'},
-    Te:{line:'追求外部效率和结果',quote:'怎么做最快最有效'}
+    Ni:{tag:'直觉 · 向内',full:'不太盯着眼前的细节，而是把零散的线索放在心里慢慢发酵，直到某天突然「想通」，笃定事情会往哪个方向发展。表现出来常是说不清来由的预感，和对某个未来画面的执着。',quote:'我就是知道会怎样'},
+    Ne:{tag:'直觉 · 向外',full:'看到一件事，脑子会立刻炸出一连串「还能怎样」——新点子、新联想、新可能停都停不下来。擅长开脑洞、跨界联想，但也容易同时开一堆坑、三分钟热度。',quote:'如果这样呢？那样呢？'},
+    Si:{tag:'实感 · 向内',full:'把亲身经历过的细节和习惯牢牢存进记忆，遇事先翻「我以前是怎么做的」。追求熟悉、稳定、靠谱，对突如其来的变动会本能地不适应。',quote:'上次就是这样的'},
+    Se:{tag:'实感 · 向外',full:'感官完全打开、对准此刻——眼前的画面、声音、身体的感受都格外敏锐，反应快、行动快，享受真实发生的当下，不爱纸上谈兵。',quote:'现在正发生什么'},
+    Ti:{tag:'思考 · 向内',full:'习惯在脑子里搭一套属于自己的逻辑，凡事都要「讲得通、说得清」。追求精确和前后一致，别人说的话会先在心里默默验证一遍对不对。',quote:'这个逻辑自洽吗'},
+    Te:{tag:'思考 · 向外',full:'眼里装的都是「怎么把事做成」——定计划、调资源、看重效率和结果，习惯用进度和数据说话，推动事情真正落地完成。',quote:'怎么做最快最有效'},
+    Fi:{tag:'情感 · 向内',full:'凡事先问自己「我认不认同、对不对得起本心」，心里有一套很深、很个人的价值标准。看重真诚、不愿违心，只是这份强烈别人不一定看得出来。',quote:'这对我来说重不重要'},
+    Fe:{tag:'情感 · 向外',full:'像自带情绪雷达，很快就能察觉到周围人的心情和气氛，会主动照顾大家、维护和谐，让在场的每个人都感觉被在意、被接住。',quote:'大家现在感受如何'}
   };
   const REF_ORDER = ['Ni','Ne','Si','Se','Fi','Fe','Ti','Te'];
   (function buildRef(){
@@ -1091,8 +1237,8 @@
       const attCn = att==='i'?'内倾':'外倾';
       return '<div class="fnq" data-att="'+att+'" style="--fx-bg:var(--fn-'+f.toLowerCase()+');--fx-hue:var(--fn-'+axis+')">'
         +'<div class="badge">'+f+'</div>'
-        +'<div class="body"><div class="ttl"><b>'+meta.cn+'</b><span class="att">'+attCn+'</span></div>'
-        +'<p class="desc">'+ref.line+'</p>'
+        +'<div class="body"><div class="ttl"><b>'+meta.cn+'</b><span class="att">'+attCn+'</span><span class="tag">'+ref.tag+'</span></div>'
+        +'<p class="desc">'+ref.full+'</p>'
         +'<span class="quote">'+ref.quote+'</span></div></div>';
     }).join('');
   })();
@@ -1124,11 +1270,11 @@
       g.list.forEach(code=>{
         const t=T[code], tc='var(--c-'+code.toLowerCase()+')';
         let tr='<tr style="--tc:'+tc+'">';
-        tr+='<td class="fx-tp"><b><i></i>'+code+'</b><small>'+t.nick+'</small></td>';
-        full8(code).forEach(f=>{
+        tr+='<td class="fx-tp" role="button" tabindex="0" data-tp="'+code+'" title="点开看 '+code+' 是什么样的人"><b><i></i>'+code+'</b><small>'+t.nick+'</small></td>';
+        full8(code).forEach((f,i)=>{
           const att=f.charAt(1);
           const axis=f.charAt(0).toLowerCase();
-          tr+='<td class="fx-cell"><span class="fx-fn" data-att="'+att+'" style="--fx-hue:var(--fn-'+axis+')" title="'+FUNC[f].cn+'：'+FUNC[f].desc+'">'+f+'</span></td>';
+          tr+='<td class="fx-cell"><span class="fx-fn" role="button" tabindex="0" data-code="'+code+'" data-pos="'+i+'" data-att="'+att+'" style="--fx-hue:var(--fn-'+axis+')" title="点开看：'+FUNC[f].cn+'在'+POS8[i]+'位的解读">'+f+'</span></td>';
         });
         tr+='</tr>';
         rows+=tr;
@@ -1141,6 +1287,107 @@
       legend.innerHTML=axes.map(a=>'<span><i style="background:var(--'+a[1]+')"></i>'+a[0]+'</span>').join('')
         +'<span style="opacity:.85">深色=内向态 · 浅色=外向态</span>';
     }
+  })();
+
+  // ── 点功能字母 → 弹出「该类型 · 该位置 · 该功能」的解读 ──
+  (function fnSheet(){
+    const body=document.getElementById('fxBody');
+    const sheet=document.getElementById('fnSheet');
+    if(!body||!sheet) return;
+    const attCn2=f=>f.charAt(1)==='i'?'内倾':'外倾';
+    // 每个功能一句话的「核心气质」，用来把定义和位置解读串起来
+    const ESS={Ni:'洞察与远见',Ne:'发散与可能',Si:'稳定与经验',Se:'当下的敏锐',Ti:'逻辑与自洽',Te:'效率与执行',Fi:'价值与真诚',Fe:'共情与和谐'};
+    // 第 1~4 位的承接语：说明这份气质排在第几位，于是……
+    const LEAD=[
+      '落在你最顺手的主导位、几乎时刻在线，于是——',
+      '被放在辅助位替主导补位，于是——',
+      '排在时强时弱的第三位，于是——',
+      '却落在你最弱的第四位，于是——'
+    ];
+    // 8 个功能「字母本身」的通俗定义：内/外向 + 功能轴 + 它最在意的那个问题
+    const FN_DEF={
+      Ni:'内向直觉（Ni）是把直觉转向内部：围绕少量线索反复酝酿，慢慢收敛成一个笃定的洞察或对未来走向的预感。它关心的是「这背后到底指向什么」。',
+      Ne:'外向直觉（Ne）是把直觉投向外部：从一件事不断发散联想，看到无数种可能性与新点子。它关心的是「还能怎样？如果这样、那样呢」。',
+      Si:'内向感觉（Si）是把感官经验存进内部：反复调取过往真实的细节和熟悉的节奏作为参照，追求稳定、可靠、可预期。它关心的是「以前是怎样的」。',
+      Se:'外向感觉（Se）是把感官完全对准当下：敏锐捕捉此刻环境里真实发生的一切，即时反应、即时行动。它关心的是「现在正发生什么」。',
+      Ti:'内向思考（Ti）是在内部搭一套自洽的逻辑框架：追求概念精确、前后一致，凡事都要讲得通。它关心的是「这个逻辑自洽吗」。',
+      Te:'外向思考（Te）是面向外部组织资源和流程：用效率与可衡量的结果说话，推动事情真正落地完成。它关心的是「怎么做最快最有效」。',
+      Fi:'内向情感（Fi）是向内确认自己的价值与感受：判断一件事对自己而言是否真诚、对不对得起本心。它关心的是「这对我重要吗、是对是错」。',
+      Fe:'外向情感（Fe）是向外感知他人与群体的情绪：主动照顾气氛、维系和谐与彼此的连接。它关心的是「大家现在感受如何」。'
+    };
+    // 第 5~8 功能（荣格阴影功能）的位置化解读框架
+    const SHADOW=[
+      {name:'对抗位',en:'Opposing',
+        frame:f=>'平时你几乎不主动动用<b>'+FUNC[f].cn+'（'+f+'）</b>。可一旦被冒犯、被逼到角落，它就会别扭地跳出来防御或较劲，语气常带着不服和抵触——像主导功能急了才甩出的一张牌。'},
+      {name:'消极位',en:'Critical',
+        frame:f=>'<b>'+FUNC[f].cn+'（'+f+'）</b>在这里像一个挑剔的内在声音。状态不好时，你容易用它来否定自己、也数落别人——「这点小事都想不明白？」，带着居高临下的批评味道。'},
+      {name:'诡计位',en:'Trickster',
+        frame:f=>'这是你的盲点区。<b>'+FUNC[f].cn+'（'+f+'）</b>用起来常常笨拙、容易被绕进去或钻牛角尖；但放松时，它偶尔又会化成一点狡黠的幽默，出其不意。'},
+      {name:'深渊位',en:'Demon',
+        frame:f=>'这是你最陌生、也最抗拒的一股力量。<b>'+FUNC[f].cn+'（'+f+'）</b>几乎只在极端压力下被逼出来，过程往往很难受；可一旦真正整合，它常会带来意想不到的转机与深层成长。'}
+    ];
+    function open(code,pos){
+      const f=full8(code)[pos];
+      const meta=FUNC[f], ref=FN_REF[f];
+      const att=f.charAt(1), axis=f.charAt(0).toLowerCase();
+      const hue='var(--fn-'+axis+')', tc='var(--c-'+code.toLowerCase()+')';
+      sheet.style.setProperty('--fx-hue',hue);
+      sheet.style.setProperty('--tc',tc);
+      const badge=document.getElementById('fnSheetBadge');
+      badge.textContent=f; badge.setAttribute('data-att',att);
+      document.getElementById('fnSheetTitle').innerHTML='<b>'+code+'</b> 的第 '+(pos+1)+' 功能';
+      document.getElementById('fnSheetSub').textContent=meta.cn+' · '+f+'（'+attCn2(f)+'）';
+      const posName=pos<4?POS8[pos]:('第'+(pos+1)+'功能 · '+SHADOW[pos-4].name);
+      document.getElementById('fnSheetPos').textContent='第 '+(pos+1)+' 位｜'+posName;
+      const posText = pos<4 ? ROLE[f][pos] : SHADOW[pos-4].frame(f);
+      const here = pos<4 ? (POS8[pos]+'位·第'+(pos+1)) : ('第'+(pos+1)+'位·'+SHADOW[pos-4].name);
+      const bridge = pos<4
+        ? '同样是<b>'+meta.cn+'</b>这份「'+ESS[f]+'」，在 '+code+' 这里它'+LEAD[pos]
+        : '同样这份「'+ESS[f]+'」，一旦沉到不常调用的'+SHADOW[pos-4].name+'——';
+      document.getElementById('fnSheetBody').innerHTML =
+        '<div class="fns-block"><span class="fns-sub">先看这个功能本身</span><p>'+FN_DEF[f]+'</p></div>'
+        +'<div class="fns-block pos"><span class="fns-sub">放到 '+code+' 这里（'+here+'）</span><p>'+bridge+posText+'</p></div>';
+      document.getElementById('fnSheetMeta').innerHTML =
+        '<div class="row"><span class="k">口头禅</span><span class="v">「'+ref.quote+'」</span></div>';
+      sheet.classList.add('show'); sheet.setAttribute('aria-hidden','false');
+    }
+    // ── 类型卡：点左列的类型名 ──
+    const tpSheet=document.getElementById('tpSheet');
+    const LV4=['主导','辅助','第三','劣势'];
+    function openType(code){
+      const t=T[code], tc='var(--c-'+code.toLowerCase()+')';
+      tpSheet.style.setProperty('--tc',tc);
+      applyPortrait(document.getElementById('tpEmblem'),code);
+      document.getElementById('tpTitle').textContent=code;
+      document.getElementById('tpSub').textContent=t.g+' · '+t.nick;
+      document.getElementById('tpLine').textContent=t.line;
+      document.getElementById('tpKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
+      document.getElementById('tpGood').innerHTML=t.good.map(k=>chip(k,'good')).join('');
+      document.getElementById('tpWatch').innerHTML=t.watch.map(k=>chip(k,'watch')).join('');
+      document.getElementById('tpStack').innerHTML=t.stack.map((f,i)=>{
+        const axis=f.charAt(0).toLowerCase();
+        return '<div class="st" style="--fx-hue:var(--fn-'+axis+')"><span class="fn">'+f+'</span><span class="lv">'+LV4[i]+'</span></div>';
+      }).join('');
+      document.getElementById('tpCta').onclick=()=>{ closeAll(); selectType(code,null); showPage('page-detail'); };
+      tpSheet.classList.add('show'); tpSheet.setAttribute('aria-hidden','false');
+    }
+    function closeAll(){ [sheet,tpSheet].forEach(s=>{ s.classList.remove('show'); s.setAttribute('aria-hidden','true'); }); }
+    body.addEventListener('click',e=>{
+      const cell=e.target.closest('.fx-fn');
+      if(cell){ open(cell.dataset.code, +cell.dataset.pos); return; }
+      const tp=e.target.closest('.fx-tp');
+      if(tp){ openType(tp.dataset.tp); }
+    });
+    body.addEventListener('keydown',e=>{
+      if(e.key!=='Enter'&&e.key!==' ') return;
+      const cell=e.target.closest('.fx-fn');
+      if(cell){ e.preventDefault(); open(cell.dataset.code, +cell.dataset.pos); return; }
+      const tp=e.target.closest('.fx-tp');
+      if(tp){ e.preventDefault(); openType(tp.dataset.tp); }
+    });
+    sheet.addEventListener('click',e=>{ if(e.target.hasAttribute('data-close')) closeAll(); });
+    tpSheet.addEventListener('click',e=>{ if(e.target.hasAttribute('data-close')) closeAll(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeAll(); });
   })();
 
 
@@ -1169,17 +1416,66 @@
   // ── people list ──
   const SELF={init:'我',name:'我',rel:'本人 · 也是 INFP',type:'INFP',self:true};
   const CONTACTS=[
-    {init:'团',name:'团团',rel:'我的老板',type:'ENTJ'},
-    {init:'布',name:'阿布',rel:'同事 · 后端',type:'ISTP'},
-    {init:'桃',name:'桃桃',rel:'好友',type:'ENFP'},
-    {init:'糯',name:'糯米',rel:'家人',type:'ISFJ'}
+    {init:'团',name:'团团',rel:'我的老板',type:'ENTJ',relKind:'hier'},
+    {init:'布',name:'阿布',rel:'同事 · 后端',type:'ISTP',relKind:'coworker'},
+    {init:'桃',name:'桃桃',rel:'好友',type:'ENFP',relKind:'friend'},
+    {init:'糯',name:'糯米',rel:'家人',type:'ISFJ',relKind:'family'}
   ];
   const pl=document.getElementById('peopleList');
   const peopleCountEl=document.querySelector('#page-people .eyebrow');
   let openPersonEditor=null;
   let setFormType=null;
   let startMbtiTest=null;
+  let openSwipe=null;
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+  // ── 关系类型（影响配对解读） ──
+  const REL_KINDS=[
+    {k:'',name:'普通'},
+    {k:'partner',name:'伴侣'},
+    {k:'family',name:'家人'},
+    {k:'friend',name:'朋友'},
+    {k:'coworker',name:'同事'},
+    {k:'hier',name:'上下级'}
+  ];
+  const REL_ICON={
+    partner:'<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',
+    family:'<svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>',
+    friend:'<svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="3"/><path d="M3 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 6.6a3 3 0 0 1 0 5.8"/><path d="M17.5 15c2.3.4 3.5 2.2 3.5 5"/></svg>',
+    coworker:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>',
+    hier:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3M6 16v-2h12v2"/></svg>',
+    general:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1 .8-1 1.6"/><path d="M12 16.6h.01"/></svg>'
+  };
+  const REL_LENS={
+    partner:{name:'伴侣',k:'k-rel',kicker:'作为伴侣 · 相处重点',
+      lead:'作为亲密伴侣，你们真正要磨合的不是「合不合得来」，而是日复一日的生活节奏、情绪照顾，以及对未来的共识。类型只是底色，用心经营才决定走多远。',
+      up:'亲密关系里，愿意为对方主动调整是最大的加分项，你们的默契能越磨越深。',
+      warn:'越亲近越容易把「你应该懂我」当默认，别让没说出口的期待攒成大隔阂。',
+      tip:'留出只属于两个人的深聊时间，聊感受和期待，而不只是聊事务。'},
+    family:{name:'家人',k:'k-val',kicker:'作为家人 · 相处重点',
+      lead:'作为家人，你们的关系长期且难以「重选」，重点在于包容天生的差异、守住彼此的底线与责任，而不是争谁对谁错。',
+      up:'家庭的羁绊让你们更能无条件支持对方，就算冲突过后也更容易和解。',
+      warn:'家人之间界限感常常模糊，关心过了头会变成干涉，记得尊重彼此的独立空间。',
+      tip:'把「我是为你好」换成「你希望我怎么帮你」，先问需求再给建议。'},
+    friend:{name:'朋友',k:'k-com',kicker:'作为朋友 · 相处重点',
+      lead:'作为朋友，你们的相处更轻盈自由，重点在于共同的兴趣、彼此的分寸感，以及互相成就而非互相消耗。',
+      up:'没有太多责任捆绑，你们更容易欣赏对方的不同，也更能玩到一起、聊到一起。',
+      warn:'友情容易因疏于联系而变淡，也可能因交浅言深而越界。',
+      tip:'保持恰当的联系频率，重要的事上互相捧场，不合适的建议点到为止。'},
+    coworker:{name:'同事',k:'k-com',kicker:'作为同事 · 相处重点',
+      lead:'作为同事，你们的相处核心是协作效率与职业边界。个人喜好可以放一放，把事情做成才是共同目标。',
+      up:'工作场景里，你们的类型差异正好覆盖不同环节，分工得当就是高效搭档。',
+      warn:'小心把私人情绪带进工作，也别让沟通风格差异被误读成态度问题。',
+      tip:'对事不对人，重要结论落成文字，明确各自负责的部分和时间点。'},
+    hier:{name:'上下级',k:'k-rel',kicker:'作为上下级 · 相处重点',
+      lead:'作为上下级，你们的关系天然有角色与权责的不对等，重点在于清晰的期待管理与相互信任，而非单纯的性格合拍。',
+      up:'层级关系里，风格互补能让一个把方向、一个抓落地，配合好会非常出成果。',
+      warn:'信息与话语权不对等，下位者的顾虑容易被忽略，上位者的一句话也容易被放大。',
+      tip:'主动对齐期待：上级把目标和标准讲清楚，下级把进度和困难及时反馈。'}
+  };
+  const REL_LENS_GENERAL={name:'普通关系',k:'k-rel',kicker:'这段关系',
+    lead:'你还没标注这段关系的类型。下面的解读只基于你们的 MBTI 类型；把 TA 标注为伴侣、家人、朋友、同事或上下级后，这里会给出更贴合这段关系的相处重点。',
+    up:null,warn:null,tip:null};
 
   // ── 关系配对：按 我 × TA 动态生成 ──
   const CMP_AXES=[
@@ -1238,6 +1534,19 @@
     const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
     setTxt('cmpVerdict',verdict);
     setTxt('cmpVerdictP',verdictP);
+
+    // 关系视角
+    const relKind=(person.relKind||'');
+    const lens=REL_LENS[relKind]||REL_LENS_GENERAL;
+    const lensCard=document.getElementById('cmpRelLens');
+    if(lensCard){
+      lensCard.className='relcard '+(lens.k||'k-rel');
+      const lensIc=document.getElementById('cmpLensIc');
+      if(lensIc)lensIc.innerHTML=REL_ICON[relKind]||REL_ICON.general;
+      setTxt('cmpLensKicker',lens.kicker);
+      setTxt('cmpLensName',lens.name);
+      setTxt('cmpLensP',lens.lead);
+    }
 
     // 关系类型
     const archName={twin:'同频共鸣 · 心有灵犀',comp:'互补拍档 · 镜像成长',contrast:'差异互补 · 拓展视野'}[tier];
@@ -1328,10 +1637,67 @@
     if(!same[2])tip.push(meTF==='T'?'表达时先肯定对方的感受，再给结论会更顺。':'需要推进时，直接给出清晰的结论和时间点。');
     else tip.push('定期同步进度和感受，别把「默契」当成理所当然。');
 
+    // 关系视角：把该关系的专属建议放到最前面
+    if(lens.up)up.unshift(lens.up);
+    if(lens.warn)warn.unshift(lens.warn);
+    if(lens.tip)tip.unshift(lens.tip);
+
     const fillUl=(id,arr)=>{const el=document.getElementById(id);if(el)el.innerHTML=arr.slice(0,3).map(x=>'<li>'+x+'</li>').join('');};
     fillUl('cmpUp',up); fillUl('cmpWarn',warn); fillUl('cmpTip',tip);
   }
 
+  function deletePerson(p){
+    const i=CONTACTS.indexOf(p);
+    if(i>=0){cloudDeleteContact(p);CONTACTS.splice(i,1);openSwipe=null;renderPeople();}
+  }
+  function attachSwipe(wrap,card){
+    const MAX=88;let sx=0,sy=0,base=0,decided=false,horiz=false,dragging=false;
+    card._swipeWrap=wrap;
+    card.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='mouse'&&e.button!==0)return;
+      sx=e.clientX;sy=e.clientY;base=wrap.classList.contains('open')?-MAX:0;
+      decided=false;horiz=false;dragging=true;card.style.transition='none';
+    });
+    card.addEventListener('pointermove',e=>{
+      if(!dragging)return;
+      const dx=e.clientX-sx,dy=e.clientY-sy;
+      if(!decided){
+        if(Math.abs(dx)>8||Math.abs(dy)>8){decided=true;horiz=Math.abs(dx)>Math.abs(dy);if(horiz){try{card.setPointerCapture(e.pointerId);}catch(_){}}}
+      }
+      if(decided&&horiz){
+        e.preventDefault();
+        let t=base+dx;if(t>0)t=0;if(t<-MAX)t=-MAX;
+        card.style.transform='translateX('+t+'px)';
+      }
+    });
+    function end(e){
+      if(!dragging)return;dragging=false;card.style.transition='';
+      if(decided&&horiz){
+        const cur=base+(e.clientX-sx);
+        const open=cur<-MAX/2;
+        card.style.transform='';
+        wrap.classList.toggle('open',open);
+        if(open){ if(openSwipe&&openSwipe!==wrap)openSwipe.classList.remove('open'); openSwipe=wrap; }
+        else if(openSwipe===wrap){ openSwipe=null; }
+        card._suppressClick=true;setTimeout(()=>{card._suppressClick=false;},80);
+      }
+    }
+    card.addEventListener('pointerup',end);
+    card.addEventListener('pointercancel',end);
+  }
+  function makeSwipeCard(p){
+    const wrap=document.createElement('div');
+    wrap.className='pswipe';
+    wrap.style.setProperty('--tc','var(--c-'+p.type.toLowerCase()+')');
+    const del=document.createElement('button');
+    del.type='button';del.className='pswipe-del';del.setAttribute('aria-label','删除');
+    del.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg><span>删除</span>';
+    del.addEventListener('click',e=>{e.stopPropagation();deletePerson(p);});
+    const card=makeCard(p,false);
+    wrap.appendChild(del);wrap.appendChild(card);
+    attachSwipe(wrap,card);
+    return wrap;
+  }
   function makeCard(p,self){
     const t=T[p.type];const tc='var(--c-'+p.type.toLowerCase()+')';
     const card=document.createElement('div');card.className='pcard'+(self?' self':'');card.style.setProperty('--tc',tc);
@@ -1344,7 +1710,11 @@
       +'<div class="pr">'+esc(p.rel)+'</div><div class="pmini">'+t.nick+' · '+t.keys.join(' / ')+'</div></div>'
       +'<div class="pacts">'+editBtn+cta+'</div>'
       +(p.note?'<div class="pnote">'+esc(p.note)+'</div>':'');
-    const go=()=>{ if(self){selectType(p.type,null);showPage('page-detail');}else{renderCompare(p);showPage('page-compare');} };
+    const go=()=>{
+      if(card._suppressClick)return;
+      if(card._swipeWrap&&card._swipeWrap.classList.contains('open')){card._swipeWrap.classList.remove('open');if(openSwipe===card._swipeWrap)openSwipe=null;return;}
+      if(self){selectType(p.type,null);showPage('page-detail');}else{renderCompare(p);showPage('page-compare');}
+    };
     const btn=card.querySelector('.pcta');if(btn)btn.addEventListener('click',e=>{e.stopPropagation();go();});
     const ed=card.querySelector('.pedit');if(ed)ed.addEventListener('click',e=>{e.stopPropagation();if(openPersonEditor)openPersonEditor(p,self);});
     card.addEventListener('click',go);
@@ -1362,7 +1732,7 @@
       const head=document.createElement('div');head.className='pgroup';
       head.innerHTML='<i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+g.color+';margin-right:7px;vertical-align:middle;"></i>'+g.name+' · '+g.en;
       pl.appendChild(head);
-      members.forEach(p=>pl.appendChild(makeCard(p,false)));
+      members.forEach(p=>pl.appendChild(makeSwipeCard(p)));
     });
     if(peopleCountEl)peopleCountEl.textContent='我标注的人 · '+(CONTACTS.length+1);
   }
@@ -1400,19 +1770,34 @@
     const noteI=document.getElementById('apNote');
     const titleEl=document.getElementById('apTitle');
     const relField=document.getElementById('apRelField');
+    const kindBox=document.getElementById('apKind');
+    const kindField=document.getElementById('apKindField');
     const delBtn=document.getElementById('apDelete');
     let selType='ENTJ';
+    let selKind='';
     let editRef=null; // {person, self} 或 null 表示新增
     if(typeBox){
       const order=[].concat.apply([],GROUPS.map(g=>g.list));
       typeBox.innerHTML=order.map(code=>'<button type="button" data-t="'+code+'" style="--tc:var(--c-'+code.toLowerCase()+')">'+code+'</button>').join('');
       typeBox.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{setType(b.dataset.t);}));
     }
+    if(kindBox){
+      kindBox.innerHTML=REL_KINDS.map(rk=>{
+        const ic=rk.k?(REL_ICON[rk.k]||''):(REL_ICON.general||'');
+        return '<button type="button" data-k="'+rk.k+'">'+ic+'<span>'+rk.name+'</span></button>';
+      }).join('');
+      kindBox.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{setKind(b.dataset.k);}));
+    }
     function setType(t){
       selType=t;
       if(typeBox)typeBox.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
     }
+    function setKind(k){
+      selKind=k||'';
+      if(kindBox)kindBox.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.k===selKind));
+    }
     function showRel(show){ if(relField)relField.style.display=show?'':'none'; }
+    function showKind(show){ if(kindField)kindField.style.display=show?'':'none'; }
     function openAdd(){
       editRef=null;
       if(titleEl)titleEl.textContent='标注一个新的人';
@@ -1420,7 +1805,9 @@
       if(relI)relI.value='';
       if(noteI)noteI.value='';
       setType('ENTJ');
+      setKind('');
       showRel(true);
+      showKind(true);
       if(delBtn)delBtn.hidden=true;
       showPage('page-addperson');
     }
@@ -1432,11 +1819,14 @@
       if(self){
         if(titleEl)titleEl.textContent='编辑我的档案';
         showRel(false);
+        showKind(false);
         if(delBtn)delBtn.hidden=true;
       }else{
         if(titleEl)titleEl.textContent='编辑资料';
         if(relI)relI.value=person.rel||'';
+        setKind(person.relKind||'');
         showRel(true);
+        showKind(true);
         if(delBtn)delBtn.hidden=false;
       }
       showPage('page-addperson');
@@ -1457,12 +1847,17 @@
         p.note=note||undefined;
         if(editRef.self){
           p.rel='本人 · 也是 '+selType;
+          cloudSaveProfile();
         }else{
           p.rel=((relI&&relI.value)||'').trim()||'联系人';
+          p.relKind=selKind||undefined;
+          cloudSaveContact(p);
         }
       }else{
         const rel=((relI&&relI.value)||'').trim()||'联系人';
-        CONTACTS.push({init:name.charAt(0),name:name,rel:rel,type:selType,note:note||undefined});
+        const np={init:name.charAt(0),name:name,rel:rel,type:selType,relKind:selKind||undefined,note:note||undefined};
+        CONTACTS.push(np);
+        cloudSaveContact(np);
       }
       renderPeople();
       goBack();
@@ -1470,7 +1865,7 @@
     if(delBtn)delBtn.addEventListener('click',()=>{
       if(!editRef||editRef.self)return;
       const idx=CONTACTS.indexOf(editRef.person);
-      if(idx>-1)CONTACTS.splice(idx,1);
+      if(idx>-1){cloudDeleteContact(editRef.person);CONTACTS.splice(idx,1);}
       renderPeople();
       goBack();
     });
@@ -1686,6 +2081,8 @@
         if(setFormType)setFormType(resultCode);
       }else{
         SELF.type=resultCode; SELF.rel='本人 · 也是 '+resultCode;
+        SELF.init=(SELF.name||'我').charAt(0);
+        cloudSaveProfile();
         renderPeople();
         navStack=['page-people']; showPage('page-people',false);
       }
@@ -1799,6 +2196,133 @@
 
     const reBtn=resultMain.querySelector('.cta.ghost');
     if(reBtn)reBtn.addEventListener('click',()=>goBack());
+  })();
+
+  /* ══════════ 云端账号同步 (Supabase) ══════════ */
+  var SUPA_URL='https://sacpwwjmtdesnosqoesz.supabase.co';
+  var SUPA_KEY='sb_publishable_4jNjRqsVYj28FqZOoa8KVA_izwV9gOc';
+  var sb=null, currentUser=null;
+  function uuid(){
+    if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);});
+  }
+  function cloudSaveProfile(){
+    if(!sb||!currentUser)return;
+    sb.from('profiles').upsert({id:currentUser.id,self_name:SELF.name,self_type:SELF.type,updated_at:new Date().toISOString()})
+      .then(function(r){ if(r.error)console.warn('profile save:',r.error.message); });
+  }
+  function cloudSaveContact(p){
+    if(!sb||!currentUser)return;
+    if(!p._id)p._id=uuid();
+    sb.from('contacts').upsert({id:p._id,user_id:currentUser.id,init:p.init,name:p.name,rel:p.rel,type:p.type,rel_kind:p.relKind||null,note:p.note||null})
+      .then(function(r){ if(r.error)console.warn('contact save:',r.error.message); });
+  }
+  function cloudDeleteContact(p){
+    if(!sb||!currentUser||!p||!p._id)return;
+    sb.from('contacts').delete().eq('id',p._id)
+      .then(function(r){ if(r.error)console.warn('contact delete:',r.error.message); });
+  }
+  async function cloudLoadAll(){
+    if(!sb||!currentUser)return;
+    try{
+      var pr=await sb.from('profiles').select('self_name,self_type').eq('id',currentUser.id).maybeSingle();
+      if(pr.data){
+        SELF.name=pr.data.self_name||SELF.name;
+        SELF.type=pr.data.self_type||SELF.type;
+        SELF.init=(SELF.name||'我').charAt(0);
+        SELF.rel='本人 · 也是 '+SELF.type;
+      }else{
+        await sb.from('profiles').upsert({id:currentUser.id,self_name:SELF.name,self_type:SELF.type});
+      }
+      var cr=await sb.from('contacts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+      if(cr.data&&cr.data.length){
+        CONTACTS.length=0;
+        cr.data.forEach(function(r){ CONTACTS.push({_id:r.id,init:r.init,name:r.name,rel:r.rel,type:r.type,relKind:r.rel_kind||undefined,note:r.note||undefined}); });
+      }else{
+        var seed=CONTACTS.map(function(c){ return {id:uuid(),user_id:currentUser.id,init:c.init,name:c.name,rel:c.rel,type:c.type,rel_kind:c.relKind||null,note:c.note||null}; });
+        if(seed.length){ await sb.from('contacts').insert(seed); }
+        CONTACTS.length=0;
+        seed.forEach(function(s){ CONTACTS.push({_id:s.id,init:s.init,name:s.name,rel:s.rel,type:s.type,relKind:s.rel_kind||undefined,note:s.note||undefined}); });
+      }
+      renderPeople();
+    }catch(e){ console.warn('cloud load failed:',e); }
+  }
+
+  (function auth(){
+    var ov=document.getElementById('authOverlay');
+    if(!ov)return;
+    var emailI=document.getElementById('authEmail');
+    var passI=document.getElementById('authPass');
+    var primary=document.getElementById('authPrimary');
+    var switchEl=document.getElementById('authSwitch');
+    var msg=document.getElementById('authMsg');
+    var titleEl=document.getElementById('authTitle');
+    var logoutBtn=document.getElementById('authLogout');
+    var mode='signin';
+    function setMsg(t,ok){ if(msg){ msg.textContent=t||''; msg.className='amsg'+(ok?' ok':''); } }
+    function render(){
+      if(mode==='signin'){ titleEl.textContent='登录同步你的人脉'; primary.textContent='登录'; switchEl.innerHTML='还没有账号？<b>注册一个</b>'; }
+      else{ titleEl.textContent='注册新账号'; primary.textContent='注册'; switchEl.innerHTML='已有账号？<b>去登录</b>'; }
+      setMsg('');
+    }
+    function show(){ ov.classList.add('show'); }
+    function hide(){ ov.classList.remove('show'); }
+    switchEl.addEventListener('click',function(e){ if(e.target&&e.target.tagName==='B'){ mode=(mode==='signin')?'signup':'signin'; render(); } });
+    async function afterLogin(){
+      var u=await sb.auth.getUser();
+      currentUser=(u.data&&u.data.user)||null;
+      if(!currentUser){ show(); return; }
+      hide();
+      if(logoutBtn)logoutBtn.style.display='';
+      if(passI)passI.value='';
+      await cloudLoadAll();
+    }
+    async function submit(){
+      var email=(emailI.value||'').trim(), pass=passI.value||'';
+      if(!email||!pass){ setMsg('请填写邮箱和密码'); return; }
+      if(pass.length<6){ setMsg('密码至少 6 位'); return; }
+      primary.disabled=true; setMsg('处理中…',true);
+      try{
+        if(mode==='signup'){
+          var su=await sb.auth.signUp({email:email,password:pass});
+          if(su.error) throw su.error;
+          if(!su.data.session){
+            var si=await sb.auth.signInWithPassword({email:email,password:pass});
+            if(si.error){ setMsg('注册成功，请到邮箱点确认链接后再回来登录。',true); mode='signin'; render(); primary.disabled=false; return; }
+          }
+          setMsg('注册成功！',true); await afterLogin();
+        }else{
+          var r=await sb.auth.signInWithPassword({email:email,password:pass});
+          if(r.error) throw r.error;
+          await afterLogin();
+        }
+      }catch(err){
+        setMsg((err&&err.message)||'操作失败，请重试');
+      }finally{
+        primary.disabled=false;
+      }
+    }
+    primary.addEventListener('click',submit);
+    if(passI)passI.addEventListener('keydown',function(e){ if(e.key==='Enter')submit(); });
+    if(logoutBtn)logoutBtn.addEventListener('click',async function(){
+      try{ if(sb)await sb.auth.signOut(); }catch(_){}
+      currentUser=null;
+      if(logoutBtn)logoutBtn.style.display='none';
+      show();
+    });
+    function init(){
+      if(!window.supabase||!window.supabase.createClient){ console.warn('Supabase SDK 未加载，进入本地演示模式'); return; }
+      try{
+        sb=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+      }catch(e){ console.warn('Supabase 初始化失败，进入本地演示模式:',e); sb=null; return; }
+      render();
+      if(logoutBtn)logoutBtn.style.display='none';
+      sb.auth.getSession().then(async function(s){
+        if(s.data&&s.data.session){ await afterLogin(); }
+        else{ show(); }
+      }).catch(function(){ show(); });
+    }
+    init();
   })();
 
 })();</script>
