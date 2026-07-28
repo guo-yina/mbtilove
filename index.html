@@ -224,12 +224,12 @@
   .pcard .pnote{grid-column:2 / -1;font-size:11px;color:var(--muted);margin-top:8px;padding:6px 10px;border-radius:9px;line-height:1.45;background:color-mix(in srgb,var(--tc) 8%,var(--surface));border-left:2px solid color-mix(in srgb,var(--tc) 42%,transparent);}
   /* 左滑删除 */
   .pswipe{--tc:var(--accent);position:relative;margin:0 20px 12px;border-radius:18px;overflow:hidden;box-shadow:0 10px 22px -18px color-mix(in srgb,var(--tc) 60%,transparent);}
-  .pswipe .pswipe-del{position:absolute;top:0;right:0;bottom:0;width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--danger),color-mix(in srgb,var(--danger) 74%,var(--true-black)));}
+  .pswipe .pswipe-del{position:absolute;top:0;right:0;bottom:0;width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;color:#fff;background:var(--danger);}
   .pswipe .pswipe-del svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .pswipe .pswipe-del:active{filter:brightness(.94);}
-  .pswipe .pcard{margin:0;box-shadow:none;position:relative;z-index:1;background:var(--surface);transition:transform .22s cubic-bezier(.22,.61,.36,1);touch-action:pan-y;}
+  .pswipe .pswipe-del:active{background:color-mix(in srgb,var(--danger) 86%,var(--true-black));}
+  .pswipe .pcard{margin:0;box-shadow:none;position:relative;z-index:1;background:var(--surface);transition:transform .22s cubic-bezier(.22,.61,.36,1),border-radius .22s ease;touch-action:pan-y;}
   .pswipe .pcard:hover{transform:none;box-shadow:none;}
-  .pswipe.open .pcard{transform:translateX(-88px);}
+  .pswipe.open .pcard{transform:translateX(-88px);border-top-right-radius:0;border-bottom-right-radius:0;}
 
   /* ── 新增联系人 ── */
   .aptype{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
