@@ -1,0 +1,10 @@
+{
+  "name": "mbti-mirror-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MBTI 人格镜像 · 高保真原型 + 通义千问 AI 推测服务端代理",
+  "engines": {
+    "node": ">=18"
+  }
+}

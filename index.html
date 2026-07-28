@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="canvas:frame" content="mobile-board" />
+<title>MBTI 图鉴 · 手机 App 高保真原型</title>
+<style>
+  :root{
+    /* ── seed tokens (Nudge 可调) ── */
+    --seed-bg:      #eceef7;
+    --seed-fg:      #1b1a2e;
+    --seed-surface: #ffffff;
+    --seed-primary: #ff5c86;   /* playful rose — 应用主色/主按钮/激活 tab */
+    --seed-accent:  #8a6ef2;    /* soft violet — 次强调（调亮） */
+    --seed-radius:  20px;
+
+    /* ── derived ── */
+    --fg:      var(--seed-fg);
+    --bg:      var(--seed-bg);
+    --surface: var(--seed-surface);
+    --muted:   color-mix(in srgb, var(--seed-fg) 52%, var(--seed-surface));
+    --faint:   color-mix(in srgb, var(--seed-fg) 32%, var(--seed-surface));
+    --border:  color-mix(in srgb, var(--seed-fg) 12%, var(--seed-surface));
+    --hair:    color-mix(in srgb, var(--seed-fg) 8%, var(--seed-surface));
+    --primary: var(--seed-primary);
+    --primary-soft: color-mix(in srgb, var(--seed-primary) 14%, var(--seed-surface));
+    --accent:  var(--seed-accent);
+
+    --success: #12a06a;
+    --warn:    #e0872a;
+
+    /* 中性/结构色，收敛到 token 避免散落 hex */
+    --on-accent:#ffffff;      /* 彩色底上的文字 */
+    --shade:    #2c1c52;      /* 深色调和基色（用于类型色渐变收尾，调柔） */
+    --portrait-bg:#f2f3f7;    /* 低多边形小人立绘背景底色 */
+    --true-black:#000000;
+    --dev-1:#2a2a2c; --dev-2:#1a1a1c; --dev-3:#0e0e10; --dev-btn:#0a0a0c;
+
+    /* ── 16 型专属色（存于 :root，避免散落 hex） ── */
+    --c-intj:#7d6bef; --c-intp:#9a86f6; --c-entj:#6f5aec; --c-entp:#a892f8;
+    --c-infj:#12ab86; --c-infp:#1cb890; --c-enfj:#16bd93; --c-enfp:#2ac79e;
+    --c-istj:#3a8ae4; --c-isfj:#4ea6ea; --c-estj:#2f78dc; --c-esfj:#4bb0ee;
+    --c-istp:#eb8a2a; --c-isfp:#f0a63e; --c-estp:#e07d1c; --c-esfp:#f2b545;
+    /* 四大气质组色 */
+    --g-nt:#8b7bf2; --g-nf:#14b88a; --g-sj:#3a8ae4; --g-sp:#eb8a2a;
+    /* 八大认知功能色：按轴取色(N紫 S橙 T蓝 F绿)，内向态更深、外向态更亮 */
+    --fn-n:var(--g-nt); --fn-s:var(--g-sp); --fn-t:var(--g-sj); --fn-f:var(--g-nf);
+    --fn-ni:var(--fn-n); --fn-ne:color-mix(in srgb,var(--fn-n) 62%,#ffffff);
+    --fn-si:var(--fn-s); --fn-se:color-mix(in srgb,var(--fn-s) 62%,#ffffff);
+    --fn-ti:var(--fn-t); --fn-te:color-mix(in srgb,var(--fn-t) 62%,#ffffff);
+    --fn-fi:var(--fn-f); --fn-fe:color-mix(in srgb,var(--fn-f) 62%,#ffffff);
+    --danger:#e5544b;
+
+    --font-display:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+    --font-body:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+    --font-mono:ui-monospace,'SF Mono',Menlo,'Roboto Mono',monospace;
+
+    --radius-card:var(--seed-radius);
+    --radius-pill:999px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(180deg, color-mix(in srgb,var(--seed-primary) 6%,var(--seed-bg)) 0%, var(--seed-bg) 340px),
+      var(--seed-bg);
+    color:var(--fg);
+    font-family:var(--font-body);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:40px 40px 64px;
+  }
+
+  /* ── board header ── */
+  .board-head{max-width:1780px;margin:0 auto 30px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .board-head .brand{display:flex;align-items:center;gap:14px;}
+  .board-mark{width:52px;height:52px;border-radius:16px;background:linear-gradient(140deg,var(--seed-primary),var(--seed-accent));display:grid;place-items:center;box-shadow:0 10px 24px -8px color-mix(in srgb,var(--seed-primary) 60%,transparent);}
+  .board-mark svg{width:28px;height:28px;stroke:var(--on-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .board-head h1{font-family:var(--font-display);font-size:30px;letter-spacing:-0.02em;margin:0;line-height:1.1;}
+  .board-head p{margin:4px 0 0;color:var(--muted);font-size:14px;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .legend i{width:11px;height:11px;border-radius:4px;display:inline-block;}
+
+  /* ── board / device ── */
+  .board{max-width:1780px;margin:0 auto;display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;}
+  .stage{display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .caption{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);}
+  .caption strong{color:var(--fg);font-weight:600;}
+  @keyframes framePulse{0%{outline-color:color-mix(in srgb,var(--seed-primary) 72%,transparent);outline-offset:2px;}70%{outline-color:color-mix(in srgb,var(--seed-primary) 28%,transparent);outline-offset:10px;}100%{outline-color:transparent;outline-offset:14px;}}
+  .stage.flash .device{outline:3px solid transparent;animation:framePulse 1s ease-out;}
+  .stage.flash .caption{color:color-mix(in srgb,var(--seed-primary) 78%,var(--fg));transition:color .2s ease;}
+
+  .device{
+    position:relative;width:390px;height:844px;border-radius:56px;padding:12px;
+    background:linear-gradient(160deg,var(--dev-1) 0%,var(--dev-2) 50%,var(--dev-3) 100%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 0 0 2px var(--true-black) inset,0 30px 64px -14px rgba(30,20,60,.42),0 8px 22px -8px rgba(0,0,0,.3);
+    isolation:isolate;flex:0 0 auto;
+  }
+  .island{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:120px;height:35px;background:var(--true-black);border-radius:999px;z-index:6;}
+  .btn-rail{position:absolute;width:4px;background:var(--dev-btn);border-radius:2px;}
+  .btn-rail.l1{left:-3px;top:172px;height:30px;} .btn-rail.l2{left:-3px;top:216px;height:56px;}
+  .btn-rail.l3{left:-3px;top:284px;height:56px;} .btn-rail.r1{right:-3px;top:248px;height:96px;}
+
+  .screen{position:relative;width:100%;height:100%;background:var(--bg);border-radius:44px;overflow:hidden;display:flex;flex-direction:column;}
+
+  .statusbar{flex:0 0 47px;padding:18px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--fg);}
+  .statusbar .right{display:inline-flex;align-items:center;gap:6px;}
+  .statusbar svg{width:17px;height:11px;fill:var(--fg);}
+  .statusbar .battery{width:25px;}
+
+  .content{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:18px;}
+  .content::-webkit-scrollbar{display:none;}
+
+  .home-indicator{flex:0 0 26px;position:relative;}
+  .home-indicator::after{content:'';position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:132px;height:5px;background:var(--fg);border-radius:999px;opacity:.8;}
+
+  /* ── primitives ── */
+  .pad{padding-inline:20px;}
+  .app-head{padding:6px 20px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin:0 0 5px;}
+  .app-head h2{font-family:var(--font-display);font-size:25px;letter-spacing:-0.02em;line-height:1.08;margin:0;}
+  .icon-btn{width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--fg);flex:0 0 auto;}
+  .icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+
+  /* search */
+  .search{margin:4px 20px 14px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 14px;}
+  .search svg{width:18px;height:18px;stroke:var(--faint);fill:none;stroke-width:1.9;stroke-linecap:round;}
+  .search input{border:0;outline:0;background:transparent;font:inherit;font-size:14px;color:var(--fg);width:100%;}
+  .search input::placeholder{color:var(--faint);}
+
+  /* filter chips */
+  .filters{display:flex;gap:8px;padding:0 20px 14px;flex-wrap:wrap;}
+  .chip{padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12.5px;font-weight:500;letter-spacing:.01em;cursor:pointer;transition:.15s;}
+  .chip .k{font-family:var(--font-mono);font-weight:700;color:var(--fg);margin-right:5px;}
+  .chip.on{background:var(--fg);border-color:var(--fg);color:var(--on-accent);}
+  .chip.on .k{color:var(--on-accent);}
+
+  /* group heading */
+  .grp{padding:14px 20px 8px;display:flex;align-items:center;gap:9px;}
+  .grp i{width:9px;height:9px;border-radius:50%;}
+  .grp b{font-size:13px;font-weight:600;letter-spacing:.01em;}
+  .grp span{font-size:11px;color:var(--faint);font-family:var(--font-mono);letter-spacing:.04em;}
+
+  /* type grid */
+  .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:0 20px;}
+  .tcard{--tc:var(--seed-accent);text-align:left;cursor:pointer;background:radial-gradient(120% 88% at 100% 0%,color-mix(in srgb,var(--tc) 16%,transparent),transparent 64%),color-mix(in srgb,var(--tc) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 19%,var(--hair));border-radius:16px;padding:13px 13px 12px;position:relative;overflow:hidden;transition:.16s;}
+  .tcard:hover{transform:translateY(-2px);box-shadow:0 12px 22px -14px color-mix(in srgb,var(--tc) 70%,transparent);}
+  .tcard.sel{outline:2px solid var(--tc);outline-offset:1px;}
+  .tcard .code{font-family:var(--font-mono);font-weight:700;font-size:17px;letter-spacing:0.04em;color:color-mix(in srgb,var(--tc) 74%,var(--true-black));padding-right:54px;}
+  .tcard .nick{font-size:14px;font-weight:600;margin-top:1px;padding-right:54px;}
+  .tcard .oneline{font-size:8px;color:var(--muted);line-height:1.5;margin-top:5px;padding-right:46px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;}
+  .tcard .emblem{position:absolute;right:-14px;bottom:-10px;width:104px;height:104px;background-image:var(--spr,none);background-size:200% 200%;background-position:var(--spr-pos,0% 0%);background-repeat:no-repeat;pointer-events:none;opacity:.84;-webkit-mask-image:linear-gradient(90deg,transparent 2%,var(--true-black) 46%);mask-image:linear-gradient(90deg,transparent 2%,var(--true-black) 46%);filter:drop-shadow(0 2px 5px color-mix(in srgb,var(--tc) 20%,transparent));}
+  .tcard.hidden{display:none;}
+
+  /* tab bar */
+  .tabbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px 2px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(18px);}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0 6px;color:var(--faint);font-size:10px;letter-spacing:.02em;background:none;border:0;cursor:pointer;}
+  .tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
+  .tab.active{color:var(--primary);}
+  .tab.active svg{stroke-width:2.1;}
+
+  /* ── detail screen ── */
+  .hero{--tc:var(--c-entj);padding:16px 20px 20px;background:linear-gradient(150deg,var(--tc),color-mix(in srgb,var(--tc) 72%,var(--shade)));color:var(--on-accent);position:relative;overflow:hidden;}
+  .hero .halo{position:absolute;width:230px;height:230px;border-radius:50%;border:1px solid rgba(255,255,255,.18);top:-90px;right:-70px;}
+  .hero .halo.two{width:150px;height:150px;top:-40px;right:-20px;border-color:rgba(255,255,255,.12);}
+  .hero .topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;margin-bottom:14px;}
+  .hero .back{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.16);display:grid;place-items:center;border:0;cursor:pointer;}
+  .hero .back svg{width:18px;height:18px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .hero .gtag{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:999px;}
+  .hero .emblem-lg{position:absolute;right:-4px;bottom:-16px;width:212px;height:212px;background-image:var(--spr,none);background-size:200% 200%;background-position:var(--spr-pos,0% 0%);background-repeat:no-repeat;z-index:1;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 6%,var(--true-black) 44%);mask-image:linear-gradient(90deg,transparent 6%,var(--true-black) 44%);filter:drop-shadow(0 12px 20px rgba(0,0,0,.28));}
+  .hero .code-lg{font-family:var(--font-mono);font-weight:700;font-size:34px;letter-spacing:0.06em;position:relative;z-index:2;line-height:1;margin-top:6px;}
+  .hero .nick-lg{font-family:var(--font-display);font-size:22px;font-weight:600;margin-top:4px;position:relative;z-index:2;}
+  .hero .tagline{font-size:13.5px;color:rgba(255,255,255,.86);margin-top:7px;position:relative;z-index:2;max-width:17ch;}
+
+  .sec-title{font-size:13px;font-weight:700;letter-spacing:.02em;margin:0 0 11px;display:flex;align-items:center;gap:8px;}
+  .sec-title .bar{width:4px;height:14px;border-radius:2px;background:var(--primary);}
+
+  .traitwrap{padding:18px 20px 4px;}
+  .trow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .ttag{font-size:12px;padding:6px 11px;border-radius:999px;border:1px solid var(--border);color:var(--fg);background:var(--surface);}
+  .ttag.good{border-color:color-mix(in srgb,var(--success) 45%,transparent);color:var(--success);background:color-mix(in srgb,var(--success) 9%,var(--surface));}
+  .ttag.watch{border-color:color-mix(in srgb,var(--warn) 45%,transparent);color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface));}
+  .grouplabel{font-size:11px;color:var(--faint);margin:0 0 6px;font-weight:500;}
+
+  /* cognitive stack */
+  .stack{padding:18px 20px 8px;}
+  .fn{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:12px 13px;margin-bottom:10px;position:relative;overflow:hidden;}
+  .fn .flabel{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .fn .lvl{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);}
+  .fn .fmain{display:flex;align-items:baseline;gap:9px;}
+  .fn .fcode{font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--tc,var(--accent));}
+  .fn .fcn{font-size:13.5px;font-weight:600;}
+  .fn .fdesc{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.4;}
+
+  /* ── people screen ── */
+  .addbtn{margin:2px 20px 16px;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 40px);min-height:48px;border-radius:14px;border:1.5px dashed color-mix(in srgb,var(--primary) 55%,var(--border));background:var(--primary-soft);color:color-mix(in srgb,var(--primary) 72%,var(--true-black));font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+  .addbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .pgroup{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.04em;padding:10px 20px 8px;}
+  .pcard{--tc:var(--accent);display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:13px;margin:0 20px 12px;padding:14px;background:var(--surface);border:1px solid var(--hair);border-radius:18px;box-shadow:0 10px 22px -18px color-mix(in srgb,var(--tc) 60%,transparent);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease;}
+  .pcard:hover{transform:translateY(-1px);box-shadow:0 16px 30px -18px color-mix(in srgb,var(--tc) 66%,transparent);}
+  .pcard .pav{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:color-mix(in srgb,var(--tc) 72%,var(--true-black));font-weight:700;font-size:18px;font-family:var(--font-display);background:color-mix(in srgb,var(--tc) 15%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 24%,transparent);}
+  .pcard .pnrow{display:flex;align-items:center;gap:7px;}
+  .pcard .pn{font-size:15.5px;font-weight:700;}
+  .pcard .pbadge{font-family:var(--font-mono);font-weight:700;font-size:10.5px;letter-spacing:.04em;padding:2px 7px;border-radius:7px;color:color-mix(in srgb,var(--tc) 74%,var(--true-black));background:color-mix(in srgb,var(--tc) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 32%,transparent);}
+  .pcard .pr{font-size:12px;color:var(--muted);margin-top:3px;}
+  .pcard .pmini{font-size:11px;color:var(--faint);margin-top:4px;}
+  .pcard .pcta{display:flex;align-items:center;gap:3px;font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:11px;color:var(--on-accent);background:linear-gradient(135deg,var(--tc),color-mix(in srgb,var(--tc) 72%,var(--shade)));border:none;font-family:inherit;cursor:pointer;white-space:nowrap;box-shadow:0 8px 16px -10px color-mix(in srgb,var(--tc) 80%,transparent);}
+  .pcard .pcta svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+  .pcard .pcta:active{transform:scale(.94);}
+  .pcard.self .pcta{color:color-mix(in srgb,var(--tc) 76%,var(--true-black));background:color-mix(in srgb,var(--tc) 13%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 28%,transparent);box-shadow:none;}
+  .pcard .pacts{display:flex;align-items:center;gap:8px;}
+  .pcard .pedit{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid var(--hair);background:var(--surface);color:var(--muted);cursor:pointer;transition:.15s;}
+  .pcard .pedit svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .pcard .pedit:hover{color:color-mix(in srgb,var(--tc) 70%,var(--true-black));border-color:color-mix(in srgb,var(--tc) 34%,var(--border));}
+  .pcard .pedit:active{transform:scale(.92);}
+  .pcard .pnote{grid-column:2 / -1;font-size:11px;color:var(--muted);margin-top:8px;padding:6px 10px;border-radius:9px;line-height:1.45;background:color-mix(in srgb,var(--tc) 8%,var(--surface));border-left:2px solid color-mix(in srgb,var(--tc) 42%,transparent);}
+
+  /* ── 新增联系人 ── */
+  .aptype{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .aptype button{--tc:var(--accent);font-family:var(--font-mono);font-weight:700;font-size:12.5px;padding:9px 0;border-radius:10px;border:1.5px solid color-mix(in srgb,var(--tc) 36%,var(--border));background:var(--surface);color:color-mix(in srgb,var(--tc) 78%,var(--true-black));cursor:pointer;transition:.15s;}
+  .aptype button.on{background:linear-gradient(135deg,var(--tc),color-mix(in srgb,var(--tc) 72%,var(--shade)));color:var(--on-accent);border-color:transparent;}
+  .ap-ai{margin:2px 20px 2px;font-size:12.5px;color:var(--muted);}
+  .ap-ai a{color:var(--primary);font-weight:600;cursor:pointer;}
+  .ap-del{display:block;margin:10px 20px 6px;width:calc(100% - 40px);min-height:44px;border-radius:12px;border:1px solid color-mix(in srgb,var(--danger) 40%,var(--border));background:color-mix(in srgb,var(--danger) 9%,var(--surface));color:color-mix(in srgb,var(--danger) 82%,var(--true-black));font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s;}
+  .ap-del:active{transform:scale(.98);}
+  .ap-del[hidden]{display:none;}
+
+  /* ── MBTI 自测 ── */
+  .ts-progress{height:5px;margin:2px 20px 4px;border-radius:99px;background:color-mix(in srgb,var(--fg) 8%,var(--surface));overflow:hidden;}
+  .ts-progress i{display:block;height:100%;width:2%;border-radius:99px;background:linear-gradient(90deg,var(--g-nf),var(--primary));transition:width .3s ease;}
+  .ts-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:14px 24px 20px;text-align:center;}
+  .ts-stage[hidden]{display:none;}
+  .ts-dim{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-bottom:14px;}
+  .ts-q{font-size:19px;font-weight:700;line-height:1.5;color:var(--fg);max-width:290px;margin:0 auto 30px;}
+  .ts-scale{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;}
+  .ts-end{font-size:11.5px;font-weight:600;flex:none;}
+  .ts-end.agree{color:color-mix(in srgb,var(--g-nf) 78%,var(--true-black));}
+  .ts-end.dis{color:color-mix(in srgb,var(--g-nt) 78%,var(--true-black));}
+  .ts-dots{display:flex;align-items:center;gap:12px;}
+  .ts-dot{--tone:var(--border);border-radius:50%;background:color-mix(in srgb,var(--tone) 12%,var(--surface));border:1.5px solid color-mix(in srgb,var(--tone) 30%,var(--border));cursor:pointer;padding:0;flex:none;position:relative;transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;}
+  .ts-dot.d2{width:42px;height:42px;}
+  .ts-dot.d1{width:33px;height:33px;}
+  .ts-dot.d0{width:25px;height:25px;}
+  .ts-dot.tone-agree{--tone:var(--g-nf);}
+  .ts-dot.tone-dis{--tone:var(--g-nt);}
+  .ts-dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--tone);transform:scale(.34);opacity:0;transition:transform .18s ease,opacity .18s ease;}
+  .ts-dot:hover{transform:scale(1.08);border-color:color-mix(in srgb,var(--tone) 55%,var(--border));}
+  .ts-dot.on{background:color-mix(in srgb,var(--tone) 16%,var(--surface));border-color:var(--tone);box-shadow:0 8px 18px -8px color-mix(in srgb,var(--tone) 65%,transparent);}
+  .ts-dot.on::after{transform:scale(1);opacity:1;}
+  .ts-prev{margin-top:30px;display:inline-flex;align-items:center;gap:5px;border:none;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;}
+  .ts-prev svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+  .ts-prev[hidden]{display:none;}
+  .ts-result{--tc:var(--primary);flex:1;display:flex;flex-direction:column;align-items:stretch;padding:14px 22px 24px;text-align:center;}
+  .ts-result[hidden]{display:none;}
+  .tr-card{position:relative;overflow:hidden;border-radius:22px;padding:22px 20px 24px;margin-bottom:22px;background:radial-gradient(130% 100% at 100% 0%,color-mix(in srgb,var(--tc) 22%,transparent),transparent 60%),color-mix(in srgb,var(--tc) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 20%,var(--hair));box-shadow:0 20px 40px -28px color-mix(in srgb,var(--tc) 75%,transparent);}
+  .tr-emblem{position:absolute;right:-18px;bottom:-22px;width:150px;height:150px;background-image:var(--spr,none);background-size:200% 200%;background-position:var(--spr-pos,0% 0%);background-repeat:no-repeat;pointer-events:none;opacity:.9;-webkit-mask-image:linear-gradient(110deg,transparent 8%,var(--true-black) 52%);mask-image:linear-gradient(110deg,transparent 8%,var(--true-black) 52%);filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--tc) 30%,transparent));}
+  .tr-eyebrow{position:relative;z-index:1;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--tc) 70%,var(--muted));margin:0 0 6px;}
+  .tr-type{position:relative;z-index:1;font-family:var(--font-mono);font-weight:800;font-size:50px;letter-spacing:.05em;line-height:1;color:color-mix(in srgb,var(--tc) 82%,var(--true-black));}
+  .tr-nick{position:relative;z-index:1;font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--fg);margin-top:8px;}
+  .tr-axes{display:flex;flex-direction:column;gap:17px;margin-bottom:24px;}
+  .tr-ax{text-align:left;}
+  .tr-poles{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:7px;}
+  .tr-poles b{font-weight:500;color:var(--faint);letter-spacing:-.01em;}
+  .tr-poles b.win{font-weight:700;color:color-mix(in srgb,var(--ax) 82%,var(--true-black));}
+  .tr-poles b em{font-family:var(--font-mono);font-style:normal;font-weight:700;font-size:12px;margin-left:5px;color:var(--ax);}
+  .tr-track{position:relative;height:9px;border-radius:99px;background:color-mix(in srgb,var(--ax) 11%,var(--surface));display:flex;overflow:hidden;}
+  .tr-ax.rev .tr-track{justify-content:flex-end;}
+  .tr-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--ax) 78%,var(--surface)),var(--ax));transition:width .5s cubic-bezier(.22,1,.36,1);}
+  .ts-result .cta{margin:0 0 12px;width:100%;background:linear-gradient(135deg,color-mix(in srgb,var(--tc) 88%,var(--true-black)),var(--tc));box-shadow:0 16px 30px -14px color-mix(in srgb,var(--tc) 72%,transparent);}
+  .ts-retry{margin:0;width:100%;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
+  .ts-chooser{padding:26px 24px;display:flex;flex-direction:column;gap:14px;}
+  .ts-chooser[hidden]{display:none;}
+  .ts-clead{font-size:20px;font-weight:800;color:var(--fg);margin-bottom:4px;}
+  .ts-opt-card{display:flex;align-items:center;gap:13px;text-align:left;padding:16px;border-radius:16px;border:1px solid var(--hair);background:var(--surface);cursor:pointer;transition:.15s;font:inherit;}
+  .ts-opt-card:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--primary) 42%,var(--border));box-shadow:0 14px 26px -18px color-mix(in srgb,var(--primary) 60%,transparent);}
+  .ts-opt-card .tc-ic{width:42px;height:42px;border-radius:12px;flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--g-sp) 15%,var(--surface));}
+  .ts-opt-card .tc-ic.accent{background:color-mix(in srgb,var(--g-nf) 15%,var(--surface));}
+  .ts-opt-card .tc-ic svg{width:22px;height:22px;fill:none;stroke:color-mix(in srgb,var(--g-sp) 80%,var(--true-black));stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .ts-opt-card .tc-ic.accent svg{stroke:color-mix(in srgb,var(--g-nf) 80%,var(--true-black));}
+  .ts-opt-card .tc-tx{flex:1 1 auto;}
+  .ts-opt-card .tc-tx b{display:block;font-size:15px;font-weight:700;color:var(--fg);}
+  .ts-opt-card .tc-tx span{font-size:12px;color:var(--muted);}
+  .ts-opt-card .tc-arw{flex:none;color:var(--faint);}
+  .ts-opt-card .tc-arw svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .ts-scale[hidden]{display:none;}
+  .ts-ab{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;}
+  .ts-ab[hidden]{display:none;}
+  .ts-opt{display:flex;align-items:center;gap:13px;text-align:left;padding:16px;border-radius:15px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:.15s;font:inherit;}
+  .ts-opt:hover{border-color:color-mix(in srgb,var(--primary) 45%,var(--border));}
+  .ts-opt.on{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 9%,var(--surface));}
+  .ts-opt .ab-k{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;font-family:var(--font-mono);font-weight:700;font-size:14px;color:color-mix(in srgb,var(--primary) 80%,var(--true-black));background:color-mix(in srgb,var(--primary) 13%,var(--surface));}
+  .ts-opt.on .ab-k{background:var(--primary);color:var(--on-accent);}
+  .ts-opt .ab-t{flex:1 1 auto;font-size:14px;font-weight:600;line-height:1.45;color:var(--fg);}
+
+  .vs-wrap{padding:16px 20px 6px;}
+  .vs-people{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:8px;}
+  .vs-card{--tc:var(--accent);background:var(--surface);border:1px solid color-mix(in srgb,var(--tc) 28%,var(--hair));border-radius:16px;padding:14px 12px;text-align:center;}
+  .vs-card .av{width:52px;height:52px;border-radius:16px;margin:0 auto 8px;display:grid;place-items:center;color:var(--on-accent);font-weight:700;font-size:19px;font-family:var(--font-display);background:linear-gradient(140deg,var(--tc),color-mix(in srgb,var(--tc) 74%,var(--shade)));}
+  .vs-card .who{font-size:13px;font-weight:600;}
+  .vs-card .ty{font-family:var(--font-mono);font-weight:700;font-size:13px;letter-spacing:.04em;color:color-mix(in srgb,var(--tc) 74%,var(--true-black));margin-top:2px;}
+  .vs-card .role{font-size:11px;color:var(--faint);margin-top:2px;}
+  .vs-x{display:grid;place-items:center;}
+  .vs-x span{width:38px;height:38px;border-radius:50%;background:var(--fg);color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-size:15px;}
+
+  .score{margin:18px 20px 4px;background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:18px;display:flex;align-items:center;gap:16px;}
+  .ring{--val:72;width:82px;height:82px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:conic-gradient(var(--primary) calc(var(--val)*1%),color-mix(in srgb,var(--fg) 8%,var(--surface)) 0);}
+  .ring .inner{width:62px;height:62px;border-radius:50%;background:var(--surface);display:grid;place-items:center;flex-direction:column;text-align:center;}
+  .ring .inner b{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1;}
+  .ring .inner small{font-size:9px;color:var(--faint);letter-spacing:.06em;}
+  .score .sx b{font-size:14px;font-weight:700;}
+  .score .sx p{margin:5px 0 0;font-size:12px;color:var(--muted);line-height:1.45;}
+
+  /* dimension bars */
+  .dims{padding:16px 20px 4px;}
+  .dim{margin-bottom:13px;}
+  .dim .dtop{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;font-family:var(--font-mono);letter-spacing:.03em;}
+  .dim .track{position:relative;height:8px;border-radius:999px;background:color-mix(in srgb,var(--fg) 8%,var(--surface));}
+  .dim .track .a,.dim .track .b{position:absolute;top:50%;width:15px;height:15px;border-radius:50%;transform:translate(-50%,-50%);border:2.5px solid var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.15);}
+  .dim .track .a{background:var(--c-infp);}
+  .dim .track .b{background:var(--c-entj);}
+  .dim .same{font-size:10px;color:var(--success);font-weight:600;}
+  .dim .diff{font-size:10px;color:var(--warn);font-weight:600;}
+
+  .insight{padding:16px 20px 4px;}
+  .ins{background:var(--surface);border:1px solid var(--hair);border-radius:15px;padding:14px;margin-bottom:11px;}
+  .ins .ih{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .ins .ih .ci{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;}
+  .ins .ih .ci svg{width:16px;height:16px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .ins .ih b{font-size:13.5px;font-weight:700;}
+  .ins.up .ci{background:var(--success);} .ins.warn .ci{background:var(--warn);} .ins.tip .ci{background:var(--accent);}
+  .ins ul{margin:0;padding-left:17px;}
+  .ins li{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:4px;}
+  .ins li b{color:var(--fg);font-weight:600;}
+
+  .subhint{text-align:center;color:var(--faint);font-size:11px;padding:6px 30px 4px;line-height:1.5;}
+  .ai-status{margin:4px 22px 0;font-size:11.5px;line-height:1.5;padding:9px 12px;border-radius:11px;background:color-mix(in srgb,var(--accent) 9%,var(--surface));color:var(--muted);border:1px solid var(--hair);}
+  .ai-status.warn{background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:color-mix(in srgb,var(--accent) 66%,var(--fg));border-color:color-mix(in srgb,var(--accent) 32%,transparent);}
+  .cta .spin{width:15px;height:15px;border-radius:50%;border:2px solid color-mix(in srgb,var(--on-accent) 40%,transparent);border-top-color:var(--on-accent);animation:spin .7s linear infinite;display:inline-block;}
+  .cta[disabled]{opacity:.72;cursor:default;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ── AI 推测：入口卡 ── */
+  .ai-entry{margin:2px 20px 14px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:linear-gradient(135deg,var(--seed-primary),var(--seed-accent));color:var(--on-accent);cursor:pointer;position:relative;overflow:hidden;box-shadow:0 14px 26px -14px color-mix(in srgb,var(--seed-accent) 70%,transparent);}
+  .ai-entry .spark{position:absolute;right:-14px;top:-18px;width:92px;height:92px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none;}
+  .ai-entry .aicon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:0 0 auto;position:relative;z-index:1;}
+  .ai-entry .aicon svg{width:22px;height:22px;stroke:var(--on-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .ai-entry .atx{flex:1 1 auto;position:relative;z-index:1;}
+  .ai-entry .atx b{font-size:14px;font-weight:700;display:block;letter-spacing:.01em;}
+  .ai-entry .atx span{font-size:11.5px;color:rgba(255,255,255,.86);}
+  .ai-entry .arw{flex:0 0 auto;position:relative;z-index:1;opacity:.9;}
+  .ai-entry .arw svg{width:18px;height:18px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .test-entry{margin:-6px 20px 14px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--hair);cursor:pointer;transition:.15s;}
+  .test-entry:hover{border-color:color-mix(in srgb,var(--g-nf) 40%,var(--border));transform:translateY(-1px);}
+  .test-entry .aicon{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--g-nf) 14%,var(--surface));display:grid;place-items:center;flex:0 0 auto;}
+  .test-entry .aicon svg{width:20px;height:20px;stroke:color-mix(in srgb,var(--g-nf) 78%,var(--true-black));fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .test-entry .atx{flex:1 1 auto;}
+  .test-entry .atx b{font-size:13.5px;font-weight:700;display:block;color:var(--fg);}
+  .test-entry .atx span{font-size:11.5px;color:var(--muted);}
+  .test-entry .arw{flex:0 0 auto;color:var(--faint);}
+  .test-entry .arw svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ── 子页头部 ── */
+  .subhead{display:flex;align-items:center;gap:12px;padding:10px 20px 8px;}
+  .subhead .back2{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .subhead .back2 svg{width:18px;height:18px;stroke:var(--fg);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .subhead h2{font-family:var(--font-display);font-size:20px;letter-spacing:-.01em;margin:0;line-height:1.1;}
+  .subhead .eyebrow{margin:0 0 2px;}
+
+  /* ── AI 输入表单 ── */
+  .ai-form{padding:6px 20px 4px;}
+  .field{margin-bottom:15px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--fg);margin-bottom:8px;}
+  .field label em{font-style:normal;font-weight:500;color:var(--faint);font-size:11px;}
+  .ti{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;color:var(--fg);outline:0;}
+  .ta{width:100%;min-height:118px;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:12px 13px;font:inherit;font-size:13.5px;line-height:1.55;color:var(--fg);outline:0;resize:none;}
+  .ti:focus,.ta:focus{border-color:color-mix(in srgb,var(--seed-accent) 55%,var(--border));}
+  .ti::placeholder,.ta::placeholder{color:var(--faint);}
+  .helper{font-size:11px;color:var(--faint);margin:7px 0 0;line-height:1.5;}
+
+  .tagset{margin-top:2px;}
+  .tagset .tgl{font-size:12.5px;font-weight:600;color:var(--fg);margin:2px 0 4px;}
+  .qgrp{margin-top:11px;}
+  .qglabel{font-size:11px;color:var(--faint);font-weight:600;margin-bottom:7px;letter-spacing:.02em;}
+  .qtags{display:flex;gap:8px;flex-wrap:wrap;}
+  .qt{padding:8px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font:inherit;font-size:12.5px;cursor:pointer;transition:.14s;}
+  .qt.on{background:color-mix(in srgb,var(--seed-accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--seed-accent) 50%,transparent);color:color-mix(in srgb,var(--seed-accent) 80%,var(--true-black));font-weight:600;}
+
+  /* ── 主 CTA ── */
+  .cta{margin:10px 20px 4px;width:calc(100% - 40px);min-height:50px;border:0;border-radius:15px;background:linear-gradient(135deg,var(--seed-primary),var(--seed-accent));color:var(--on-accent);font:inherit;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 16px 28px -14px color-mix(in srgb,var(--seed-primary) 72%,transparent);}
+  .cta svg{width:19px;height:19px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .cta.ghost{background:var(--surface);color:var(--fg);border:1px solid var(--border);box-shadow:none;}
+  .cta.ghost svg{stroke:var(--fg);}
+
+  /* ── AI 结果 hero ── */
+  .ai-hero{--tc:var(--c-enfp);padding:16px 20px 20px;background:linear-gradient(150deg,var(--tc),color-mix(in srgb,var(--tc) 72%,var(--shade)));color:var(--on-accent);position:relative;overflow:hidden;}
+  .ai-hero .halo{position:absolute;width:230px;height:230px;border-radius:50%;border:1px solid rgba(255,255,255,.18);top:-90px;right:-70px;}
+  .ai-hero .halo.two{width:150px;height:150px;top:-40px;right:-20px;border-color:rgba(255,255,255,.12);}
+  .ai-hero .topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;margin-bottom:12px;}
+  .ai-hero .back{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.16);display:grid;place-items:center;border:0;cursor:pointer;}
+  .ai-hero .back svg{width:18px;height:18px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .ai-hero .gtag{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:999px;}
+  .ai-hero .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;background:rgba(255,255,255,.2);padding:5px 10px;border-radius:999px;position:relative;z-index:1;margin-bottom:13px;}
+  .ai-hero .badge svg{width:13px;height:13px;stroke:var(--on-accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .ai-hero .rrow{display:flex;align-items:center;gap:16px;position:relative;z-index:1;}
+  .ai-hero .rring{--val:84;width:76px;height:76px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:conic-gradient(var(--on-accent) calc(var(--val)*1%),rgba(255,255,255,.28) 0);}
+  .ai-hero .rring .ri{width:58px;height:58px;border-radius:50%;background:color-mix(in srgb,var(--tc) 76%,var(--shade));display:grid;place-items:center;text-align:center;line-height:1;}
+  .ai-hero .rring .ri b{font-family:var(--font-mono);font-size:19px;font-weight:700;}
+  .ai-hero .rring .ri small{display:block;font-size:8px;opacity:.82;letter-spacing:.04em;margin-top:2px;}
+  .ai-hero .rcode{font-family:var(--font-mono);font-weight:700;font-size:30px;letter-spacing:.05em;line-height:1;}
+  .ai-hero .rnick{font-family:var(--font-display);font-size:16px;font-weight:600;margin-top:3px;}
+  .ai-hero .rsub{font-size:11px;color:rgba(255,255,255,.82);margin-top:2px;}
+  .ai-hero .rline{font-size:12.5px;color:rgba(255,255,255,.9);margin-top:13px;line-height:1.5;position:relative;z-index:1;}
+
+  /* ── 单人四维倾向条 ── */
+  .ai-dims{padding:18px 20px 4px;}
+  .adim{margin-bottom:14px;}
+  .adim .atop{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;margin-bottom:6px;}
+  .adim .atop .lt{font-family:var(--font-mono);font-weight:700;color:var(--fg);}
+  .adim .atop .rt{font-family:var(--font-mono);color:var(--faint);}
+  .adim .atop .pct{font-family:var(--font-mono);font-weight:700;color:var(--tc,var(--accent));font-variant-numeric:tabular-nums;}
+  .adim .atrack{position:relative;height:8px;border-radius:999px;background:color-mix(in srgb,var(--fg) 8%,var(--surface));overflow:hidden;}
+  .adim .atrack>i{position:absolute;left:0;top:0;height:100%;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 70%,var(--surface)),var(--tc));}
+
+  /* ── 第二可能 ── */
+  .alt{padding:16px 20px 2px;}
+  .altcard{--tc:var(--c-esfp);display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid color-mix(in srgb,var(--tc) 26%,var(--hair));border-radius:15px;padding:12px 14px;cursor:pointer;}
+  .altcard .ac{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--on-accent);font-family:var(--font-mono);font-weight:700;font-size:12px;letter-spacing:.02em;background:linear-gradient(140deg,var(--tc),color-mix(in srgb,var(--tc) 74%,var(--shade)));flex:0 0 auto;}
+  .altcard .amid{flex:1 1 auto;}
+  .altcard .amid b{font-size:13.5px;font-weight:700;}
+  .altcard .amid .arole{font-size:11.5px;color:var(--muted);margin-top:1px;}
+  .altcard .apct{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--muted);flex:0 0 auto;}
+
+  /* ── 配对：关系解读引导语 ── */
+  .rel-lead{padding:2px 20px 6px;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .rel-lead b{color:var(--fg);font-weight:600;}
+
+  /* ── 配对：认知功能匹配 ── */
+  .fnmatch{--tca:var(--c-infp);--tcb:var(--c-entj);padding:16px 20px 4px;}
+  .fmlegend{display:flex;gap:14px;font-size:10.5px;color:var(--muted);margin:0 0 14px;font-family:var(--font-mono);letter-spacing:.02em;}
+  .fmlegend span{display:inline-flex;align-items:center;gap:6px;}
+  .fmlegend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+  .fmitem{margin-bottom:14px;}
+  .fmrow{display:grid;grid-template-columns:auto minmax(52px,1fr) auto;align-items:center;gap:10px;}
+  .fmside{display:flex;align-items:center;gap:8px;min-width:0;}
+  .fmside.r{flex-direction:row-reverse;text-align:right;}
+  .fmbadge{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--on-accent);flex:0 0 auto;}
+  .fmbadge.a{background:linear-gradient(140deg,var(--tca),color-mix(in srgb,var(--tca) 72%,var(--shade)));}
+  .fmbadge.b{background:linear-gradient(140deg,var(--tcb),color-mix(in srgb,var(--tcb) 72%,var(--shade)));}
+  .fmmeta .fc{font-size:12px;font-weight:600;line-height:1.15;}
+  .fmmeta .fl{font-size:9.5px;color:var(--faint);font-family:var(--font-mono);letter-spacing:.03em;margin-top:1px;}
+  .fmtrack{position:relative;height:7px;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--tca) 62%,var(--surface)),color-mix(in srgb,var(--tcb) 62%,var(--surface)));}
+  .fmtrack .mk{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;transform:translate(-50%,-50%);background:var(--surface);border:2.5px solid var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.22);}
+  .fmnote{font-size:11px;color:var(--muted);line-height:1.5;margin:7px 0 0;}
+  .fmnote b{color:var(--fg);font-weight:600;}
+
+  /* ── 配对：关系解读卡 ── */
+  .relcard{background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:14px 15px;margin:0 20px 12px;}
+  .relcard .rh{display:flex;align-items:center;gap:11px;margin-bottom:9px;}
+  .relcard .ric{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;background:color-mix(in srgb,var(--accent) 14%,var(--surface));}
+  .relcard .ric svg{width:19px;height:19px;stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+  .relcard .rk{font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.02em;}
+  .relcard .rn{font-size:16px;font-weight:700;font-family:var(--font-display);line-height:1.1;margin-top:1px;}
+  .relcard p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0;}
+  .relcard.k-rel .ric{background:color-mix(in srgb,var(--primary) 14%,var(--surface));} .relcard.k-rel .ric svg{stroke:var(--primary);} .relcard.k-rel .rk{color:var(--primary);}
+  .relcard.k-val .ric{background:color-mix(in srgb,var(--success) 14%,var(--surface));} .relcard.k-val .ric svg{stroke:var(--success);} .relcard.k-val .rk{color:var(--success);}
+  .relcard.k-com .ric{background:color-mix(in srgb,var(--accent) 14%,var(--surface));} .relcard.k-com .ric svg{stroke:var(--accent);} .relcard.k-com .rk{color:var(--accent);}
+
+  /* ══════════ 单屏 App 模式 ══════════ */
+  body{padding:0;}
+  .app-shell{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:32px 16px;}
+  .pages{flex:1 1 auto;position:relative;overflow:hidden;}
+  .content.page{position:absolute;inset:0;flex:none;display:none;}
+  .content.page.active{display:block;animation:pageIn .28s ease;}
+  @keyframes pageIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .tabbar{grid-template-columns:repeat(4,1fr);}
+
+  /* ══════════ 八维功能全表 ══════════ */
+  #page-functions{padding:0;display:none;flex-direction:column;}
+  #page-functions.active{display:flex;}
+  .fx-head{padding:18px 18px 12px;flex:none;}
+  .fx-head h2{font-size:20px;font-weight:800;letter-spacing:-.01em;margin:2px 0 4px;}
+  .fx-head p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0;}
+  .fx-seg{display:inline-flex;background:var(--hair);border-radius:999px;padding:3px;margin-top:12px;gap:2px;}
+  .fx-seg button{border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:700;color:var(--muted);padding:6px 16px;border-radius:999px;cursor:pointer;transition:.2s;}
+  .fx-seg button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+  .fx-view{flex:1 1 auto;overflow:auto;-webkit-overflow-scrolling:touch;padding:2px 16px 16px;}
+  .fx-view[hidden]{display:none;}
+  #fxTable{padding:0 12px 16px;}
+  /* 功能速查卡片 */
+  .fn-quick{display:flex;flex-direction:column;gap:10px;}
+  .fnq{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--fx-hue);border-radius:16px;padding:12px 14px;}
+  .fnq .badge{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-mono);font-weight:800;font-size:16px;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
+  .fnq[data-att="e"] .badge{background:color-mix(in srgb,var(--fx-hue) 8%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 60%,var(--true-black));}
+  .fnq .body{flex:1;min-width:0;}
+  .fnq .ttl{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .fnq .ttl b{font-size:14px;font-weight:800;}
+  .fnq .ttl .att{font-size:10.5px;font-weight:700;color:var(--fx-hue);}
+  .fnq .desc{font-size:13px;color:var(--fg);margin:3px 0 0;line-height:1.5;}
+  .fnq .quote{display:inline-block;margin-top:7px;font-size:12px;color:var(--fg);background:color-mix(in srgb,var(--fx-hue) 12%,var(--surface));border-radius:8px;padding:3px 10px;}
+  .fnq .quote::before{content:'“';opacity:.6;} .fnq .quote::after{content:'”';opacity:.6;}
+  .fx-legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:0 6px 12px;}
+  .fx-legend span{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+  .fx-legend i{width:11px;height:11px;border-radius:3px;}
+  .fx-table{border-collapse:separate;border-spacing:0;font-size:11px;width:max-content;min-width:100%;}
+  .fx-table th,.fx-table td{padding:0;text-align:center;white-space:nowrap;}
+  .fx-table thead th{position:sticky;top:0;z-index:3;background:var(--surface);color:var(--muted);font-weight:600;font-size:10.5px;padding:7px 6px;border-bottom:1px solid var(--line);}
+  .fx-table thead th.corner{left:0;z-index:5;text-align:left;padding-left:10px;color:var(--fg);}
+  .fx-tp{position:sticky;left:0;z-index:2;background:var(--surface);text-align:left;padding:0 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line-soft);}
+  .fx-tp b{display:block;font-size:11.5px;font-weight:600;line-height:1.15;color:var(--fg);}
+  .fx-tp small{display:block;font-size:10px;color:var(--muted);}
+  .fx-tp i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--tc);margin-right:4px;vertical-align:middle;}
+  .fx-cell{padding:6px 4px;border-bottom:1px solid var(--line-soft);}
+  .fx-fn{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 8px;border-radius:8px;font-weight:600;font-size:11.5px;font-family:var(--font-mono);letter-spacing:.02em;background:color-mix(in srgb,var(--fx-hue) 17%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 74%,var(--true-black));}
+  .fx-fn[data-att="e"]{background:color-mix(in srgb,var(--fx-hue) 8%,var(--surface));color:color-mix(in srgb,var(--fx-hue) 64%,var(--true-black));}
+  .fx-table tbody tr:hover .fx-tp,.fx-table tbody tr:hover .fx-cell{background:color-mix(in srgb,var(--tc) 8%,var(--surface));}
+  @media (max-width:480px){
+    .fx-fn{min-width:30px;padding:4px 6px;font-size:11px;}
+    .fx-table th,.fx-table thead th{font-size:10px;}
+  }
+
+  /* 手机端全屏：去掉外框/刘海/侧键 */
+  @media (max-width:480px){
+    .app-shell{padding:0;align-items:stretch;}
+    .device{width:100vw;height:100vh;height:100dvh;border-radius:0;padding:0;box-shadow:none;}
+    .btn-rail,.island{display:none;}
+    .screen{border-radius:0;}
+    .statusbar{padding-top:max(16px,env(safe-area-inset-top));}
+    .home-indicator{display:none;}
+  }
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="device">
+      <span class="btn-rail l1"></span><span class="btn-rail l2"></span><span class="btn-rail l3"></span><span class="btn-rail r1"></span>
+      <span class="island"></span>
+      <div class="screen">
+        <div class="statusbar"><span class="num">9:41</span><span class="right">
+          <svg viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".6"/><rect x="4" y="5" width="3" height="6" rx=".6"/><rect x="8" y="3" width="3" height="8" rx=".6"/><rect x="12" y="0" width="3" height="11" rx=".6"/></svg>
+          <svg viewBox="0 0 17 11"><path d="M8.5 1.5C5.5 1.5 2.7 2.6 .5 4.6L2 6.1C3.8 4.5 6.1 3.6 8.5 3.6c2.4 0 4.7 .9 6.5 2.5l1.5-1.5c-2.2-2-5-3.1-8-3.1z"/></svg>
+          <svg class="battery" viewBox="0 0 25 11"><rect x=".5" y=".5" width="21" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-opacity=".45"/><rect x="22" y="3.5" width="1.5" height="4" rx=".4" fill="currentColor" fill-opacity=".45"/><rect x="2" y="2" width="18" height="7" rx="1.4"/></svg>
+        </span></div>
+        <div class="pages">
+          <main class="content page active" id="page-explore" data-component="ExploreScreen">
+            <div class="app-head">
+              <div><p class="eyebrow">发现你的人格</p><h2>16 型图鉴</h2></div>
+            </div>
+            <div class="ai-entry" data-component="AIGuessEntry" role="button" tabindex="0">
+              <span class="spark" aria-hidden></span>
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span>
+              <span class="atx"><b>不确定 TA 是哪一型？</b><span>把 TA 的行为讲给 AI，智能推测 MBTI</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="search">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" aria-label="搜索人格类型" placeholder="搜索类型 / 昵称，如 ENTJ、指挥官" />
+            </div>
+            <div class="filters" data-component="DimensionFilter" role="group" aria-label="维度筛选">
+              <button class="chip" data-dim="E"><span class="k">E</span>外向</button>
+              <button class="chip" data-dim="I"><span class="k">I</span>内向</button>
+              <button class="chip" data-dim="N"><span class="k">N</span>直觉</button>
+              <button class="chip" data-dim="S"><span class="k">S</span>实感</button>
+              <button class="chip" data-dim="T"><span class="k">T</span>思考</button>
+              <button class="chip" data-dim="F"><span class="k">F</span>情感</button>
+              <button class="chip" data-dim="J"><span class="k">J</span>判断</button>
+              <button class="chip" data-dim="P"><span class="k">P</span>知觉</button>
+            </div>
+            <div id="groups"></div>
+          </main>
+          <main class="content page" id="page-detail" data-component="TypeDetailScreen">
+            <div class="hero" id="heroBox">
+              <span class="halo"></span><span class="halo two"></span>
+              <div class="topbar">
+                <button class="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="gtag" id="heroGtag">分析家 · NT</span>
+              </div>
+              <div class="emblem-lg" id="heroEmblem" aria-hidden></div>
+              <div class="code-lg" id="heroCode">ENTJ</div>
+              <div class="nick-lg" id="heroNick">指挥官</div>
+              <p class="tagline" id="heroTagline">天生的领导者，果断、高效，擅长把想法变成可执行的计划。</p>
+            </div>
+
+            <div class="traitwrap" data-component="TraitTags">
+              <div class="sec-title"><span class="bar"></span>主要特征</div>
+              <p class="grouplabel">核心关键词</p>
+              <div class="trow" id="tKeys"></div>
+              <p class="grouplabel">突出优势</p>
+              <div class="trow" id="tGood"></div>
+              <p class="grouplabel">需要留意</p>
+              <div class="trow" id="tWatch"></div>
+            </div>
+
+            <div class="stack" data-component="CognitiveFunctionStack">
+              <div class="sec-title"><span class="bar"></span>认知功能栈</div>
+              <div id="fnList"></div>
+            </div>
+            <p class="subhint">功能栈由 主导 → 辅助 → 第三 → 劣势 排列，决定一个人思考与决策的默认顺序。</p>
+          </main>
+          <main class="content page" id="page-people" data-component="PeopleScreen">
+            <div class="app-head">
+              <div><p class="eyebrow">我标注的人 · 5</p><h2>我的人脉</h2></div>
+            </div>
+            <button class="addbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>标注一个新的人</button>
+            <div class="ai-entry" data-component="AIGuessEntry" role="button" tabindex="0">
+              <span class="spark" aria-hidden></span>
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span>
+              <span class="atx"><b>不知道 TA 的 MBTI？</b><span>描述 TA 的行为，让 AI 帮你推测</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="test-entry" id="selfTestEntry" role="button" tabindex="0">
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+              <span class="atx"><b>还不确定自己的类型？</b><span>速测 20 题，或精准 48 题</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div id="peopleList"></div>
+          </main>
+          <main class="content page" id="page-addperson" data-component="AddPersonScreen">
+            <div class="subhead">
+              <button class="back2" id="apBack" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <div><p class="eyebrow">人脉</p><h2 id="apTitle">标注一个新的人</h2></div>
+            </div>
+            <form class="ai-form" onsubmit="return false">
+              <div class="field">
+                <label for="apName">名字 / 昵称</label>
+                <input class="ti" id="apName" type="text" placeholder="如：张磊、林悦" autocomplete="off" />
+              </div>
+              <div class="field" id="apRelField">
+                <label for="apRel">关系备注 <em>· 可选</em></label>
+                <input class="ti" id="apRel" type="text" placeholder="如：我的老板、大学同学" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label>TA 的 MBTI 类型</label>
+                <div class="aptype" id="apType"></div>
+              </div>
+              <div class="field">
+                <label for="apNote">我的观察笔记 <em>· 可选</em></label>
+                <textarea class="ta" id="apNote" placeholder="记录你对 TA 的观察，如：压力大时会变得沉默、决策很快…"></textarea>
+              </div>
+            </form>
+            <p class="ap-ai">不知道类型？<a id="apToAi">AI 推测 ›</a> · <a id="apTest">做测试题 ›</a></p>
+            <button class="cta" id="apSave"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>保存到我的人脉</button>
+            <button class="ap-del" id="apDelete" type="button" hidden>删除这个联系人</button>
+          </main>
+          <main class="content page" id="page-test" data-component="MbtiTestScreen">
+            <div class="subhead">
+              <button class="back2" id="tsBack" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <div><p class="eyebrow">MBTI 自测</p><h2 id="tsTitle">第 1 / 48 题</h2></div>
+            </div>
+            <div class="ts-progress" aria-hidden><i id="tsBar"></i></div>
+            <div class="ts-chooser" id="tsChooser">
+              <p class="ts-clead">你想怎么测？</p>
+              <button class="ts-opt-card" type="button" data-variant="quick">
+                <span class="tc-ic"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12z"/></svg></span>
+                <span class="tc-tx"><b>速测 · 20 题</b><span>每题二选一，约 2 分钟，快速得到结果</span></span>
+                <span class="tc-arw"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+              </button>
+              <button class="ts-opt-card" type="button" data-variant="full">
+                <span class="tc-ic accent"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+                <span class="tc-tx"><b>精准 · 48 题</b><span>同意程度量表，约 5 分钟，结果更细腻</span></span>
+                <span class="tc-arw"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+              </button>
+            </div>
+            <div class="ts-stage" id="tsStage" hidden>
+              <p class="ts-dim" id="tsDim"></p>
+              <p class="ts-q" id="tsQ"></p>
+              <div class="ts-scale" id="tsScaleWrap">
+                <span class="ts-end agree">同意</span>
+                <div class="ts-dots" id="tsScale">
+                  <button class="ts-dot d2 tone-agree" type="button" data-v="2" aria-label="非常同意"></button>
+                  <button class="ts-dot d1 tone-agree" type="button" data-v="1" aria-label="同意"></button>
+                  <button class="ts-dot d0" type="button" data-v="0" aria-label="中立"></button>
+                  <button class="ts-dot d1 tone-dis" type="button" data-v="-1" aria-label="不同意"></button>
+                  <button class="ts-dot d2 tone-dis" type="button" data-v="-2" aria-label="非常不同意"></button>
+                </div>
+                <span class="ts-end dis">不同意</span>
+              </div>
+              <div class="ts-ab" id="tsAB" hidden>
+                <button class="ts-opt" id="tsA" type="button"><span class="ab-k">A</span><span class="ab-t"></span></button>
+                <button class="ts-opt" id="tsB" type="button"><span class="ab-k">B</span><span class="ab-t"></span></button>
+              </div>
+              <button class="ts-prev" id="tsPrev" type="button" hidden><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>上一题</button>
+            </div>
+            <div class="ts-result" id="tsResult" hidden>
+              <div class="tr-card" id="trCard">
+                <div class="tr-emblem" id="trEmblem" aria-hidden></div>
+                <p class="tr-eyebrow">你的类型</p>
+                <div class="tr-type" id="trType"></div>
+                <div class="tr-nick" id="trNick"></div>
+              </div>
+              <div class="tr-axes" id="trAxes"></div>
+              <button class="cta" id="tsApply"></button>
+              <button class="ap-del ts-retry" id="tsRetry" type="button">重新测一次</button>
+            </div>
+          </main>
+          <main class="content page" id="page-compare" data-component="CompareScreen">
+            <div class="app-head">
+              <div><p class="eyebrow">关系配对</p><h2>你们合得来吗</h2></div>
+              <button class="icon-btn" aria-label="重新选择"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 9A8 8 0 0 0 6 5.3L4 7M4 15a8 8 0 0 0 14 3.7l2-1.7"/></svg></button>
+            </div>
+
+            <div class="vs-wrap" data-component="PairPicker">
+              <div class="vs-people">
+                <div class="vs-card" style="--tc:var(--c-infp)">
+                  <div class="av">我</div>
+                  <div class="who">我</div>
+                  <div class="ty">INFP</div>
+                  <div class="role">调停者</div>
+                </div>
+                <div class="vs-x"><span>×</span></div>
+                <div class="vs-card" style="--tc:var(--c-entj)">
+                  <div class="av">磊</div>
+                  <div class="who">张磊</div>
+                  <div class="ty">ENTJ</div>
+                  <div class="role">我的老板</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="score" data-component="CompatibilityScore">
+              <div class="ring" style="--val:72"><div class="inner"><b class="num">72</b><small>兼容分</small></div></div>
+              <div class="sx">
+                <b>互补型搭档</b>
+                <p>理想主义者遇上执行者：你重意义与价值，他重目标与效率。方向一致时非常互补，但节奏和沟通方式差异明显。</p>
+              </div>
+            </div>
+
+            <div class="relcard k-rel" data-component="RelationArchetype">
+              <div class="rh">
+                <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.3-8.5C1 8 2.8 4.5 6 4.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.2 0 5 3.5 3.3 7C19 15.65 12 20 12 20z"/></svg></span>
+                <div><div class="rk">关系类型</div><div class="rn">互补拍档 · 镜像成长</div></div>
+              </div>
+              <p>你们像镜子的两面：你以 <b>Fi 主导</b>、他以 <b>Te 主导</b>，恰好互为对方的劣势功能。方向一致时，一个把握意义与人心，一个负责决断与推进，是少见的“互相补课”关系。</p>
+            </div>
+
+            <div class="fnmatch" data-component="CognitiveFunctionMatch">
+              <div class="sec-title"><span class="bar"></span>认知功能匹配</div>
+              <p class="rel-lead">MBTI 相处的深层逻辑藏在<b>认知功能</b>里。把两人四条功能轴对齐，就能看清谁在哪一环更强、又如何补位。</p>
+              <div class="fmlegend" aria-hidden>
+                <span><i style="background:var(--c-infp)"></i>我 · INFP</span>
+                <span><i style="background:var(--c-entj)"></i>张磊 · ENTJ</span>
+              </div>
+
+              <div class="fmitem">
+                <div class="fmrow">
+                  <div class="fmside">
+                    <span class="fmbadge a">Fi</span>
+                    <div class="fmmeta"><div class="fc">内向情感</div><div class="fl">主导① · 我</div></div>
+                  </div>
+                  <div class="fmtrack"><span class="mk" style="left:22%"></span></div>
+                  <div class="fmside r">
+                    <span class="fmbadge b">Fi</span>
+                    <div class="fmmeta"><div class="fc">内向情感</div><div class="fl">劣势④ · 张磊</div></div>
+                  </div>
+                </div>
+                <p class="fmnote">价值与真诚是你的底色；他 Fi 最弱——<b>你能帮他看见人的感受</b>。</p>
+              </div>
+
+              <div class="fmitem">
+                <div class="fmrow">
+                  <div class="fmside">
+                    <span class="fmbadge a">Ne</span>
+                    <div class="fmmeta"><div class="fc">外向直觉</div><div class="fl">辅助② · 我</div></div>
+                  </div>
+                  <div class="fmtrack"><span class="mk" style="left:50%"></span></div>
+                  <div class="fmside r">
+                    <span class="fmbadge b">Ni</span>
+                    <div class="fmmeta"><div class="fc">内向直觉</div><div class="fl">辅助② · 张磊</div></div>
+                  </div>
+                </div>
+                <p class="fmnote">你发散(Ne)找可能、他收敛(Ni)定愿景，<b>都靠直觉，方向天然合拍</b>。</p>
+              </div>
+
+              <div class="fmitem">
+                <div class="fmrow">
+                  <div class="fmside">
+                    <span class="fmbadge a">Si</span>
+                    <div class="fmmeta"><div class="fc">内向感觉</div><div class="fl">第三③ · 我</div></div>
+                  </div>
+                  <div class="fmtrack"><span class="mk" style="left:48%"></span></div>
+                  <div class="fmside r">
+                    <span class="fmbadge b">Se</span>
+                    <div class="fmmeta"><div class="fc">外向感觉</div><div class="fl">第三③ · 张磊</div></div>
+                  </div>
+                </div>
+                <p class="fmnote">细节(Si)与当下行动(Se)都不是你俩强项，<b>需互相提醒把事做实</b>。</p>
+              </div>
+
+              <div class="fmitem">
+                <div class="fmrow">
+                  <div class="fmside">
+                    <span class="fmbadge a">Te</span>
+                    <div class="fmmeta"><div class="fc">外向思考</div><div class="fl">劣势④ · 我</div></div>
+                  </div>
+                  <div class="fmtrack"><span class="mk" style="left:80%"></span></div>
+                  <div class="fmside r">
+                    <span class="fmbadge b">Te</span>
+                    <div class="fmmeta"><div class="fc">外向思考</div><div class="fl">主导① · 张磊</div></div>
+                  </div>
+                </div>
+                <p class="fmnote">他用 Te 高效决断、推进落地；你的 Te 偏弱，<b>正好被他补位</b>。</p>
+              </div>
+            </div>
+
+            <div class="dims" data-component="DimensionCompare">
+              <div class="sec-title"><span class="bar"></span>四维差异</div>
+              <div class="dim"><div class="dtop"><span>I 内向 · 我</span><span class="diff">相反</span><span>E 外向 · 张磊</span></div><div class="track"><span class="a" style="left:22%"></span><span class="b" style="left:82%"></span></div></div>
+              <div class="dim"><div class="dtop"><span>N 直觉 · 我</span><span class="same">一致</span><span>N 直觉 · 张磊</span></div><div class="track"><span class="a" style="left:30%"></span><span class="b" style="left:40%"></span></div></div>
+              <div class="dim"><div class="dtop"><span>F 情感 · 我</span><span class="diff">相反</span><span>T 思考 · 张磊</span></div><div class="track"><span class="a" style="left:20%"></span><span class="b" style="left:84%"></span></div></div>
+              <div class="dim"><div class="dtop"><span>P 知觉 · 我</span><span class="diff">相反</span><span>J 判断 · 张磊</span></div><div class="track"><span class="a" style="left:24%"></span><span class="b" style="left:80%"></span></div></div>
+            </div>
+
+            <div class="relcard k-val" data-component="SharedValues">
+              <div class="rh">
+                <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 2 15 8l6 .9-4.5 4.3L17.6 20 12 16.9 6.4 20l1.1-6.8L3 8.9 9 8z"/></svg></span>
+                <div><div class="rk">共有价值</div><div class="rn">成长与真诚</div></div>
+              </div>
+              <p>你们都反感虚伪，也都想把想法真正实现。你在意价值与初心，他在意目标与结果——当彼此认可对方的出发点，就能既走得快、又走得远。</p>
+            </div>
+
+            <div class="relcard k-com" data-component="CommunicationStyle">
+              <div class="rh">
+                <span class="ric"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.6A8.4 8.4 0 1 1 21 11.5z"/></svg></span>
+                <div><div class="rk">沟通方式</div><div class="rn">直接 × 委婉</div></div>
+              </div>
+              <p>他习惯直给结论、就事论事；你习惯照顾感受、迂回表达。看懂这层差异后，你可以“先结论再感受”，他可以在结论前先留一句肯定。</p>
+            </div>
+
+            <div class="insight" data-component="RelationInsights">
+              <div class="ins up">
+                <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14" transform="rotate(180 12 20)"/></svg></span><b>合作优势</b></div>
+                <ul>
+                  <li>他擅长<b>定方向、推进度</b>，能把你天马行空的创意真正落地。</li>
+                  <li>你能补充<b>人文视角与价值判断</b>，提醒团队关注人的感受与长期意义。</li>
+                </ul>
+              </div>
+              <div class="ins warn">
+                <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span><b>潜在摩擦</b></div>
+                <ul>
+                  <li>他直接、结果导向的表达，可能让你感到<b>被催促或被否定</b>。</li>
+                  <li>你偏好慢思考与和谐，容易被误读为<b>拖延或态度不明确</b>。</li>
+                </ul>
+              </div>
+              <div class="ins tip">
+                <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2.5h6c0-1.3.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span><b>沟通建议</b></div>
+                <ul>
+                  <li>汇报时<b>先给结论和进度</b>，再补充过程和思考。</li>
+                  <li>主动确认 deadline，把价值观诉求<b>翻译成对目标的贡献</b>来表达。</li>
+                </ul>
+              </div>
+            </div>
+            <p class="subhint">分析基于类型倾向，仅供相处参考，真实的人远比标签丰富。</p>
+          </main>
+          <main class="content page" id="page-aiin" data-component="AIGuessInput">
+            <div class="subhead">
+              <button class="back2" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <div><p class="eyebrow">AI 智能推测</p><h2>描述一下 TA</h2></div>
+            </div>
+            <form class="ai-form" data-component="AIGuessForm" onsubmit="return false">
+              <div class="field">
+                <label for="aiName">TA 是谁 <em>· 便于保存到人脉</em></label>
+                <input class="ti" id="aiName" type="text" value="同事 · 小夏" aria-label="TA 是谁" />
+              </div>
+              <div class="field">
+                <label for="aiText">TA 平时是怎样的人？<em>· 越具体，推测越准</em></label>
+                <textarea class="ta" id="aiText" aria-label="行为描述">聚会里她总是最活跃的那个，能跟谁都聊得起来。脑子里点子特别多，经常突然冒出新计划，但常常三分钟热度、很快又被下一件事吸引。做决定更跟着感觉走，特别在意朋友的情绪，不喜欢被条条框框和固定日程束缚。</textarea>
+                <p class="helper">可以聊聊 TA 的社交方式、做决定的习惯、面对计划与变化的态度。</p>
+              </div>
+              <div class="tagset" data-component="QuickTags">
+                <div class="tgl">或点选快捷标签补充 <em style="font-style:normal;font-weight:500;color:var(--faint);font-size:11px">（可多选）</em></div>
+                <div class="qgrp">
+                  <p class="qglabel">社交能量</p>
+                  <div class="qtags">
+                    <button class="qt on" type="button">社交中充电</button>
+                    <button class="qt" type="button">独处中充电</button>
+                  </div>
+                </div>
+                <div class="qgrp">
+                  <p class="qglabel">获取信息</p>
+                  <div class="qtags">
+                    <button class="qt on" type="button">爱联想 · 追新点子</button>
+                    <button class="qt" type="button">重经验 · 讲务实</button>
+                  </div>
+                </div>
+                <div class="qgrp">
+                  <p class="qglabel">做决定</p>
+                  <div class="qtags">
+                    <button class="qt on" type="button">跟着感受走</button>
+                    <button class="qt" type="button">讲逻辑对错</button>
+                  </div>
+                </div>
+                <div class="qgrp">
+                  <p class="qglabel">生活方式</p>
+                  <div class="qtags">
+                    <button class="qt on" type="button">随性 · 爱灵活</button>
+                    <button class="qt" type="button">计划性强 · 求确定</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <button class="cta" id="aiRun"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>让 AI 开始分析</button>
+            <p class="ai-status" id="aiStatus" style="display:none"></p>
+            <p class="subhint">AI 会综合你的描述给出最可能的类型，仅供参考，最终仍以真实了解为准。</p>
+          </main>
+          <main class="content page" id="aiResult" data-component="AIGuessResult">
+            <div class="ai-hero">
+              <span class="halo"></span><span class="halo two"></span>
+              <div class="topbar">
+                <button class="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="gtag">外交家 · NF</span>
+              </div>
+              <span class="badge"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/></svg><span class="bwho">AI 推测 · 同事 小夏</span></span>
+              <div class="rrow">
+                <div class="rring"><div class="ri"><b class="num">84%</b><small>把握度</small></div></div>
+                <div>
+                  <div class="rcode">ENFP</div>
+                  <div class="rnick">竞选者</div>
+                  <div class="rsub">热情洋溢的自由灵魂</div>
+                </div>
+              </div>
+              <p class="rline">TA 的行为高度符合 ENFP：外向的能量、发散的点子、跟随感受的决策与拒绝束缚的生活方式。</p>
+            </div>
+
+            <div class="ai-dims" data-component="DimensionEstimate">
+              <div class="sec-title"><span class="bar"></span>四维倾向推测</div>
+              <div class="adim"><div class="atop"><span class="lt">E 外向</span><span class="rt">I 内向</span><span class="pct">78%</span></div><div class="atrack"><i style="width:78%"></i></div></div>
+              <div class="adim"><div class="atop"><span class="lt">N 直觉</span><span class="rt">S 实感</span><span class="pct">71%</span></div><div class="atrack"><i style="width:71%"></i></div></div>
+              <div class="adim"><div class="atop"><span class="lt">F 情感</span><span class="rt">T 思考</span><span class="pct">66%</span></div><div class="atrack"><i style="width:66%"></i></div></div>
+              <div class="adim"><div class="atop"><span class="lt">P 知觉</span><span class="rt">J 判断</span><span class="pct">74%</span></div><div class="atrack"><i style="width:74%"></i></div></div>
+            </div>
+
+            <div class="insight" data-component="AIEvidence">
+              <div class="ins tip">
+                <div class="ih"><span class="ci"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.2 1 2.5h6c0-1.3.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span><b>AI 是这样推理的</b></div>
+                <ul>
+                  <li>“聚会最活跃、跟谁都聊得来” → 指向<b>外向 E</b>，在社交中获取能量。</li>
+                  <li>“点子多、常冒出新计划” → 典型的<b>外向直觉 Ne · 直觉 N</b>。</li>
+                  <li>“跟着感觉走、在意朋友情绪” → 偏<b>情感 F</b> 的价值与共情决策。</li>
+                  <li>“三分钟热度、不爱被束缚” → 偏<b>知觉 P</b>，追求灵活与开放。</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="alt" data-component="AltCandidate">
+              <div class="sec-title"><span class="bar"></span>第二可能</div>
+              <div class="altcard">
+                <div class="ac">ESFP</div>
+                <div class="amid"><b>ESFP · 表演者</b><div class="arole">同样外向热情，但更活在当下、重真实体验</div></div>
+                <div class="apct">61%</div>
+              </div>
+              <p class="helper" style="padding:0 2px;">若 TA 更关注眼前的真实感受而非未来可能性，就可能偏向 ESFP。</p>
+            </div>
+
+            <button class="cta"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span class="mklabel">标记小夏为 ENFP · 竞选者</span></button>
+            <button class="cta ghost"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 9A8 8 0 0 0 6 5.3L4 7M4 15a8 8 0 0 0 14 3.7l2-1.7"/></svg>重新描述行为</button>
+            <p class="subhint">推测基于你提供的有限描述，人远比标签复杂，建议结合真实相处再确认。</p>
+          </main>
+
+          <main class="content page" id="page-functions" data-component="FunctionMatrix">
+            <div class="fx-head">
+              <p class="eyebrow">认知功能 · 荣格八维</p>
+              <h2>八维功能</h2>
+              <p>先看懂 8 个功能各自在做什么，再横向对比 16 型的完整功能栈。</p>
+              <div class="fx-seg" id="fxSeg">
+                <button class="on" data-view="fxRef">功能速查</button>
+                <button data-view="fxTable">全表对比</button>
+              </div>
+            </div>
+            <section class="fx-view" id="fxRef">
+              <div class="fn-quick" id="fnQuick"></div>
+            </section>
+            <section class="fx-view" id="fxTable" hidden>
+              <div class="fx-legend" id="fxLegend"></div>
+              <table class="fx-table"><thead id="fxHead"></thead><tbody id="fxBody"></tbody></table>
+            </section>
+          </main>
+        </div><!-- /.pages -->
+        <nav class="tabbar" data-component="TabBar">
+          <button class="tab active" data-target="page-explore"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>探索</button>
+          <button class="tab" data-target="page-people"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3.3 2.6-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M17 8h4M19 6v4"/></svg>人脉</button>
+          <button class="tab" data-target="page-functions"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg>八维</button>
+          <button class="tab" data-target="page-aiin"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>AI 推测</button>
+        </nav>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const FUNC = {
+    Ni:{cn:'内向直觉',desc:'洞察本质与模式，专注长远的单一愿景。'},
+    Ne:{cn:'外向直觉',desc:'发散联想，不断捕捉新的可能性与创意。'},
+    Si:{cn:'内向感觉',desc:'重视经验、细节与熟悉的稳定节奏。'},
+    Se:{cn:'外向感觉',desc:'活在当下，敏锐感知真实环境与机会。'},
+    Ti:{cn:'内向思考',desc:'追求内部逻辑自洽与概念的精确。'},
+    Te:{cn:'外向思考',desc:'高效组织资源，用结果和效率衡量一切。'},
+    Fi:{cn:'内向情感',desc:'忠于内心价值观，判断真诚与对错。'},
+    Fe:{cn:'外向情感',desc:'体察他人情绪，主动维系群体和谐。'}
+  };
+  const LV = [
+    {n:'主导 · Dominant',w:100},
+    {n:'辅助 · Auxiliary',w:78},
+    {n:'第三 · Tertiary',w:54},
+    {n:'劣势 · Inferior',w:32}
+  ];
+
+  // 认知功能在不同位置（主导/辅助/第三/劣势）的角色化解读
+  const ROLE = {
+    Ni:[
+      '你会不自觉地穿透表象，直接抓住事情的本质与走向。脑中常有一个清晰而笃定的长远愿景，并以此作为所有判断的锚点，哪怕一时说不清理由。',
+      '它默默为主导功能收敛信息，把纷杂的线索和念头汇成一条主线。让你在向外行动的同时，始终守着一个稳定的内在方向感。',
+      '平时不常露面，但在放松或深思时会突然闪现洞察，帮你跳出眼前、预感事情的走向。只是发挥并不稳定，时灵时不灵。',
+      '这是你最不擅长的部分。压力大时容易钻进单一的负面预感里，把想象中的坏结局当成必然，越想越走不出来。'
+    ],
+    Ne:[
+      '你的念头像不断分叉的枝桠，总能从一件事联想到无数可能。世界在你眼里是一片充满机会的旷野，好奇心推着你持续探索新方向。',
+      '它为主导功能不停打开选项，让你灵活联想、随机应变。在坚持核心立场的同时，也愿意接住各种新鲜的可能性。',
+      '兴致来时脑洞大开、点子频出，能给平淡的事情添不少趣味。但发挥并不稳定，也容易一下子发散跑题、收不回来。',
+      '这是你的短板。压力下联想会失控地滑向负面，脑中冒出各种「万一出事怎么办」，被无穷的坏可能缠住、难以安心。'
+    ],
+    Si:[
+      '你高度依赖亲历过的经验与具体细节，凡事讲究有据可依。熟悉、稳定、可预期的节奏让你安心，也让你格外可靠、少出纰漏。',
+      '它为主导功能沉淀事实与经验，让每个决定都踩在扎实的地基上。既能向外应对，又不至于飘、不至于离地。',
+      '偶尔泛起怀旧情绪，用熟悉的习惯和老办法给自己安全感。这部分带来稳定，但发挥有限，未必时时靠得住。',
+      '这是你的弱项。压力下容易被身体不适、琐碎细节或「过去都是这么做的」困住，对突如其来的变化格外抗拒和不适。'
+    ],
+    Se:[
+      '你的注意力牢牢锁在当下，对环境里的一切变化都极其敏锐。机会一出现就能立刻出手，行动力和临场反应是你的天赋。',
+      '它为主导功能提供鲜活的现场信息，把判断拉回真实的地面。让你既有内在主张，又不脱离眼前的实际情况。',
+      '放松时你会尽情享受感官带来的愉悦，追逐即时的快乐与刺激。它给生活添了活力，但发挥时强时弱、并不稳定。',
+      '这是你不擅长的一面。压力下容易冲动放纵——暴饮暴食、乱花钱或鲁莽行事，用感官刺激逃避，事后又难以收拾。'
+    ],
+    Ti:[
+      '你习惯用一套自洽的逻辑体系去拆解万物，追求概念的精确与内部一致。凡事都想弄懂底层原理，不接受似是而非的答案。',
+      '它为主导功能校准逻辑，让判断更严谨、更站得住脚。在向外表达或行动时，替你把关「这到底讲不讲得通」。',
+      '偶尔会较真起来，埋头钻研自己感兴趣的原理与细节。这份分析力时不时帮上忙，但并非你随时都能稳定调用。',
+      '这是你的软肋。压力下容易陷入吹毛求疵，用一堆尖锐挑剔的逻辑去反驳别人或自我防御，把简单的事越辩越复杂。'
+    ],
+    Te:[
+      '你天然擅长调度资源、组织流程，用结果和效率衡量一切。目标一旦确定，就会高效推进、雷厉风行地把事情做成。',
+      '它为主导功能负责落地执行，把抽象的想法拆成清晰可行的步骤与计划。让你既有内在追求，又能真正把事办出来。',
+      '偶尔想掌控进度，靠列清单、定流程找回秩序感。这份执行力偶有帮助，但发挥不稳，不是你最顺手的工具。',
+      '这是你的弱环。压力下容易变得武断而强硬，急着发号施令、强行控场，用生硬的效率逻辑要求别人和自己。'
+    ],
+    Fi:[
+      '你以内心的价值观为最高准绳，凡事先问「这符不符合我真正认同的东西」。真诚、忠于自我，对是非对错有细腻而坚定的判断。',
+      '它为主导功能注入价值判断，替你守住做人的底线。在向外探索或行动时，始终确认这条路对不对得起自己的心。',
+      '偶尔格外在意自己的感受，渴望被真正理解和接纳。这份自我觉察时有时无，往往情绪上来时才明显浮现。',
+      '这是你最不熟练的部分。压力下情绪常先被压抑、积到一定程度再骤然爆发，你自己也说不清到底为什么这么难受。'
+    ],
+    Fe:[
+      '你对周围人的情绪极其敏感，会本能地照顾气氛、维系群体的和谐。让大家都感到舒服、被在意，是你与生俱来的能力。',
+      '它为主导功能牵起与他人的连接，让你的决定总能顾及旁人的感受。在坚持自我的同时，也把人情冷暖考虑进去。',
+      '偶尔渴望被认同，会努力讨人喜欢、迎合他人的期待。这份体贴时强时弱，未必是你能稳定拿捏的分寸。',
+      '这是你的短板。压力下会过度在意别人的评价，要么一味讨好、委屈自己，要么积压之后突然情绪失控地宣泄出来。'
+    ]
+  };
+
+  const T = {
+    INTJ:{nick:'建筑师',g:'分析家 · NT',gk:'nt',line:'富有想象力又极具战略的思考者，凡事皆有计划。',keys:['战略','独立','远见'],good:['理性决策','自我驱动','长期视野'],watch:['过度自负','忽略情绪','完美主义'],stack:['Ni','Te','Fi','Se']},
+    INTP:{nick:'逻辑学家',g:'分析家 · NT',gk:'nt',line:'求知欲永不满足的发明家，痴迷于逻辑与理论。',keys:['逻辑','好奇','独创'],good:['深度分析','客观中立','创新思维'],watch:['行动力弱','忽视细节','难以决断'],stack:['Ti','Ne','Si','Fe']},
+    ENTJ:{nick:'指挥官',g:'分析家 · NT',gk:'nt',line:'天生的领导者，果断高效，擅长把想法变成可执行的计划。',keys:['领导','果断','高效'],good:['统筹全局','执行力强','目标坚定'],watch:['过于强势','缺乏耐心','忽略感受'],stack:['Te','Ni','Se','Fi']},
+    ENTP:{nick:'辩论家',g:'分析家 · NT',gk:'nt',line:'机智大胆的思想家，无法抗拒智力上的挑战。',keys:['机智','善辩','创意'],good:['随机应变','点子多','敢于挑战'],watch:['难以专注','爱抬杠','虎头蛇尾'],stack:['Ne','Ti','Fe','Si']},
+    INFJ:{nick:'提倡者',g:'外交家 · NF',gk:'nf',line:'安静而神秘的理想主义者，却总能鼓舞他人。',keys:['理想','洞察','坚定'],good:['富有同理','使命感强','深刻洞察'],watch:['过度理想','易倦怠','敏感内耗'],stack:['Ni','Fe','Ti','Se']},
+    INFP:{nick:'调停者',g:'外交家 · NF',gk:'nf',line:'诗意善良的利他主义者，永远愿意为正当理由挺身而出。',keys:['真诚','共情','理想'],good:['价值坚定','富有创意','善解人意'],watch:['过度理想','回避冲突','自我怀疑'],stack:['Fi','Ne','Si','Te']},
+    ENFJ:{nick:'主人公',g:'外交家 · NF',gk:'nf',line:'富有魅力的领导者，能感召并激励身边的人。',keys:['感召','热忱','利他'],good:['激励他人','沟通力强','有责任感'],watch:['过度付出','在意评价','难说不'],stack:['Fe','Ni','Se','Ti']},
+    ENFP:{nick:'竞选者',g:'外交家 · NF',gk:'nf',line:'热情洋溢又富创造力的自由灵魂，总能找到微笑的理由。',keys:['热情','创意','自由'],good:['感染力强','点子丰富','真诚待人'],watch:['三分钟热度','难专注','情绪化'],stack:['Ne','Fi','Te','Si']},
+    ISTJ:{nick:'物流师',g:'守护者 · SJ',gk:'sj',line:'务实而注重事实的可靠之人，说到做到。',keys:['务实','可靠','严谨'],good:['责任心强','执行稳健','注重细节'],watch:['偏保守','不善变通','情感含蓄'],stack:['Si','Te','Fi','Ne']},
+    ISFJ:{nick:'守卫者',g:'守护者 · SJ',gk:'sj',line:'尽职尽责又温暖的守护者，时刻准备保护所爱之人。',keys:['温暖','尽责','细心'],good:['体贴周到','踏实可靠','乐于奉献'],watch:['过度牺牲','不敢拒绝','害怕改变'],stack:['Si','Fe','Ti','Ne']},
+    ESTJ:{nick:'总经理',g:'守护者 · SJ',gk:'sj',line:'出色的管理者，在管理事务与人员上无人能及。',keys:['组织','务实','果断'],good:['执行高效','原则清晰','善于统筹'],watch:['略显固执','偏刻板','缺乏弹性'],stack:['Te','Si','Ne','Fi']},
+    ESFJ:{nick:'执政官',g:'守护者 · SJ',gk:'sj',line:'极有同情心又受欢迎的人，总是热心帮助他人。',keys:['热心','合群','负责'],good:['善于协调','关心他人','行动可靠'],watch:['在意评价','回避冲突','易被左右'],stack:['Fe','Si','Ne','Ti']},
+    ISTP:{nick:'鉴赏家',g:'探险家 · SP',gk:'sp',line:'大胆而务实的实验家，擅长使用各种工具。',keys:['冷静','动手','灵活'],good:['临场应变','动手能力','逻辑清晰'],watch:['难以承诺','偏冷淡','厌恶束缚'],stack:['Ti','Se','Ni','Fe']},
+    ISFP:{nick:'探险家',g:'探险家 · SP',gk:'sp',line:'灵活迷人的艺术家，随时准备探索新鲜事物。',keys:['艺术','随性','敏感'],good:['审美出众','真诚温和','活在当下'],watch:['易冲动','难规划','回避冲突'],stack:['Fi','Se','Ni','Te']},
+    ESTP:{nick:'企业家',g:'探险家 · SP',gk:'sp',line:'聪明精力充沛的行动派，真心享受活在边缘的感觉。',keys:['果敢','行动','机敏'],good:['反应迅速','敢闯敢拼','善于社交'],watch:['爱冒险','缺乏耐心','忽略长远'],stack:['Se','Ti','Fe','Ni']},
+    ESFP:{nick:'表演者',g:'探险家 · SP',gk:'sp',line:'自发热情的表演者，身边永远不会无聊。',keys:['活力','热情','享受'],good:['气氛担当','乐观外向','善于共情'],watch:['难专注','怕无聊','逃避严肃'],stack:['Se','Fi','Te','Ni']}
+  };
+
+  const GROUPS = [
+    {k:'nt',name:'分析家',en:'Analysts · NT',color:'var(--g-nt)',list:['INTJ','INTP','ENTJ','ENTP']},
+    {k:'nf',name:'外交家',en:'Diplomats · NF',color:'var(--g-nf)',list:['INFJ','INFP','ENFJ','ENFP']},
+    {k:'sj',name:'守护者',en:'Sentinels · SJ',color:'var(--g-sj)',list:['ISTJ','ISFJ','ESTJ','ESFJ']},
+    {k:'sp',name:'探险家',en:'Explorers · SP',color:'var(--g-sp)',list:['ISTP','ISFP','ESTP','ESFP']}
+  ];
+
+  // ── 低多边形小人立绘：按四大气质组分 sprite，每张 2x2 切 4 型 ──
+  const CODE_GROUP = {};
+  GROUPS.forEach(g=>g.list.forEach(c=>CODE_GROUP[c]=g.k));
+  // 各型在所属 2x2 精灵图中的位置（左上/右上/左下/右下）
+  const SPR_POS = {
+    INTJ:'0% 0%', INTP:'100% 0%', ENTJ:'0% 100%', ENTP:'100% 100%',
+    INFJ:'0% 0%', INFP:'100% 0%', ENFJ:'0% 100%', ENFP:'100% 100%',
+    ISTJ:'0% 0%', ISFJ:'100% 0%', ESTJ:'0% 100%', ESFJ:'100% 100%',
+    ISTP:'0% 0%', ISFP:'100% 0%', ESTP:'0% 100%', ESFP:'100% 100%'
+  };
+  function applyPortrait(el,code){
+    el.style.setProperty('--spr',"url('assets/mbti-"+CODE_GROUP[code]+"-cut.png')");
+    el.style.setProperty('--spr-pos',SPR_POS[code]);
+  }
+
+  // ── render explore grid ──
+  const groupsEl = document.getElementById('groups');
+  GROUPS.forEach(g=>{
+    const head = document.createElement('div');
+    head.className='grp';
+    head.innerHTML = '<i style="background:'+g.color+'"></i><b>'+g.name+'</b><span>'+g.en+'</span>';
+    groupsEl.appendChild(head);
+    const grid = document.createElement('div');
+    grid.className='tgrid';
+    g.list.forEach(code=>{
+      const t=T[code];
+      const card=document.createElement('button');
+      card.className='tcard';
+      card.dataset.code=code;
+      card.style.setProperty('--tc','var(--c-'+code.toLowerCase()+')');
+      card.innerHTML='<span class="emblem" aria-hidden></span><div class="code">'+code+'</div><div class="nick">'+t.nick+'</div><div class="oneline">'+t.line+'</div>';
+      applyPortrait(card.querySelector('.emblem'),code);
+      card.addEventListener('click',()=>{selectType(code,card);showPage('page-detail');});
+      grid.appendChild(card);
+    });
+    groupsEl.appendChild(grid);
+  });
+
+  // ── detail render ──
+  function chip(txt,cls){return '<span class="ttag'+(cls?' '+cls:'')+'">'+txt+'</span>';}
+  function selectType(code,cardEl){
+    const t=T[code];
+    document.querySelectorAll('.tcard.sel').forEach(c=>c.classList.remove('sel'));
+    if(cardEl) cardEl.classList.add('sel');
+    const tc='var(--c-'+code.toLowerCase()+')';
+    const hero=document.getElementById('heroBox');
+    hero.style.setProperty('--tc',tc);
+    hero.style.background='linear-gradient(150deg,'+tc+',color-mix(in srgb,'+tc+' 72%,var(--shade)))';
+    applyPortrait(document.getElementById('heroEmblem'),code);
+    document.getElementById('heroGtag').textContent=t.g;
+    document.getElementById('heroCode').textContent=code;
+    document.getElementById('heroNick').textContent=t.nick;
+    document.getElementById('heroTagline').textContent=t.line;
+    document.getElementById('tKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
+    document.getElementById('tGood').innerHTML=t.good.map(k=>chip(k,'good')).join('');
+    document.getElementById('tWatch').innerHTML=t.watch.map(k=>chip(k,'watch')).join('');
+    const fn=document.getElementById('fnList');
+    fn.innerHTML=t.stack.map((f,i)=>{
+      const meta=FUNC[f],lv=LV[i];
+      return '<div class="fn" style="--tc:'+tc+'"><div class="flabel"><span class="lvl">'+lv.n+'</span><span class="fcode" style="font-size:11px;opacity:.7">'+((i+1))+'/4</span></div>'
+        +'<div class="fmain"><span class="fcode">'+f+'</span><span class="fcn">'+meta.cn+'</span></div>'
+        +'<div class="fdesc">'+((ROLE[f]&&ROLE[f][i])||meta.desc)+'</div></div>';
+    }).join('');
+  }
+  selectType('ENTJ',null);
+
+  // ── 八维功能全表 ──
+  // 荣格八维：第 5~8 功能 = 第 1~4 功能翻转内外向（e↔i）
+  const flipAttitude = f => f.charAt(1)==='i' ? f.charAt(0)+'e' : f.charAt(0)+'i';
+  const full8 = code => { const s=T[code].stack; return s.concat(s.map(flipAttitude)); };
+  const POS8 = ['主导','辅助','第三','劣势','第五','第六','第七','第八'];
+  // 8 个功能的「一句话理解」与口头禅（功能速查）
+  const FN_REF = {
+    Ni:{line:'向内收敛到一个答案',quote:'我就是知道会怎样'},
+    Ne:{line:'向外发散看到 N 种可能',quote:'如果这样呢？那样呢？'},
+    Si:{line:'调取过去经验作为参照',quote:'上次是这样的'},
+    Se:{line:'活在当下，敏锐感知环境',quote:'现在发生了什么'},
+    Fi:{line:'内在价值判断',quote:'这对我来说重要不重要'},
+    Fe:{line:'感知群体情绪、维护和谐',quote:'大家感受怎么样'},
+    Ti:{line:'内部逻辑推演',quote:'这个逻辑自洽吗'},
+    Te:{line:'追求外部效率和结果',quote:'怎么做最快最有效'}
+  };
+  const REF_ORDER = ['Ni','Ne','Si','Se','Fi','Fe','Ti','Te'];
+  (function buildRef(){
+    const box=document.getElementById('fnQuick');
+    if(!box) return;
+    box.innerHTML=REF_ORDER.map(f=>{
+      const att=f.charAt(1), axis=f.charAt(0).toLowerCase(), meta=FUNC[f], ref=FN_REF[f];
+      const attCn = att==='i'?'内倾':'外倾';
+      return '<div class="fnq" data-att="'+att+'" style="--fx-bg:var(--fn-'+f.toLowerCase()+');--fx-hue:var(--fn-'+axis+')">'
+        +'<div class="badge">'+f+'</div>'
+        +'<div class="body"><div class="ttl"><b>'+meta.cn+'</b><span class="att">'+attCn+'</span></div>'
+        +'<p class="desc">'+ref.line+'</p>'
+        +'<span class="quote">'+ref.quote+'</span></div></div>';
+    }).join('');
+  })();
+  (function segToggle(){
+    const seg=document.getElementById('fxSeg');
+    if(!seg) return;
+    seg.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));
+        const target=btn.dataset.view;
+        document.getElementById('fxRef').hidden = target!=='fxRef';
+        document.getElementById('fxTable').hidden = target!=='fxTable';
+      });
+    });
+  })();
+  (function buildMatrix(){
+    const head=document.getElementById('fxHead');
+    const body=document.getElementById('fxBody');
+    const legend=document.getElementById('fxLegend');
+    if(!head||!body) return;
+    // 表头：首列角标 + 第1~8功能
+    let hr='<tr><th class="corner">类型 \\ 功能位</th>';
+    POS8.forEach((p,i)=>{ hr+='<th>第'+(i+1)+'<small style="display:block;font-weight:600;opacity:.75">'+p+'</small></th>'; });
+    hr+='</tr>';
+    head.innerHTML=hr;
+    // 行：按四大气质组顺序铺满 16 型
+    let rows='';
+    GROUPS.forEach(g=>{
+      g.list.forEach(code=>{
+        const t=T[code], tc='var(--c-'+code.toLowerCase()+')';
+        let tr='<tr style="--tc:'+tc+'">';
+        tr+='<td class="fx-tp"><b><i></i>'+code+'</b><small>'+t.nick+'</small></td>';
+        full8(code).forEach(f=>{
+          const att=f.charAt(1);
+          const axis=f.charAt(0).toLowerCase();
+          tr+='<td class="fx-cell"><span class="fx-fn" data-att="'+att+'" style="--fx-hue:var(--fn-'+axis+')" title="'+FUNC[f].cn+'：'+FUNC[f].desc+'">'+f+'</span></td>';
+        });
+        tr+='</tr>';
+        rows+=tr;
+      });
+    });
+    body.innerHTML=rows;
+    // 图例：四条功能轴
+    if(legend){
+      const axes=[['N 直觉','fn-n'],['S 实感','fn-s'],['T 思考','fn-t'],['F 情感','fn-f']];
+      legend.innerHTML=axes.map(a=>'<span><i style="background:var(--'+a[1]+')"></i>'+a[0]+'</span>').join('')
+        +'<span style="opacity:.85">深色=内向态 · 浅色=外向态</span>';
+    }
+  })();
+
+
+  const active=new Set();
+  document.querySelectorAll('.chip').forEach(ch=>{
+    ch.addEventListener('click',()=>{
+      const d=ch.dataset.dim;
+      if(active.has(d)){active.delete(d);ch.classList.remove('on');}
+      else{active.add(d);ch.classList.add('on');}
+      applyFilter();
+    });
+  });
+  function applyFilter(){
+    document.querySelectorAll('.tcard').forEach(card=>{
+      const code=card.dataset.code;
+      const ok=[...active].every(l=>code.includes(l));
+      card.classList.toggle('hidden',!ok);
+    });
+    document.querySelectorAll('.grp').forEach(head=>{
+      const grid=head.nextElementSibling;
+      const any=[...grid.querySelectorAll('.tcard')].some(c=>!c.classList.contains('hidden'));
+      head.style.display=any?'':'none';grid.style.display=any?'':'none';
+    });
+  }
+
+  // ── people list ──
+  const SELF={init:'我',name:'我',rel:'本人 · 也是 INFP',type:'INFP',self:true};
+  const CONTACTS=[
+    {init:'磊',name:'张磊',rel:'我的老板',type:'ENTJ'},
+    {init:'工',name:'王工',rel:'同事 · 后端',type:'ISTP'},
+    {init:'悦',name:'林悦',rel:'好友',type:'ENFP'},
+    {init:'妈',name:'妈妈',rel:'家人',type:'ISFJ'}
+  ];
+  const pl=document.getElementById('peopleList');
+  const peopleCountEl=document.querySelector('#page-people .eyebrow');
+  let openPersonEditor=null;
+  let setFormType=null;
+  let startMbtiTest=null;
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function makeCard(p,self){
+    const t=T[p.type];const tc='var(--c-'+p.type.toLowerCase()+')';
+    const card=document.createElement('div');card.className='pcard'+(self?' self':'');card.style.setProperty('--tc',tc);
+    const cta=self
+      ? '<button class="pcta" type="button">查看档案</button>'
+      : '<button class="pcta" type="button">配对<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>';
+    const editBtn='<button class="pedit" type="button" aria-label="编辑资料"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>';
+    card.innerHTML='<div class="pav">'+esc(p.init)+'</div>'
+      +'<div class="pbody"><div class="pnrow"><span class="pn">'+esc(p.name)+'</span><span class="pbadge">'+p.type+'</span></div>'
+      +'<div class="pr">'+esc(p.rel)+'</div><div class="pmini">'+t.nick+' · '+t.keys.join(' / ')+'</div></div>'
+      +'<div class="pacts">'+editBtn+cta+'</div>'
+      +(p.note?'<div class="pnote">'+esc(p.note)+'</div>':'');
+    const go=()=>{ if(self){selectType(p.type,null);showPage('page-detail');}else{showPage('page-compare');} };
+    const btn=card.querySelector('.pcta');if(btn)btn.addEventListener('click',e=>{e.stopPropagation();go();});
+    const ed=card.querySelector('.pedit');if(ed)ed.addEventListener('click',e=>{e.stopPropagation();if(openPersonEditor)openPersonEditor(p,self);});
+    card.addEventListener('click',go);
+    return card;
+  }
+  function renderPeople(){
+    pl.innerHTML='';
+    // 「我自己」始终置顶
+    const selfHead=document.createElement('div');selfHead.className='pgroup';selfHead.textContent='我自己';pl.appendChild(selfHead);
+    pl.appendChild(makeCard(SELF,true));
+    // 其余联系人按 MBTI 四大人群分组
+    GROUPS.forEach(g=>{
+      const members=CONTACTS.filter(p=>CODE_GROUP[p.type]===g.k);
+      if(!members.length)return;
+      const head=document.createElement('div');head.className='pgroup';
+      head.innerHTML='<i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+g.color+';margin-right:7px;vertical-align:middle;"></i>'+g.name+' · '+g.en;
+      pl.appendChild(head);
+      members.forEach(p=>pl.appendChild(makeCard(p,false)));
+    });
+    if(peopleCountEl)peopleCountEl.textContent='我标注的人 · '+(CONTACTS.length+1);
+  }
+  renderPeople();
+
+  // ── 单屏 App 页面路由 ──
+  const TAB_OF={'page-explore':'page-explore','page-detail':'page-explore','page-people':'page-people','page-addperson':'page-people','page-compare':'page-people','page-test':'page-people','page-functions':'page-functions','page-aiin':'page-aiin','aiResult':'page-aiin'};
+  let navStack=['page-explore'];
+  function showPage(id,push){
+    if(push===undefined)push=true;
+    const el=document.getElementById(id);
+    if(!el)return;
+    document.querySelectorAll('.content.page').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');el.scrollTop=0;
+    const tabTarget=TAB_OF[id]||id;
+    document.querySelectorAll('.tabbar .tab').forEach(t=>t.classList.toggle('active',t.dataset.target===tabTarget));
+    if(push&&navStack[navStack.length-1]!==id)navStack.push(id);
+  }
+  function goBack(){
+    if(navStack.length>1){navStack.pop();showPage(navStack[navStack.length-1],false);}
+    else showPage('page-explore',false);
+  }
+  // 底部三标签：顶层切换
+  document.querySelectorAll('.tabbar .tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{const t=tab.dataset.target;navStack=[t];showPage(t,false);});
+  });
+  // AI 入口卡片 → AI 推测
+  document.querySelectorAll('.ai-entry').forEach(e=>e.addEventListener('click',()=>showPage('page-aiin')));
+  // 新增联系人：标注一个新的人 → 表单 → 保存进人脉
+  (function addPerson(){
+    const openBtn=document.querySelector('#page-people .addbtn');
+    const typeBox=document.getElementById('apType');
+    const nameI=document.getElementById('apName');
+    const relI=document.getElementById('apRel');
+    const noteI=document.getElementById('apNote');
+    const titleEl=document.getElementById('apTitle');
+    const relField=document.getElementById('apRelField');
+    const delBtn=document.getElementById('apDelete');
+    let selType='ENTJ';
+    let editRef=null; // {person, self} 或 null 表示新增
+    if(typeBox){
+      const order=[].concat.apply([],GROUPS.map(g=>g.list));
+      typeBox.innerHTML=order.map(code=>'<button type="button" data-t="'+code+'" style="--tc:var(--c-'+code.toLowerCase()+')">'+code+'</button>').join('');
+      typeBox.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{setType(b.dataset.t);}));
+    }
+    function setType(t){
+      selType=t;
+      if(typeBox)typeBox.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
+    }
+    function showRel(show){ if(relField)relField.style.display=show?'':'none'; }
+    function openAdd(){
+      editRef=null;
+      if(titleEl)titleEl.textContent='标注一个新的人';
+      if(nameI)nameI.value='';
+      if(relI)relI.value='';
+      if(noteI)noteI.value='';
+      setType('ENTJ');
+      showRel(true);
+      if(delBtn)delBtn.hidden=true;
+      showPage('page-addperson');
+    }
+    function openEdit(person,self){
+      editRef={person:person,self:!!self};
+      if(nameI)nameI.value=person.name||'';
+      if(noteI)noteI.value=person.note||'';
+      setType(person.type||'ENTJ');
+      if(self){
+        if(titleEl)titleEl.textContent='编辑我的档案';
+        showRel(false);
+        if(delBtn)delBtn.hidden=true;
+      }else{
+        if(titleEl)titleEl.textContent='编辑资料';
+        if(relI)relI.value=person.rel||'';
+        showRel(true);
+        if(delBtn)delBtn.hidden=false;
+      }
+      showPage('page-addperson');
+    }
+    openPersonEditor=openEdit;
+    setFormType=setType;
+    if(openBtn)openBtn.addEventListener('click',openAdd);
+    const back=document.getElementById('apBack');if(back)back.addEventListener('click',goBack);
+    const toAi=document.getElementById('apToAi');if(toAi)toAi.addEventListener('click',()=>{navStack=['page-people'];showPage('page-aiin');});
+    const toTest=document.getElementById('apTest');if(toTest)toTest.addEventListener('click',()=>{if(startMbtiTest)startMbtiTest('form');});
+    const save=document.getElementById('apSave');
+    if(save)save.addEventListener('click',()=>{
+      const name=((nameI&&nameI.value)||'').trim()||'未命名';
+      const note=((noteI&&noteI.value)||'').trim();
+      if(editRef){
+        const p=editRef.person;
+        p.name=name;p.type=selType;p.init=name.charAt(0);
+        p.note=note||undefined;
+        if(editRef.self){
+          p.rel='本人 · 也是 '+selType;
+        }else{
+          p.rel=((relI&&relI.value)||'').trim()||'联系人';
+        }
+      }else{
+        const rel=((relI&&relI.value)||'').trim()||'联系人';
+        CONTACTS.push({init:name.charAt(0),name:name,rel:rel,type:selType,note:note||undefined});
+      }
+      renderPeople();
+      goBack();
+    });
+    if(delBtn)delBtn.addEventListener('click',()=>{
+      if(!editRef||editRef.self)return;
+      const idx=CONTACTS.indexOf(editRef.person);
+      if(idx>-1)CONTACTS.splice(idx,1);
+      renderPeople();
+      goBack();
+    });
+  })();
+  // ── MBTI 48 题自测 ──
+  (function mbtiTest(){
+    // key = “同意(正分)”所支持的字母；每维 12 题，正反交替以减小惯性偏差
+    const QBANK_FULL=[
+      // EI
+      {dim:'EI',key:'E',t:'在聚会里，我常常是主动找人聊天的那一个。'},
+      {dim:'EI',key:'I',t:'独处一整天也完全不会让我觉得难熬。'},
+      {dim:'EI',key:'E',t:'认识新朋友让我感到兴奋，而不是紧张。'},
+      {dim:'EI',key:'I',t:'长时间社交之后，我需要独处来恢复精力。'},
+      {dim:'EI',key:'E',t:'我习惯一边说出来、一边把想法理清楚。'},
+      {dim:'EI',key:'I',t:'比起热闹的大场合，我更喜欢一两个人的深聊。'},
+      {dim:'EI',key:'E',t:'周末我更愿意出门参加活动，而不是待在家里。'},
+      {dim:'EI',key:'I',t:'开口之前，我常常会先在心里想很久。'},
+      {dim:'EI',key:'E',t:'在陌生的环境里，我也能很快放开自己。'},
+      {dim:'EI',key:'I',t:'比起打电话，我更偏好用文字来沟通。'},
+      {dim:'EI',key:'E',t:'身边人多的时候，我反而更有干劲。'},
+      {dim:'EI',key:'I',t:'我的社交圈子不大，但关系都很深。'},
+      // SN
+      {dim:'SN',key:'N',t:'我经常思考事情背后的含义和更多可能性。'},
+      {dim:'SN',key:'S',t:'我更相信亲眼所见、能被验证的事实。'},
+      {dim:'SN',key:'N',t:'我喜欢想象那些还没发生的未来场景。'},
+      {dim:'SN',key:'S',t:'做事时，我偏好按具体、可操作的步骤来。'},
+      {dim:'SN',key:'N',t:'别人常说我的想法很跳跃、很有创意。'},
+      {dim:'SN',key:'S',t:'比起遥远的大方向，我更关注当下的细节。'},
+      {dim:'SN',key:'N',t:'抽象的理论和概念常常让我着迷。'},
+      {dim:'SN',key:'S',t:'我更信任过往的经验和实际的做法。'},
+      {dim:'SN',key:'N',t:'我常常从一个想法联想到一大串别的想法。'},
+      {dim:'SN',key:'S',t:'记东西时，我更容易记住具体的画面和数字。'},
+      {dim:'SN',key:'N',t:'我喜欢探索“如果……会怎样”这类问题。'},
+      {dim:'SN',key:'S',t:'我更看重一件事实不实用，而不是新不新。'},
+      // TF
+      {dim:'TF',key:'T',t:'做决定时，我会先看逻辑，把情绪放在一边。'},
+      {dim:'TF',key:'F',t:'别人难过时，我第一反应是想安慰，而不是分析。'},
+      {dim:'TF',key:'T',t:'我觉得公平和一致，比照顾个别感受更重要。'},
+      {dim:'TF',key:'F',t:'我很容易感受到身边人情绪的变化。'},
+      {dim:'TF',key:'T',t:'争论时，我更在意谁的论据更站得住脚。'},
+      {dim:'TF',key:'F',t:'做选择时，“会不会伤到别人”对我很重要。'},
+      {dim:'TF',key:'T',t:'我倾向于直接指出问题，哪怕话不太中听。'},
+      {dim:'TF',key:'F',t:'维持关系里的和谐，对我来说很重要。'},
+      {dim:'TF',key:'T',t:'我习惯用列利弊清单的方式来权衡决定。'},
+      {dim:'TF',key:'F',t:'我常常会对别人的处境感同身受。'},
+      {dim:'TF',key:'T',t:'我认为诚实比委婉更重要。'},
+      {dim:'TF',key:'F',t:'表扬和鼓励，比批评更能激励我。'},
+      // JP
+      {dim:'JP',key:'J',t:'我喜欢提前把计划安排得清清楚楚。'},
+      {dim:'JP',key:'P',t:'我更享受随性而至、看情况再决定。'},
+      {dim:'JP',key:'J',t:'把待办事项一项项打勾，会让我很有满足感。'},
+      {dim:'JP',key:'P',t:'截止日期临近时，我才更有效率。'},
+      {dim:'JP',key:'J',t:'出发前，我通常会先把行程都定好。'},
+      {dim:'JP',key:'P',t:'我的桌面和文件常常是“随手一放”的状态。'},
+      {dim:'JP',key:'J',t:'事情悬而未决会让我不舒服，我想尽快敲定。'},
+      {dim:'JP',key:'P',t:'计划有变对我来说没什么，我很能随机应变。'},
+      {dim:'JP',key:'J',t:'我喜欢有规律、可预期的生活节奏。'},
+      {dim:'JP',key:'P',t:'我常常同时开着好几件事，慢慢推进。'},
+      {dim:'JP',key:'J',t:'我做事偏向先定目标，再一步步执行。'},
+      {dim:'JP',key:'P',t:'保留多种选择、先不急着决定，让我更自在。'}
+    ];
+    // 速测：每维 5 题，二选一，aKey/bKey 为两端字母
+    const QBANK_QUICK=[
+      // EI
+      {dim:'EI',aKey:'E',a:'人群和热闹让我更来劲、更充电',bKey:'I',b:'独处安静更能让我恢复精力'},
+      {dim:'EI',aKey:'E',a:'我常常先开口、边说边想',bKey:'I',b:'我通常先想清楚再开口'},
+      {dim:'EI',aKey:'E',a:'周末更想出门社交',bKey:'I',b:'周末更想宅着独处'},
+      {dim:'EI',aKey:'E',a:'认识新朋友让我兴奋',bKey:'I',b:'认识新朋友让我有点消耗'},
+      {dim:'EI',aKey:'E',a:'我喜欢广泛地交很多朋友',bKey:'I',b:'我更要少而深的关系'},
+      // SN
+      {dim:'SN',aKey:'S',a:'我更关注具体的事实与细节',bKey:'N',b:'我更关注背后的含义与可能'},
+      {dim:'SN',aKey:'S',a:'我信任经验与实际做法',bKey:'N',b:'我信任灵感与新点子'},
+      {dim:'SN',aKey:'S',a:'我更活在当下、看眼前',bKey:'N',b:'我常想象未来的种种可能'},
+      {dim:'SN',aKey:'S',a:'我记得住具体画面和数据',bKey:'N',b:'我记得住整体印象和感觉'},
+      {dim:'SN',aKey:'S',a:'我喜欢按部就班地实操',bKey:'N',b:'我喜欢琢磨抽象的理论'},
+      // TF
+      {dim:'TF',aKey:'T',a:'做决定我先讲逻辑对错',bKey:'F',b:'做决定我先顾及感受'},
+      {dim:'TF',aKey:'T',a:'我更看重公平与一致',bKey:'F',b:'我更看重和谐与体谅'},
+      {dim:'TF',aKey:'T',a:'我会直接指出问题',bKey:'F',b:'我会先照顾对方情绪'},
+      {dim:'TF',aKey:'T',a:'别人说我理性、客观',bKey:'F',b:'别人说我温暖、善解人意'},
+      {dim:'TF',aKey:'T',a:'争论时我在意谁更有道理',bKey:'F',b:'争论时我在意别伤了和气'},
+      // JP
+      {dim:'JP',aKey:'J',a:'我喜欢提前计划、都定好',bKey:'P',b:'我喜欢随性、看情况再说'},
+      {dim:'JP',aKey:'J',a:'事情定下来我才安心',bKey:'P',b:'保留选择让我更自在'},
+      {dim:'JP',aKey:'J',a:'我按清单一项项完成',bKey:'P',b:'我常同时开着好几件事'},
+      {dim:'JP',aKey:'J',a:'我喜欢规律、可预期',bKey:'P',b:'我喜欢灵活、多变'},
+      {dim:'JP',aKey:'J',a:'出发前我把行程都排好',bKey:'P',b:'到了再随机应变'}
+    ];
+    const AXES=[
+      {dim:'EI',pos:'E',neg:'I',posN:'外向 · E',negN:'内向 · I',color:'var(--g-sp)'},
+      {dim:'SN',pos:'N',neg:'S',posN:'直觉 · N',negN:'实感 · S',color:'var(--g-nt)'},
+      {dim:'TF',pos:'T',neg:'F',posN:'思考 · T',negN:'情感 · F',color:'var(--g-nf)'},
+      {dim:'JP',pos:'J',neg:'P',posN:'判断 · J',negN:'感知 · P',color:'var(--g-sj)'}
+    ];
+    const stage=document.getElementById('tsStage');
+    const resultBox=document.getElementById('tsResult');
+    const chooser=document.getElementById('tsChooser');
+    const bar=document.getElementById('tsBar');
+    const titleEl=document.getElementById('tsTitle');
+    const dimEl=document.getElementById('tsDim');
+    const qEl=document.getElementById('tsQ');
+    const scale=document.getElementById('tsScale');
+    const scaleWrap=document.getElementById('tsScaleWrap');
+    const abBox=document.getElementById('tsAB');
+    const tsA=document.getElementById('tsA');
+    const tsB=document.getElementById('tsB');
+    const prevBtn=document.getElementById('tsPrev');
+    const backBtn=document.getElementById('tsBack');
+    const applyBtn=document.getElementById('tsApply');
+    const retryBtn=document.getElementById('tsRetry');
+    const trType=document.getElementById('trType');
+    const trNick=document.getElementById('trNick');
+    const trAxes=document.getElementById('trAxes');
+    const dots=scale?[].slice.call(scale.querySelectorAll('.ts-dot')):[];
+    const cards=chooser?[].slice.call(chooser.querySelectorAll('.ts-opt-card')):[];
+    let variant='quick', QUESTIONS=QBANK_QUICK;
+    let answers=[], idx=0, mode='self', resultCode=null;
+
+    function showChooser(){
+      if(chooser)chooser.hidden=false;
+      if(stage)stage.hidden=true;
+      if(resultBox)resultBox.hidden=true;
+      if(titleEl)titleEl.textContent='选择测试方式';
+      if(bar)bar.style.width='0%';
+    }
+    function beginTest(v){
+      variant=v; QUESTIONS=(v==='full')?QBANK_FULL:QBANK_QUICK;
+      answers=new Array(QUESTIONS.length).fill(null); idx=0; resultCode=null;
+      if(chooser)chooser.hidden=true;
+      renderQ();
+    }
+    function renderQ(){
+      if(stage)stage.hidden=false; if(resultBox)resultBox.hidden=true;
+      const q=QUESTIONS[idx];
+      const quick=variant!=='full';
+      if(scaleWrap)scaleWrap.hidden=quick;
+      if(abBox)abBox.hidden=!quick;
+      if(dimEl)dimEl.textContent=quick?'凭第一直觉，二选一 · 没有对错':'看你有多同意 · 没有对错';
+      if(titleEl)titleEl.textContent='第 '+(idx+1)+' / '+QUESTIONS.length+' 题';
+      if(bar)bar.style.width=Math.max(2,(idx/QUESTIONS.length)*100)+'%';
+      if(quick){
+        if(qEl)qEl.textContent='下面哪句更像你？';
+        if(tsA){tsA.querySelector('.ab-t').textContent=q.a; tsA.dataset.k=q.aKey; tsA.classList.toggle('on',answers[idx]===q.aKey);}
+        if(tsB){tsB.querySelector('.ab-t').textContent=q.b; tsB.dataset.k=q.bKey; tsB.classList.toggle('on',answers[idx]===q.bKey);}
+      }else{
+        if(qEl)qEl.textContent=q.t;
+        dots.forEach(d=>d.classList.toggle('on',answers[idx]!==null&&Number(d.dataset.v)===answers[idx]));
+      }
+      if(prevBtn)prevBtn.hidden=idx===0;
+    }
+    function advance(){
+      setTimeout(()=>{ if(idx<QUESTIONS.length-1){idx++;renderQ();} else finish(); },170);
+    }
+    dots.forEach(d=>d.addEventListener('click',()=>{
+      if(variant==='full'){
+        answers[idx]=Number(d.dataset.v);
+        dots.forEach(x=>x.classList.toggle('on',x===d));
+        advance();
+      }
+    }));
+    function pickAB(btn){
+      if(variant==='full')return;
+      answers[idx]=btn.dataset.k;
+      if(tsA)tsA.classList.toggle('on',tsA===btn);
+      if(tsB)tsB.classList.toggle('on',tsB===btn);
+      advance();
+    }
+    if(tsA)tsA.addEventListener('click',()=>pickAB(tsA));
+    if(tsB)tsB.addEventListener('click',()=>pickAB(tsB));
+    if(prevBtn)prevBtn.addEventListener('click',()=>{ if(idx>0){idx--;renderQ();} });
+    cards.forEach(c=>c.addEventListener('click',()=>beginTest(c.dataset.variant)));
+    function compute(){
+      let code=''; const res={};
+      AXES.forEach(ax=>{
+        let s=0,n=0;
+        QUESTIONS.forEach((q,i)=>{
+          if(q.dim!==ax.dim||answers[i]===null)return; n++;
+          if(variant==='full'){ s+=(q.key===ax.pos?answers[i]:-answers[i]); }
+          else{ s+=(answers[i]===ax.pos?1:-1); }
+        });
+        const denom=(variant==='full')?(n*2):n;
+        const winner=s>=0?ax.pos:ax.neg;
+        const pct=Math.round(50+(denom?Math.abs(s)/denom:0)*50);
+        code+=winner; res[ax.dim]={winner:winner,pct:pct,ax:ax};
+      });
+      return {code:code,res:res};
+    }
+    function finish(){
+      const r=compute(); resultCode=r.code;
+      if(stage)stage.hidden=true; if(resultBox)resultBox.hidden=false;
+      if(bar)bar.style.width='100%';
+      if(titleEl)titleEl.textContent='测试完成';
+      if(resultBox)resultBox.style.setProperty('--tc','var(--c-'+r.code.toLowerCase()+')');
+      if(trType)trType.textContent=r.code;
+      const emb=document.getElementById('trEmblem'); if(emb)applyPortrait(emb,r.code);
+      if(trNick)trNick.textContent=(T[r.code]&&T[r.code].nick)?T[r.code].nick:'';
+      if(trAxes)trAxes.innerHTML=AXES.map(ax=>{
+        const a=r.res[ax.dim];
+        const winPos=a.winner===ax.pos;
+        const posB='<b class="'+(winPos?'win':'')+'">'+ax.posN+(winPos?' <em>'+a.pct+'%</em>':'')+'</b>';
+        const negB='<b class="'+(winPos?'':'win')+'">'+ax.negN+(winPos?'':' <em>'+a.pct+'%</em>')+'</b>';
+        return '<div class="tr-ax'+(winPos?'':' rev')+'" style="--ax:'+ax.color+'">'
+          +'<div class="tr-poles">'+posB+negB+'</div>'
+          +'<div class="tr-track"><i style="width:'+a.pct+'%"></i></div>'
+          +'</div>';
+      }).join('');
+      if(applyBtn)applyBtn.textContent=(mode==='form')?'使用这个类型':'设为我的类型';
+    }
+    if(applyBtn)applyBtn.addEventListener('click',()=>{
+      if(!resultCode)return;
+      if(mode==='form'){
+        goBack();
+        if(setFormType)setFormType(resultCode);
+      }else{
+        SELF.type=resultCode; SELF.rel='本人 · 也是 '+resultCode;
+        renderPeople();
+        navStack=['page-people']; showPage('page-people',false);
+      }
+    });
+    if(retryBtn)retryBtn.addEventListener('click',showChooser);
+    if(backBtn)backBtn.addEventListener('click',goBack);
+    startMbtiTest=function(m){ mode=m||'self'; showChooser(); showPage('page-test'); };
+    const selfEntry=document.getElementById('selfTestEntry');
+    if(selfEntry)selfEntry.addEventListener('click',()=>startMbtiTest('self'));
+  })();
+  // 返回按钮
+  const backDetail=document.querySelector('#page-detail .back');if(backDetail)backDetail.addEventListener('click',goBack);
+  const backResult=document.querySelector('#aiResult .back');if(backResult)backResult.addEventListener('click',goBack);
+  const backAiin=document.querySelector('#page-aiin .back2');if(backAiin)backAiin.addEventListener('click',goBack);
+  const backCompare=document.querySelector('#page-compare .icon-btn');if(backCompare)backCompare.addEventListener('click',goBack);
+
+  // ── AI 推测：快捷标签（同组单选） ──
+  document.querySelectorAll('.qgrp .qtags').forEach(group=>{
+    group.querySelectorAll('.qt').forEach(tag=>{
+      tag.addEventListener('click',()=>{
+        group.querySelectorAll('.qt').forEach(t=>t.classList.remove('on'));
+        tag.classList.add('on');
+      });
+    });
+  });
+  // ── AI 推测：接入通义千问 qwen-plus（前端直连 + 失败/无Key 回退示例） ──
+  (function(){
+    const runBtn=document.getElementById('aiRun');
+    const resultMain=document.getElementById('aiResult');
+    if(!runBtn||!resultMain)return;
+    const statusEl=document.getElementById('aiStatus');
+    const groupName={NT:'分析家 · NT',NF:'外交家 · NF',SJ:'守护者 · SJ',SP:'探险家 · SP'};
+    function grpOf(tp){const N=tp[1]==='N',F=tp[2]==='F',J=tp[3]==='J';if(N&&!F)return'NT';if(N&&F)return'NF';if(!N&&J)return'SJ';return'SP';}
+    function shortName(name){const parts=String(name).split(/[·・|]/).map(s=>s.trim()).filter(Boolean);return parts[parts.length-1]||String(name)||'TA';}
+    function clampPct(v,dflt){v=Math.round(Number(v));if(!isFinite(v))v=dflt;return Math.max(1,Math.min(99,v));}
+    function setStatus(msg,kind){if(!statusEl)return;statusEl.textContent=msg||'';statusEl.className='ai-status'+(kind?' '+kind:'');statusEl.style.display=msg?'block':'none';}
+
+    const MOCK={type:'ENFP',nickname:'竞选者',tagline:'热情洋溢的自由灵魂',group:'外交家 · NF',confidence:84,
+      summary:'TA 的行为高度符合 ENFP：外向的能量、发散的点子、跟随感受的决策与拒绝束缚的生活方式。',
+      dims:[{left:'E 外向',right:'I 内向',leftPct:78},{left:'N 直觉',right:'S 实感',leftPct:71},{left:'F 情感',right:'T 思考',leftPct:66},{left:'P 知觉',right:'J 判断',leftPct:74}],
+      evidence:['“聚会最活跃、跟谁都聊得来” → 指向外向 E，在社交中获取能量。','“点子多、常冒出新计划” → 典型的外向直觉 Ne · 直觉 N。','“跟着感觉走、在意朋友情绪” → 偏情感 F 的价值与共情决策。','“三分钟热度、不爱被束缚” → 偏知觉 P，追求灵活与开放。'],
+      second:{type:'ESFP',nickname:'表演者',reason:'同样外向热情，但更活在当下、重真实体验',confidence:61},
+      secondHint:'若 TA 更关注眼前的真实感受而非未来可能性，就可能偏向 ESFP。'};
+
+    function renderResult(d,who){
+      const tp=String(d.type||'ENFP').toUpperCase().slice(0,4);
+      const tc='var(--c-'+tp.toLowerCase()+')';
+      resultMain.style.setProperty('--tc',tc);
+      ['.ai-hero','.ai-dims','.alt'].forEach(sel=>{const el=resultMain.querySelector(sel);if(el)el.style.setProperty('--tc',tc);});
+      resultMain.querySelector('.gtag').textContent=d.group||groupName[grpOf(tp)]||'';
+      resultMain.querySelector('.badge .bwho').textContent='AI 推测 · '+who;
+      const conf=clampPct(d.confidence,80);
+      const ring=resultMain.querySelector('.rring');if(ring)ring.style.setProperty('--val',conf);
+      resultMain.querySelector('.rring .num').textContent=conf+'%';
+      resultMain.querySelector('.rcode').textContent=tp;
+      resultMain.querySelector('.rnick').textContent=d.nickname||'';
+      resultMain.querySelector('.rsub').textContent=d.tagline||'';
+      resultMain.querySelector('.rline').textContent=d.summary||'';
+      const dims=Array.isArray(d.dims)?d.dims:[];
+      resultMain.querySelectorAll('.ai-dims .adim').forEach((row,i)=>{
+        const dm=dims[i];if(!dm)return;
+        row.querySelector('.lt').textContent=dm.left||'';
+        row.querySelector('.rt').textContent=dm.right||'';
+        const p=clampPct(dm.leftPct,50);
+        row.querySelector('.pct').textContent=p+'%';
+        row.querySelector('.atrack>i').style.width=p+'%';
+      });
+      const ul=resultMain.querySelector('.insight ul');
+      if(ul&&Array.isArray(d.evidence)){ul.innerHTML='';d.evidence.slice(0,5).forEach(e=>{const li=document.createElement('li');li.textContent=e;ul.appendChild(li);});}
+      const sec=d.second||{};const st=String(sec.type||'').toUpperCase().slice(0,4);
+      resultMain.querySelector('.altcard .ac').textContent=st;
+      resultMain.querySelector('.amid b').textContent=(st?st+' · ':'')+(sec.nickname||'');
+      resultMain.querySelector('.arole').textContent=sec.reason||'';
+      resultMain.querySelector('.apct').textContent=sec.confidence!=null?clampPct(sec.confidence,50)+'%':'';
+      const altHint=resultMain.querySelector('.alt .helper');if(altHint&&d.secondHint)altHint.textContent=d.secondHint;
+      const mk=resultMain.querySelector('.mklabel');if(mk)mk.textContent='标记'+who+'为 '+tp+' · '+(d.nickname||'');
+    }
+
+    function collectInput(){
+      return {
+        name:(document.getElementById('aiName').value||'TA').trim(),
+        text:(document.getElementById('aiText').value||'').trim(),
+        tags:[...document.querySelectorAll('#page-aiin .qt.on')].map(t=>t.textContent.trim())
+      };
+    }
+
+    async function callProxy(inp){
+      const res=await fetch('/api/guess',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(inp)});
+      if(!res.ok){let detail='';try{detail=(await res.json()).error||'';}catch(e){}throw new Error('HTTP '+res.status+(detail?'：'+detail:''));}
+      return await res.json();
+    }
+
+    runBtn.addEventListener('click',async()=>{
+      const inp=collectInput();
+      const who=shortName(inp.name);
+      const oldHTML=runBtn.innerHTML;runBtn.disabled=true;runBtn.innerHTML='<span class="spin"></span>AI 分析中…';
+      setStatus('正在通过服务端调用通义千问 qwen-plus…','');
+      try{
+        const data=await callProxy(inp);
+        renderResult(data,who);
+        setStatus('','');
+        showPage('aiResult');
+      }catch(err){
+        renderResult(MOCK,who);
+        setStatus('未接通真实模型（'+((err&&err.message)||'无后端/网络')+'），已用示例结果演示。部署到线上并在服务端配置好密钥后即可真实分析。','warn');
+        showPage('aiResult');
+      }finally{
+        runBtn.disabled=false;runBtn.innerHTML=oldHTML;
+      }
+    });
+
+    const reBtn=resultMain.querySelector('.cta.ghost');
+    if(reBtn)reBtn.addEventListener('click',()=>goBack());
+  })();
+
+})();</script>
+</body>
+</html>
