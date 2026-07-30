@@ -346,6 +346,8 @@
   .dim .track .b{background:var(--cmp-ta,var(--c-entj));}
   .dim .same{font-size:10px;color:var(--success);font-weight:600;}
   .dim .diff{font-size:10px;color:var(--warn);font-weight:600;}
+  .dim .dnote{font-size:11px;color:var(--muted);line-height:1.58;margin:7px 0 0;}
+  .dim .dnote b{color:var(--fg);font-weight:600;}
 
   .insight{padding:16px 20px 4px;}
   .ins{background:var(--surface);border:1px solid var(--hair);border-radius:15px;padding:14px;margin-bottom:11px;}
@@ -1521,6 +1523,72 @@
   const attCn=f=>f.charAt(1)==='i'?'向内':'向外';
   let currentComparePerson=CONTACTS[0];
 
+  // 每个认知功能「带进关系里」的样子（一句话本质）
+  const FN_REL={
+    Ni:'认准一个长远方向、直接抓事情的本质',
+    Ne:'不停发散点子、看到各种可能性',
+    Si:'依着经验和细节、把事情做稳妥',
+    Se:'盯着眼前真实的情况、灵活应对',
+    Ti:'把道理想透、追求逻辑自洽',
+    Te:'讲效率和结果、快速组织落地',
+    Fi:'守着自己的价值观、看重真不真诚',
+    Fe:'照顾在场每个人的情绪、维系和谐'
+  };
+  const fnKind=f=>(f.charAt(0)==='N'||f.charAt(0)==='S')?'P':'J'; // 感知型 / 判断型
+  // 逐位认知功能对齐的深度解读
+  function fnPairNote(mf,tf,i,meName,taName){
+    const mCn=FUNC[mf].cn, tCn=FUNC[tf].cn, mRel=FN_REL[mf], tRel=FN_REL[tf];
+    if(mf===tf){
+      return [
+        '你俩最本能的反应都是<b>'+mRel+'</b>，遇事几乎想到一块去，沟通几乎零翻译成本；反过来也要小心一起钻进同一个角度，少了个人在旁边提醒。',
+        '你俩背后都靠同一套<b>'+mCn+'</b>来撑住判断，配合起来省心默契；只是别把「你懂我」当成理所当然，该说的还是要说。',
+        '你俩放松、找乐子时都会切到<b>'+mCn+'</b>这一面，玩得来也聊得开，是关系里的调味剂——只是它对谁都不太稳定，别指望它扛大事。',
+        '你俩的软肋恰好也一样：压力一大都容易在<b>'+mCn+'</b>上翻车，谁也补不了谁的位，这一块得提前留个心眼。'
+      ][i];
+    }
+    if(mf.charAt(0)===tf.charAt(0)){ // 同族、内外相反 —— 镜像互补
+      return '同样是<b>'+famCn(mf)+'</b>，你更'+attCn(mf)+'（'+mRel+'），TA 更'+attCn(tf)+'（'+tRel+'）。像一枚硬币的两面，聊得上、还能补齐对方没顾到的那半边，是最典型的镜像互补。';
+    }
+    const mk=fnKind(mf), tk=fnKind(tf);
+    if(mk==='P'&&tk==='P'){
+      return '这一格你俩都在「接收信息」，只是你偏<b>'+mRel+'</b>、TA 偏<b>'+tRel+'</b>。看得全是好事，但也容易一个嫌对方太天马行空、一个嫌对方太拘泥眼前。';
+    }
+    if(mk==='J'&&tk==='J'){
+      return '这一格你俩都在「下判断」，你按<b>'+(mf.charAt(0)==='T'?'逻辑对错':'人情价值')+'</b>、TA 按<b>'+(tf.charAt(0)==='T'?'逻辑对错':'人情价值')+'</b>。都想拍板，标准却不同，容易一个觉得对方冷、一个觉得对方乱。';
+    }
+    const pName=(mk==='P')?meName:taName, pf=(mk==='P')?mf:tf;
+    const jName=(mk==='P')?taName:meName, jf=(mk==='P')?tf:mf;
+    return '这一格你俩做的根本是两件事：'+pName+'在<b>'+FN_REL[pf]+'</b>（先把信息摊开），'+jName+'在<b>'+FN_REL[jf]+'</b>（想快点下结论）。节奏不同步，需要一个愿意慢下来听、一个愿意先给方向。';
+  }
+  const fnPairMk=(mf,tf)=> mf===tf?50:(mf.charAt(0)===tf.charAt(0)?44:(fnKind(mf)===fnKind(tf)?34:24));
+  // 四维差异的深度解读
+  function dimNote(idx,ml,tl){
+    const agree=ml===tl;
+    if(idx===0){ // E / I
+      if(agree)return ml==='E'
+        ?'你俩都靠人和外部互动来<b>充电</b>，凑一起容易热闹、话题不断；反面是可能都停不下来，缺个安静下来的时候。'
+        :'你俩都需要<b>独处回血</b>，很懂对方为什么想「躲一躲」，会自然给彼此空间；只是也可能都太被动，谁都不先开口。';
+      return '一个在人群里越聊越有劲、一个靠独处才能回血。相处要照顾节奏：热闹够了记得给对方留白，别把「想安静」误读成「嫌弃你」。';
+    }
+    if(idx===1){ // N / S
+      if(agree)return ml==='N'
+        ?'你俩都爱聊<b>抽象、可能性和未来</b>，天马行空一路能接住，聊得很过瘾；注意别光顾着畅想，把落地的细节漏了。'
+        :'你俩都重<b>现实、事实和细节</b>，务实靠谱、少说空话；只是也容易都埋头眼前，少了点跳出来看远方的想象。';
+      return '一个满脑子概念和「万一能这样」、一个盯着具体事实和怎么落地。最常见的误会是一个嫌对方太虚、一个嫌对方太较真——其实正好一个负责畅想、一个负责踩实。';
+    }
+    if(idx===2){ // T / F
+      if(agree)return ml==='T'
+        ?'你俩拍板都先讲<b>逻辑和结果</b>，对事不对人、效率很高；但要小心一起忽略了情绪，把话说得太硬。'
+        :'你俩都很看重<b>感受和关系</b>，体贴、会照顾人；只是也可能都不好意思说硬话，让问题一直悬着。';
+      return '一个按<b>道理和结果</b>取舍、一个按<b>感受和价值</b>取舍。同一句话很容易一个被听成「冷漠」、一个被听成「啰嗦」——先接住对方的出发点，再讲自己的，就顺了。';
+    }
+    // idx 3: J / P
+    if(agree)return ml==='J'
+      ?'你俩都喜欢<b>提前定好、按计划推进</b>，一起做事踏实、有掌控感；但计划太满时也可能都不够灵活，遇到变化都别扭。'
+      :'你俩都<b>随性、爱留弹性</b>，不喜欢被计划绑死，相处轻松自由；只是也容易一起拖到最后，缺个人踩刹车。';
+    return '一个想<b>早点敲定</b>、按部就班，一个想<b>留到最后看情况</b>。这是你俩最常拉扯的地方——「现在能不能定下来」。折中办法：大方向先定死，细节留点弹性。';
+  }
+
   function renderCompare(person){
     currentComparePerson=person;
     const meCode=SELF.type, taCode=person.type;
@@ -1602,11 +1670,8 @@
       let html='';
       for(let i=0;i<4;i++){
         const mf=me.stack[i], tf=ta.stack[i];
-        const isSame=mf===tf, isFam=mf.charAt(0)===tf.charAt(0);
-        let note, mk;
-        if(isSame){ note='你们都把 <b>'+FUNC[mf].cn+'（'+mf+'）</b> 放在同一位置，这一环天然同频。'; mk=50; }
-        else if(isFam){ note='同属<b>'+famCn(mf)+'</b>，你'+attCn(mf)+'、TA '+attCn(tf)+'，视角互补。'; mk=42; }
-        else { note='你靠 <b>'+FUNC[mf].cn+'</b>、TA 靠 <b>'+FUNC[tf].cn+'</b>，关注点不同，需要互相补位。'; mk=28; }
+        const note=fnPairNote(mf,tf,i,esc(SELF.name),esc(person.name));
+        const mk=fnPairMk(mf,tf);
         html+='<div class="fmitem"><div class="fmrow">'
           +'<div class="fmside"><span class="fmbadge a">'+mf+'</span><div class="fmmeta"><div class="fc">'+FUNC[mf].cn+'</div><div class="fl">'+POS_LABEL[i]+' · '+esc(SELF.name)+'</div></div></div>'
           +'<div class="fmtrack"><span class="mk" style="left:'+mk+'%"></span></div>'
@@ -1627,7 +1692,8 @@
           +'<span>'+ml+' '+LETTER_CN[ml]+' · '+esc(SELF.name)+'</span>'
           +'<span class="'+(agree?'same':'diff')+'">'+(agree?'一致':'相反')+'</span>'
           +'<span>'+tl+' '+LETTER_CN[tl]+' · '+esc(person.name)+'</span></div>'
-          +'<div class="track"><span class="a" style="left:'+mx+'%"></span><span class="b" style="left:'+tx+'%"></span></div></div>';
+          +'<div class="track"><span class="a" style="left:'+mx+'%"></span><span class="b" style="left:'+tx+'%"></span></div>'
+          +'<p class="dnote">'+dimNote(ax.idx,ml,tl)+'</p></div>';
       }).join('');
     }
 
