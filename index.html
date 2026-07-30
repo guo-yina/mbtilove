@@ -188,6 +188,11 @@
   .ttag.watch{border-color:color-mix(in srgb,var(--warn) 45%,transparent);color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface));}
   .grouplabel{font-size:11px;color:var(--faint);margin:0 0 6px;font-weight:500;}
 
+  /* 综合解读 */
+  .overview{padding:18px 20px 4px;}
+  .overview .ocard{--tc:var(--primary);background:color-mix(in srgb,var(--tc) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 20%,var(--hair));border-radius:16px;padding:15px 16px;line-height:1.78;font-size:13.5px;color:color-mix(in srgb,var(--fg) 90%,var(--muted));}
+  .overview .ocard b{color:color-mix(in srgb,var(--tc) 78%,var(--true-black));font-weight:700;}
+
   /* cognitive stack */
   .stack{padding:18px 20px 8px;}
   .fn{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:12px 13px;margin-bottom:10px;position:relative;overflow:hidden;}
@@ -676,6 +681,11 @@
               <p class="tagline" id="heroTagline">天生的领导者，果断、高效，擅长把想法变成可执行的计划。</p>
             </div>
 
+            <div class="overview" data-component="TypeOverview">
+              <div class="sec-title"><span class="bar"></span>综合解读</div>
+              <div class="ocard" id="tOverview"></div>
+            </div>
+
             <div class="traitwrap" data-component="TraitTags">
               <div class="sec-title"><span class="bar"></span>主要特征</div>
               <p class="grouplabel">核心关键词</p>
@@ -1138,6 +1148,25 @@
     ESTP:{nick:'企业家',g:'探险家 · SP',gk:'sp',line:'聪明精力充沛的行动派，真心享受活在边缘的感觉。',keys:['果敢','行动','机敏'],good:['反应迅速','敢闯敢拼','善于社交'],watch:['爱冒险','缺乏耐心','忽略长远'],stack:['Se','Ti','Fe','Ni']},
     ESFP:{nick:'表演者',g:'探险家 · SP',gk:'sp',line:'自发热情的表演者，身边永远不会无聊。',keys:['活力','热情','享受'],good:['气氛担当','乐观外向','善于共情'],watch:['难专注','怕无聊','逃避严肃'],stack:['Se','Fi','Te','Ni']}
   };
+  // 每型「综合解读」：思维方式 × 人际相处 × 优势与盲区，串成一段整体画像
+  const TDESC={
+    INTJ:'INTJ 是典型的<b>战略家</b>：习惯先在脑子里把事情推演到很远，再倒推出当下该做什么，因此显得笃定甚至有点固执。对内他们高度自驱、极其独立，不太需要外界认可就能长期投入一件事；对外则偏冷静克制，交流时更看重逻辑和结论，而非寒暄与情绪安抚。强在看透本质、做长期规划，但也容易因过度相信自己的判断而忽略他人感受，把「高标准」变成对自己和别人的苛求。',
+    INTP:'INTP 是天生的<b>分析者</b>，脑子里永远在拆解概念、追问「为什么」。他们享受在思想世界里自由探索，对逻辑一致性近乎执着，却常对现实琐事和截止日期不太上心。相处时真诚、不爱评判，但情感表达含蓄，需要独处思考的空间。强在深度与客观，弱在行动与决断——想法很多，落地却常常一拖再拖。',
+    ENTJ:'ENTJ 是果断的<b>领导者</b>，天生擅长设定目标、调配资源，把模糊的想法迅速拆成可执行的计划并推动落地。他们精力充沛、直奔结果，喜欢掌控局面，也乐于为团队扛责任。这份高效背后是极强的意志力与标准，但也容易显得强势、缺乏耐心，在追求效率时忽略旁人的情绪和节奏。',
+    ENTP:'ENTP 是机敏的<b>点子王</b>，思维发散、反应极快，最享受智力上的交锋和「把不可能聊成可能」的过程。他们好奇、健谈、敢于挑战既有规则，总能从新角度看问题。缺点是兴趣来得快去得也快，容易虎头蛇尾，也可能为辩而辩让人觉得爱抬杠。整体是充满活力、不安于现状的探索者。',
+    INFJ:'INFJ 是安静而有<b>使命感</b>的理想主义者，既能敏锐读懂他人情绪，又有一套坚定的内在价值观。表面温和随和，内心却对「意义」非常执着，愿意为认定的理想长期付出。这让他们既能深刻共情、鼓舞他人，也容易因为想得太多、要求太高而自我消耗、悄悄倦怠。',
+    INFP:'INFP 是柔软而<b>真诚</b>的理想主义者，内心有一套很强的价值判断，凡事都要问「这符不符合我相信的东西」。他们富有想象力和同理心，待人温和、不喜冲突，常把心事藏在心里。强在创意和对人的理解，弱在容易陷入自我怀疑、回避现实矛盾，理想与现实的落差常让他们纠结。',
+    ENFJ:'ENFJ 是充满<b>感召力</b>的引导者，天生关注人，善于察觉每个人的需要并把大家凝聚起来。他们热忱、有责任感，乐于成就他人，常是团队里的粘合剂和精神支柱。但也正因太在意他人的评价与感受，容易过度付出、不好意思拒绝，把自己的需求排在最后。',
+    ENFP:'ENFP 是热情洋溢的<b>自由灵魂</b>，好奇心旺盛，总能在平凡里发现新鲜和乐趣，也很容易和人打成一片。他们真诚、有感染力、点子层出不穷，是天生的鼓舞者。缺点是容易三分钟热度、难以专注在琐碎重复的事上，情绪来得快去得也快，需要意义感来维持长期投入。',
+    ISTJ:'ISTJ 是可靠的<b>实干家</b>，尊重事实、讲究秩序，答应的事一定说到做到。他们凭经验和规则办事，注重细节、执行稳健，是让人无比放心的那类人。相对地，他们偏保守、不太爱变通，情感表达含蓄，面对突如其来的变化和「拍脑袋」的想法会本能地抗拒。',
+    ISFJ:'ISFJ 是温暖体贴的<b>守护者</b>，习惯默默照顾身边每一个人，把别人的需要放在很前面。他们踏实、细心、极有责任感，记得住各种琐碎又重要的小事。但也容易过度牺牲自己、不敢说「不」，害怕冲突和改变，付出了很多却常常不被看见。',
+    ESTJ:'ESTJ 是天生的<b>管理者</b>，条理清晰、原则分明，擅长把人和事组织得井井有条并高效推进。他们务实果断、说一不二，是靠谱的执行核心。缺点是有点固执刻板，习惯按既定规则和标准办事，弹性不足，面对模糊和例外时不太自在。',
+    ESFJ:'ESFJ 是热心的<b>协调者</b>，重视和谐与归属，总是主动关心他人、把集体照顾得妥妥帖帖。他们合群、可靠、行动力强，是气氛和关系的维护者。但也很在意别人的看法，容易回避冲突、被他人意见左右，在「照顾大家」和「坚持自己」之间常常为难。',
+    ISTP:'ISTP 是冷静的<b>动手派</b>，遇事不慌，喜欢通过亲自拆解和尝试去搞懂事物如何运作。他们逻辑清晰、临场应变强，是解决实际问题的高手。相处上偏独立、话不多，讨厌被束缚和过度承诺，情感表达比较淡，更愿意用行动而不是言语表达在乎。',
+    ISFP:'ISFP 是随性而<b>敏感</b>的艺术家，审美出众，习惯凭真实感受活在当下，做喜欢的事、和喜欢的人在一起。他们温和真诚、不爱说教，用行动和作品表达自己。缺点是容易冲动、不太做长远规划，遇到冲突倾向回避，需要足够的自由和被理解。',
+    ESTP:'ESTP 是精力充沛的<b>行动派</b>，反应快、胆子大，喜欢真刀真枪地上手，在变化和压力里反而更兴奋。他们务实机敏、善于社交，是敢闯敢拼、能迅速搞定眼前问题的人。但也偏爱冒险、缺乏耐心，容易只顾眼前刺激而忽略长期后果。',
+    ESFP:'ESFP 是自带光芒的<b>气氛担当</b>，热情外向、乐观爱玩，走到哪里都能让身边变得热闹。他们活在当下、善于共情，很会照顾现场每个人的情绪。缺点是难以长时间专注、害怕无聊和沉闷，倾向逃避严肃与长远的规划，需要有人帮着把节奏稳住。'
+  };
 
   const GROUPS = [
     {k:'nt',name:'分析家',en:'Analysts · NT',color:'var(--g-nt)',list:['INTJ','INTP','ENTJ','ENTP']},
@@ -1199,6 +1228,8 @@
     document.getElementById('heroCode').textContent=code;
     document.getElementById('heroNick').textContent=t.nick;
     document.getElementById('heroTagline').textContent=t.line;
+    const ov=document.getElementById('tOverview');
+    if(ov){ ov.style.setProperty('--tc',tc); ov.innerHTML=TDESC[code]||t.line; }
     document.getElementById('tKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
     document.getElementById('tGood').innerHTML=t.good.map(k=>chip(k,'good')).join('');
     document.getElementById('tWatch').innerHTML=t.watch.map(k=>chip(k,'watch')).join('');
