@@ -1509,6 +1509,18 @@
   const REL_LENS_GENERAL={name:'普通关系',k:'k-rel',kicker:'这段关系',
     lead:'你还没标注这段关系的类型。下面的解读只基于你们的 MBTI 类型；把 TA 标注为伴侣、家人、朋友、同事或上下级后，这里会给出更贴合这段关系的相处重点。',
     up:null,warn:null,tip:null};
+  // 上下级 · 方向化：TA 是我的上级
+  const REL_LENS_HIER_UP={name:'我的上级',k:'k-rel',kicker:'TA 是你的上级 · 向上管理',
+    lead:'TA 是你的上级，这段关系的重点是「向上管理」：理解 TA 的决策风格和关注点，主动对齐期待、及时同步进度，让 TA 敢把重要的事交给你。',
+    up:'向上管理不是讨好，是让 TA 省心。你的主动同步和可靠交付，比任何性格合拍都更能赢得信任。',
+    warn:'别等 TA 来问才说。信息不对称时，上级容易往坏处想；坏消息更要早讲、带着方案讲。',
+    tip:'摸清 TA 最在意什么（结果、效率还是风险），用 TA 的语言汇报：先结论、再依据、最后讲你需要什么支持。'};
+  // 上下级 · 方向化：TA 是我的下属
+  const REL_LENS_HIER_DOWN={name:'我的下属',k:'k-rel',kicker:'TA 是你的下属 · 带人重点',
+    lead:'TA 是你的下属，这段关系的重点是「因人而异地带」：TA 的类型决定了 TA 吃哪一套——有人要清晰指令，有人要空间信任，给对方式才出活。',
+    up:'你掌握的方向和全局，正是 TA 最需要的。把「为什么做」讲清楚，TA 会更有动力，也更愿意主动补位。',
+    warn:'你的随口一句话，到 TA 那里会被放大解读。批评对事不对人，表扬具体到行为，别让 TA 猜你的态度。',
+    tip:'给反馈要看 TA 的类型：重逻辑的讲清标准和利害，重感受的先认可付出再谈改进；定期一对一对齐期待。'};
 
   // ── 关系配对：按 我 × TA 动态生成 ──
   const CMP_AXES=[
@@ -1616,16 +1628,36 @@
     return '一个想<b>早点敲定</b>、按部就班，一个想<b>留到最后看情况</b>。这是你俩最常拉扯的地方——「现在能不能定下来」。折中办法：大方向先定死，细节留点弹性。';
   }
 
-  // 沟通方式：T/F × 关系类型
-  function relCom(rk,meTF,taTF){
+  // 从关系备注判断上下级方向：up=TA 是我的上级，down=TA 是我的下属
+  function hierDir(rel){
+    const s=String(rel||'');
+    if(/老板|上司|领导|上级|主管|总监|经理|总裁|负责人|带我的|boss|leader|ceo/i.test(s))return 'up';
+    if(/下属|部下|员工|下级|组员|徒弟|汇报给我|带的|团队里/i.test(s))return 'down';
+    return '';
+  }
+
+  // 沟通方式：T/F × 关系类型 × 上下级方向
+  function relCom(rk,meTF,taTF,dir){
     const bothT=meTF==='T'&&taTF==='T', bothF=meTF==='F'&&taTF==='F';
     const t=bothT?'直接 × 直接':(bothF?'委婉 × 委婉':'直接 × 委婉');
     let p;
     if(rk==='hier'){
-      p=bothT?'你们都就事论事、直奔结果，在上下级里这是很高效的组合——指令清晰、反馈不绕弯，一个定方向、一个挑漏洞，天然就是能打硬仗的搭档。'
-        :bothF?'你们都很在意对方的感受和颜面，上下级之间氛围温和、有安全感；但关键反馈容易绕弯子，该敲定的事别因为照顾情绪而拖着。'
-        :(meTF==='T'?'你反馈直接，TA 更在意被怎么对待。给 TA 提意见时先认可付出再讲问题，TA 会更能听进去；TA 也要明白，直接恰恰是信任。'
-          :'TA 反馈直接，你更在意被怎么对待。别把直来直去读成不尊重，那往往是对事不对人；你也可以主动把想法讲出来，别让 TA 猜。');
+      if(dir==='up'){ // TA 是我的上级
+        p=bothT?'你和 TA 都就事论事、直奔结果，向上沟通成本低——TA 要的是结论和依据，你直接给、少铺垫，这是很容易被重用的沟通方式。'
+          :bothF?'你和 TA 都顾及感受和颜面，向上沟通氛围温和；但 TA 要的不只是「舒服」，关键结论和坏消息还是要讲清楚、讲及时。'
+          :(meTF==='T'?'你习惯直接讲结论，TA 更在意表达的方式。向上反馈时先讲 TA 关心的结果，再补一句对 TA 判断的尊重，会更容易被采纳。'
+            :'TA 说话直接，你更在意被怎么对待。别把 TA 的直读成不认可，那往往是对事不对人；有想法直接讲出来，别让 TA 猜。');
+      }else if(dir==='down'){ // TA 是我的下属
+        p=bothT?'你和 TA 都就事论事、直奔结果，带起来省心——指令清晰、反馈不绕弯，一个定方向、一个挑漏洞，是能打硬仗的组合。'
+          :bothF?'你和 TA 都顾及感受，团队氛围温和有安全感；但作为上级，该给的直接反馈别因为照顾情绪而绕弯子，温和地把标准讲清楚。'
+          :(meTF==='T'?'你反馈直接，TA 更在意被怎么对待。给 TA 提意见时先认可付出再讲问题，TA 会更能听进去——你的直接，对 TA 需要一点温度来包装。'
+            :'TA 更在意被怎么对待，而你反馈直接。别把「对事不对人」当成可以省略认可的理由；先肯定、再讲问题，TA 才接得住、也更愿意跟。');
+      }else{
+        p=bothT?'你们都就事论事、直奔结果，在上下级里这是很高效的组合——指令清晰、反馈不绕弯，一个定方向、一个挑漏洞，天然就是能打硬仗的搭档。'
+          :bothF?'你们都很在意对方的感受和颜面，上下级之间氛围温和、有安全感；但关键反馈容易绕弯子，该敲定的事别因为照顾情绪而拖着。'
+          :(meTF==='T'?'你反馈直接，TA 更在意被怎么对待。给 TA 提意见时先认可付出再讲问题，TA 会更能听进去；TA 也要明白，直接恰恰是信任。'
+            :'TA 反馈直接，你更在意被怎么对待。别把直来直去读成不尊重，那往往是对事不对人；你也可以主动把想法讲出来，别让 TA 猜。');
+      }
     }else if(rk==='coworker'){
       p=bothT?'你们协作时就事论事、不兜圈子，少了很多情绪内耗，是推进项目的高效组合；只是对外沟通时，记得团队里还有人需要被照顾感受。'
         :bothF?'你们协作时互相体谅、氛围舒服，团队黏性强；但遇到分歧要有人先把话挑明，别让「不好意思说」耽误了进度。'
@@ -1684,6 +1716,7 @@
 
     // 兼容分（认知重叠 + 四维动力 + 关系场景）
     const rk=person.relKind||'';
+    const hdir=hierDir(person.rel);
     let score=50+sharedN*7;
     if(same[1])score+=5;   // N/S 同频：信息频道一致
     if(same[2])score+=4;   // T/F 同频：决策语言一致
@@ -1717,7 +1750,7 @@
 
     // 关系视角
     const relKind=(person.relKind||'');
-    const lens=REL_LENS[relKind]||REL_LENS_GENERAL;
+    const lens=(relKind==='hier')?(({up:REL_LENS_HIER_UP,down:REL_LENS_HIER_DOWN})[hdir]||REL_LENS.hier):(REL_LENS[relKind]||REL_LENS_GENERAL);
     const lensCard=document.getElementById('cmpRelLens');
     if(lensCard){
       lensCard.className='relcard '+(lens.k||'k-rel');
@@ -1787,9 +1820,9 @@
       setTxt('cmpValP','你们的共同点更多在「想要什么」而不是「怎么想」。先对齐目标，再尊重彼此不同的路径，就能各展所长。');
     }
 
-    // 沟通方式（T/F × 关系类型）
+    // 沟通方式（T/F × 关系类型 × 上下级方向）
     const meTF=meCode[2], taTF=taCode[2];
-    const com=relCom(relKind,meTF,taTF);
+    const com=relCom(relKind,meTF,taTF,hdir);
     setTxt('cmpComT',com.t);
     setTxt('cmpComP',com.p);
 
