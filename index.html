@@ -1682,10 +1682,25 @@
     const sharedN=shared.length; // 0 / 2 / 4
     const meDom=me.stack[0], taDom=ta.stack[0];
 
-    // 兼容分
-    let score=46+sharedN*9;
-    if(same[1])score+=6; if(!same[0])score+=5; if(!same[3])score+=2; if(same[2])score+=4;
-    score=Math.max(48,Math.min(95,score));
+    // 兼容分（认知重叠 + 四维动力 + 关系场景）
+    const rk=person.relKind||'';
+    let score=50+sharedN*7;
+    if(same[1])score+=5;   // N/S 同频：信息频道一致
+    if(same[2])score+=4;   // T/F 同频：决策语言一致
+    if(!same[0])score+=3;  // E/I 互补：能量节奏平衡
+    if(!same[3])score+=3;  // J/P 互补：快慢节奏平衡
+    if(rk==='hier'||rk==='coworker'){
+      if(same[2])score+=6;  // 职场：决策语言一致，协作成本低
+      if(same[1])score+=4;  // 职场：能一起看大图、定方向
+      if(!same[3])score+=5; // 职场：一个稳推进、一个留弹性，分工强
+    }else if(rk==='partner'||rk==='family'){
+      if(same[0])score+=3;  // 亲密：能量节奏一致，少摩擦
+      if(same[3])score+=3;  // 亲密：生活步调一致，少拉扯
+    }else if(rk==='friend'){
+      if(same[1])score+=3;  // 朋友：话题频道一致，聊得来
+      if(same[0])score+=2;  // 朋友：社交节奏一致，玩得来
+    }
+    score=Math.max(48,Math.min(96,score));
     const ring=document.getElementById('cmpRing');if(ring)ring.style.setProperty('--val',score);
     const scoreEl=document.getElementById('cmpScore');if(scoreEl)scoreEl.textContent=score;
 
@@ -1694,7 +1709,7 @@
     const verdictP={
       twin:'你们用着几乎相同的一套认知功能，看世界、做决定的方式高度一致，沟通几乎没有翻译成本，很容易惺惺相惜。',
       comp:'你们共享 '+shared.join('、')+' 两个功能，又各有侧重。方向一致时非常互补，但节奏和表达方式会有明显差异。',
-      contrast:'你们几乎不共享核心认知功能，看待同一件事的角度差别很大。需要多一点耐心，但也能彼此打开全新的视野。'
+      contrast:'你们的核心认知功能几乎不重叠，看同一件事的切入点差别很大。但差异不等于不合——恰恰是「你看不到的我能看到」，让你们一旦对齐目标，就能覆盖一个人想不到的盲区。'
     }[tier];
     const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
     setTxt('cmpVerdict',verdict);
