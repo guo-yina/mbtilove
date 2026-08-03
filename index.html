@@ -830,7 +830,7 @@
             <div class="relcard k-rel" data-component="RelationArchetype">
               <div class="rh">
                 <span class="ric"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
-                <div><div class="rk">关系类型</div><div class="rn" id="cmpArch">互补拍档 · 镜像成长</div></div>
+                <div><div class="rk">关系类型</div><div class="rn" id="cmpArch">互补搭档</div></div>
               </div>
               <p id="cmpArchP"></p>
             </div>
@@ -1780,14 +1780,35 @@
     // 关系类型
     const bothNT=meCode[1]==='N'&&meCode[2]==='T'&&taCode[1]==='N'&&taCode[2]==='T';
     const workCtx=rk==='hier'||rk==='coworker';
-    const archName=tier==='mirror'?((bothNT&&workCtx)?'龙骨组合 · 战力拍档':'镜像搭档 · 互为外挂'):{twin:'同频共鸣 · 心有灵犀',comp:'互补拍档 · 镜像成长',contrast:'差异互补 · 拓展视野'}[tier];
+    let archName, archP;
+    if(tier==='mirror'){
+      archName=(bothNT&&workCtx)?'龙骨组合 · 战力拍档':'镜像搭档 · 互为外挂';
+      archP='你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，你们的功能栈像照镜子：同样四种功能，态度全部相反。你铺开的 TA 来收口，TA 忽略的你来补位'+((bothNT&&workCtx)?'——这就是职场里说的「龙骨组」：一个出谋划策、一个拍板推进，是非常能打的组合。':'。');
+    }else if(tier==='comp'){
+      const sNames=shared.map(f=>(FUNC[f]&&FUNC[f].cn)||f).join('、');
+      const nP=shared.filter(f=>fnKind(f)==='P').length;
+      const taDomShared=shared.indexOf(ta.stack[0])>=0;
+      const meDomShared=shared.indexOf(me.stack[0])>=0;
+      if(nP===2){
+        archName='同频信息 · 异路结论';
+        archP='你们共享 '+sNames+'，接收信息、看世界的方式高度同频，但做决定与收尾的方式不同。聊起天来容易对上频道，磨合点主要在「接下来怎么办」。';
+      }else if(nP===0){
+        archName='同一把尺 · 不同视野';
+        archP='你们共享 '+sNames+'，做决定用的语言和衡量标准很像，只是各自关注的信息不一样。只要把「是什么」对齐，你们的结论通常不会差太远。';
+      }else{
+        archName='链路搭档 · 感知判断衔接';
+        archP='你们共享 '+sNames+'，一个落在感知、一个落在判断：既能看到同一部分世界，也有对得上的判断标准，协作链路比较顺。';
+      }
+      if(taDomShared)archP+='TA 用得最顺手的功能你也常用，TA 的思路你天然就能接住。';
+      else if(meDomShared)archP+='你的主导功能 TA 也常用，你的想法 TA 稍加解释就能懂。';
+    }else{
+      archName={twin:'同频共鸣 · 心有灵犀',contrast:'差异互补 · 拓展视野'}[tier];
+      archP={
+        twin:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，四个核心功能完全相同，只是排序略有差别，天然懂彼此的关注点。',
+        contrast:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，两套思路差异很大。理解彼此需要更多解释，但一旦对齐，看问题会更完整。'
+      }[tier];
+    }
     setTxt('cmpArch',archName);
-    const archP={
-      twin:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，四个核心功能完全相同，只是排序略有差别，天然懂彼此的关注点。',
-      comp:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，像镜子的两面——一个人的强项常是另一个人的盲区，正好互相补位。',
-      mirror:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，你们的功能栈像照镜子：同样四种功能，态度全部相反。你铺开的 TA 来收口，TA 忽略的你来补位'+((bothNT&&workCtx)?'——这就是职场里说的「龙骨组」：一个出谋划策、一个拍板推进，是非常能打的组合。':'。'),
-      contrast:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，两套思路差异很大。理解彼此需要更多解释，但一旦对齐，看问题会更完整。'
-    }[tier];
     setTxt('cmpArchP',archP);
 
     // 图例
