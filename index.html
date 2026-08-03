@@ -128,12 +128,6 @@
   .icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
 
-  /* search */
-  .search{margin:4px 20px 14px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 14px;}
-  .search svg{width:18px;height:18px;stroke:var(--faint);fill:none;stroke-width:1.9;stroke-linecap:round;}
-  .search input{border:0;outline:0;background:transparent;font:inherit;font-size:14px;color:var(--fg);width:100%;}
-  .search input::placeholder{color:var(--faint);}
-
   /* filter chips */
   .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px 14px;}
   .chip{display:inline-flex;align-items:center;justify-content:center;padding:7px 6px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12.5px;font-weight:500;letter-spacing:.01em;cursor:pointer;transition:.15s;white-space:nowrap;}
@@ -660,10 +654,6 @@
               <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span>
               <span class="atx"><b>不确定 TA 是哪一型？</b><span>把 TA 的行为讲给 AI，智能推测 MBTI</span></span>
               <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-            </div>
-            <div class="search">
-              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-              <input type="text" aria-label="搜索人格类型" placeholder="搜索类型 / 昵称，如 ENTJ、指挥官" />
             </div>
             <div class="filters" data-component="DimensionFilter" role="group" aria-label="维度筛选">
               <button class="chip" data-dim="E"><span class="k">E</span>外向</button>
