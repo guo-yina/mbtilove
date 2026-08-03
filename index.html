@@ -417,6 +417,8 @@
   .qtags{display:flex;gap:8px;flex-wrap:wrap;}
   .qt{padding:8px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font:inherit;font-size:12.5px;cursor:pointer;transition:.14s;}
   .qt.on{background:color-mix(in srgb,var(--seed-accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--seed-accent) 50%,transparent);color:color-mix(in srgb,var(--seed-accent) 80%,var(--true-black));font-weight:600;}
+  .qt-ns{border-style:dashed;color:var(--faint);}
+  .qt-ns.on{background:color-mix(in srgb,var(--fg) 8%,var(--surface));border-color:color-mix(in srgb,var(--fg) 30%,transparent);border-style:solid;color:var(--fg);font-weight:600;}
 
   /* ── 主 CTA ── */
   .cta{margin:10px 20px 4px;width:calc(100% - 40px);min-height:50px;border:0;border-radius:15px;background:linear-gradient(135deg,var(--seed-primary),var(--seed-accent));color:var(--on-accent);font:inherit;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 16px 28px -14px color-mix(in srgb,var(--seed-primary) 72%,transparent);}
@@ -895,41 +897,45 @@
             <form class="ai-form" data-component="AIGuessForm" onsubmit="return false">
               <div class="field">
                 <label for="aiName">TA 是谁 <em>· 便于保存到人脉</em></label>
-                <input class="ti" id="aiName" type="text" value="同事 · 小夏" aria-label="TA 是谁" />
+                <input class="ti" id="aiName" type="text" placeholder="比如：同事 · 小夏 / 我男朋友 / 闺蜜" aria-label="TA 是谁" />
               </div>
               <div class="field">
                 <label for="aiText">TA 平时是怎样的人？<em>· 越具体，推测越准</em></label>
-                <textarea class="ta" id="aiText" aria-label="行为描述">聚会里她总是最活跃的那个，能跟谁都聊得起来。脑子里点子特别多，经常突然冒出新计划，但常常三分钟热度、很快又被下一件事吸引。做决定更跟着感觉走，特别在意朋友的情绪，不喜欢被条条框框和固定日程束缚。</textarea>
+                <textarea class="ta" id="aiText" aria-label="行为描述" placeholder="比如：TA 在聚会里总是最活跃的那个，点子特别多，但常常三分钟热度；做决定跟着感觉走，不喜欢被计划束缚……"></textarea>
                 <p class="helper">可以聊聊 TA 的社交方式、做决定的习惯、面对计划与变化的态度。</p>
               </div>
               <div class="tagset" data-component="QuickTags">
-                <div class="tgl">或点选快捷标签补充 <em style="font-style:normal;font-weight:500;color:var(--faint);font-size:11px">（可多选）</em></div>
+                <div class="tgl">或点选快捷标签补充 <em style="font-style:normal;font-weight:500;color:var(--faint);font-size:11px">（可选，拿不准就选「不好判断」）</em></div>
                 <div class="qgrp">
                   <p class="qglabel">社交能量</p>
                   <div class="qtags">
-                    <button class="qt on" type="button">社交中充电</button>
+                    <button class="qt" type="button">社交中充电</button>
                     <button class="qt" type="button">独处中充电</button>
+                    <button class="qt qt-ns" type="button">不好判断</button>
                   </div>
                 </div>
                 <div class="qgrp">
                   <p class="qglabel">获取信息</p>
                   <div class="qtags">
-                    <button class="qt on" type="button">爱联想 · 追新点子</button>
+                    <button class="qt" type="button">爱联想 · 追新点子</button>
                     <button class="qt" type="button">重经验 · 讲务实</button>
+                    <button class="qt qt-ns" type="button">不好判断</button>
                   </div>
                 </div>
                 <div class="qgrp">
                   <p class="qglabel">做决定</p>
                   <div class="qtags">
-                    <button class="qt on" type="button">跟着感受走</button>
+                    <button class="qt" type="button">跟着感受走</button>
                     <button class="qt" type="button">讲逻辑对错</button>
+                    <button class="qt qt-ns" type="button">不好判断</button>
                   </div>
                 </div>
                 <div class="qgrp">
                   <p class="qglabel">生活方式</p>
                   <div class="qtags">
-                    <button class="qt on" type="button">随性 · 爱灵活</button>
+                    <button class="qt" type="button">随性 · 爱灵活</button>
                     <button class="qt" type="button">计划性强 · 求确定</button>
+                    <button class="qt qt-ns" type="button">不好判断</button>
                   </div>
                 </div>
               </div>
@@ -2338,12 +2344,13 @@
   const backAiin=document.querySelector('#page-aiin .back2');if(backAiin)backAiin.addEventListener('click',goBack);
   const backCompare=document.querySelector('#page-compare .icon-btn');if(backCompare)backCompare.addEventListener('click',goBack);
 
-  // ── AI 推测：快捷标签（同组单选） ──
+  // ── AI 推测：快捷标签（同组单选，可再点取消） ──
   document.querySelectorAll('.qgrp .qtags').forEach(group=>{
     group.querySelectorAll('.qt').forEach(tag=>{
       tag.addEventListener('click',()=>{
+        const wasOn=tag.classList.contains('on');
         group.querySelectorAll('.qt').forEach(t=>t.classList.remove('on'));
-        tag.classList.add('on');
+        if(!wasOn)tag.classList.add('on');
       });
     });
   });
@@ -2401,10 +2408,16 @@
     }
 
     function collectInput(){
+      const tags=[...document.querySelectorAll('#page-aiin .qgrp')].map(g=>{
+        const on=g.querySelector('.qt.on');
+        if(!on)return null;
+        const label=g.querySelector('.qglabel');
+        return (label?label.textContent.trim()+'：':'')+on.textContent.trim();
+      }).filter(Boolean);
       return {
-        name:(document.getElementById('aiName').value||'TA').trim(),
+        name:((document.getElementById('aiName').value||'').trim())||'TA',
         text:(document.getElementById('aiText').value||'').trim(),
-        tags:[...document.querySelectorAll('#page-aiin .qt.on')].map(t=>t.textContent.trim())
+        tags:tags
       };
     }
 
