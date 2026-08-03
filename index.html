@@ -1719,6 +1719,11 @@
     // 共享认知功能（前四功能）
     const shared=me.stack.filter(f=>ta.stack.indexOf(f)>=0);
     const sharedN=shared.length; // 0 / 2 / 4
+    // 镜像互补：功能家族相同但内外向态度相反（如 ENTP×ENTJ）
+    const famOf=f=>f.charAt(0);
+    const taFams=ta.stack.map(famOf);
+    const mirrorN=me.stack.filter(f=>shared.indexOf(f)<0&&taFams.indexOf(famOf(f))>=0).length;
+    const fullMirror=sharedN===0&&mirrorN===4;
     const meDom=me.stack[0], taDom=ta.stack[0];
 
     // 兼容分（认知重叠 + 四维动力 + 关系场景）
@@ -1740,15 +1745,23 @@
       if(same[1])score+=3;  // 朋友：话题频道一致，聊得来
       if(same[0])score+=2;  // 朋友：社交节奏一致，玩得来
     }
+    // 完整镜像组合（如 ENTP×ENTJ）：功能全部互为反向，分工协同极强
+    if(fullMirror){
+      if(rk==='hier'||rk==='coworker')score+=12; // 职场「龙骨组」：一个铺开、一个收口
+      else if(rk==='partner'||rk==='family')score+=7;
+      else if(rk==='friend')score+=5;
+      else score+=4;
+    }
     score=Math.max(48,Math.min(96,score));
     const ring=document.getElementById('cmpRing');if(ring)ring.style.setProperty('--val',score);
     const scoreEl=document.getElementById('cmpScore');if(scoreEl)scoreEl.textContent=score;
 
-    const tier=sharedN===4?'twin':(sharedN===2?'comp':'contrast');
-    const verdict={twin:'同频共鸣型',comp:'互补搭档型',contrast:'差异互补型'}[tier];
+    const tier=sharedN===4?'twin':(sharedN===2?'comp':(fullMirror?'mirror':'contrast'));
+    const verdict={twin:'同频共鸣型',comp:'互补搭档型',mirror:'镜像互补型',contrast:'差异互补型'}[tier];
     const verdictP={
       twin:'你们用着几乎相同的一套认知功能，看世界、做决定的方式高度一致，沟通几乎没有翻译成本，很容易惺惺相惜。',
       comp:'你们共享 '+shared.join('、')+' 两个功能，又各有侧重。方向一致时非常互补，但节奏和表达方式会有明显差异。',
+      mirror:'你们是典型的镜像组合：四套核心功能完全相同，方向却正好相反——TA 最强的地方，恰是你最不常用的。彼此都像对方的「外挂」，目标一旦对齐，覆盖面几乎翻倍。',
       contrast:'你们的核心认知功能几乎不重叠，看同一件事的切入点差别很大。但差异不等于不合——恰恰是「你看不到的我能看到」，让你们一旦对齐目标，就能覆盖一个人想不到的盲区。'
     }[tier];
     const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
@@ -1769,11 +1782,14 @@
     }
 
     // 关系类型
-    const archName={twin:'同频共鸣 · 心有灵犀',comp:'互补拍档 · 镜像成长',contrast:'差异互补 · 拓展视野'}[tier];
+    const bothNT=meCode[1]==='N'&&meCode[2]==='T'&&taCode[1]==='N'&&taCode[2]==='T';
+    const workCtx=rk==='hier'||rk==='coworker';
+    const archName=tier==='mirror'?((bothNT&&workCtx)?'龙骨组合 · 战力拍档':'镜像搭档 · 互为外挂'):{twin:'同频共鸣 · 心有灵犀',comp:'互补拍档 · 镜像成长',contrast:'差异互补 · 拓展视野'}[tier];
     setTxt('cmpArch',archName);
     const archP={
       twin:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，四个核心功能完全相同，只是排序略有差别，天然懂彼此的关注点。',
       comp:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，像镜子的两面——一个人的强项常是另一个人的盲区，正好互相补位。',
+      mirror:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，你们的功能栈像照镜子：同样四种功能，态度全部相反。你铺开的 TA 来收口，TA 忽略的你来补位'+((bothNT&&workCtx)?'——这就是职场里说的「龙骨组」：一个出谋划策、一个拍板推进，是非常能打的组合。':'。'),
       contrast:'你以 '+meDom+' 主导、TA 以 '+taDom+' 主导，两套思路差异很大。理解彼此需要更多解释，但一旦对齐，看问题会更完整。'
     }[tier];
     setTxt('cmpArchP',archP);
