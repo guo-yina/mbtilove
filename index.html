@@ -210,6 +210,11 @@
   .addbtn:active{transform:scale(.97);}
   .addbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .pgroup{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.04em;padding:10px 20px 8px;}
+  .pempty{margin:2px 20px 12px;border:1.5px dashed color-mix(in srgb,var(--accent) 38%,var(--border));border-radius:18px;background:color-mix(in srgb,var(--accent) 4%,var(--surface));padding:22px 18px;text-align:center;}
+  .pempty b{font-size:14px;font-weight:700;}
+  .pempty p{margin:8px 0 14px;font-size:12px;color:var(--muted);line-height:1.66;}
+  .pempty button{border:none;border-radius:999px;background:var(--primary);color:#fff;font-size:13px;font-weight:600;padding:10px 20px;cursor:pointer;box-shadow:0 8px 18px -10px color-mix(in srgb,var(--primary) 70%,transparent);}
+  .pempty button:active{transform:scale(.97);}
   .pcard{--tc:var(--accent);display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:13px;margin:0 20px 12px;padding:14px;background:var(--surface);border:1px solid var(--hair);border-radius:18px;box-shadow:0 10px 22px -18px color-mix(in srgb,var(--tc) 60%,transparent);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease;}
   .pcard:hover{transform:translateY(-1px);box-shadow:0 16px 30px -18px color-mix(in srgb,var(--tc) 66%,transparent);}
   .pcard .pav{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:color-mix(in srgb,var(--tc) 72%,var(--true-black));font-weight:700;font-size:18px;font-family:var(--font-display);background:color-mix(in srgb,var(--tc) 15%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 24%,transparent);}
@@ -1455,6 +1460,8 @@
     {init:'桃',name:'桃桃',rel:'好友',type:'ENFP',relKind:'friend'},
     {init:'糯',name:'糯米',rel:'家人',type:'ISFJ',relKind:'family'}
   ];
+  // 未登录时的演示数据快照（登录用户只存自己的人脉，不混入示例）
+  const DEMO_CONTACTS=CONTACTS.map(c=>Object.assign({},c));
   const pl=document.getElementById('peopleList');
   const peopleCountEl=document.querySelector('#page-people .eyebrow');
   let openPersonEditor=null;
@@ -1933,6 +1940,15 @@
     // 「我自己」始终置顶
     const selfHead=document.createElement('div');selfHead.className='pgroup';selfHead.textContent='我自己';pl.appendChild(selfHead);
     pl.appendChild(makeCard(SELF,true));
+    // 空状态：新账号还没有自己的人脉
+    if(!CONTACTS.length){
+      const empty=document.createElement('div');
+      empty.className='pempty';
+      empty.innerHTML='<b>你还没有标注身边的人</b><p>把老板、同事、朋友、家人记下来，就能看你们各自的合拍度和相处建议。你添加的人脉只属于你这个账号，会自动同步到云端。</p><button type="button">＋ 标注第一个人</button>';
+      const btn=empty.querySelector('button');
+      if(btn)btn.addEventListener('click',function(){ const ab=document.querySelector('#page-people .addbtn'); if(ab)ab.click(); });
+      pl.appendChild(empty);
+    }
     // 其余联系人按 MBTI 四大人群分组
     GROUPS.forEach(g=>{
       const members=CONTACTS.filter(p=>CODE_GROUP[p.type]===g.k);
@@ -2443,14 +2459,9 @@
         await sb.from('profiles').upsert({id:currentUser.id,self_name:SELF.name,self_type:SELF.type});
       }
       var cr=await sb.from('contacts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+      CONTACTS.length=0;
       if(cr.data&&cr.data.length){
-        CONTACTS.length=0;
         cr.data.forEach(function(r){ CONTACTS.push({_id:r.id,init:r.init,name:r.name,rel:r.rel,type:r.type,relKind:r.rel_kind||undefined,note:r.note||undefined}); });
-      }else{
-        var seed=CONTACTS.map(function(c){ return {id:uuid(),user_id:currentUser.id,init:c.init,name:c.name,rel:c.rel,type:c.type,rel_kind:c.relKind||null,note:c.note||null}; });
-        if(seed.length){ await sb.from('contacts').insert(seed); }
-        CONTACTS.length=0;
-        seed.forEach(function(s){ CONTACTS.push({_id:s.id,init:s.init,name:s.name,rel:s.rel,type:s.type,relKind:s.rel_kind||undefined,note:s.note||undefined}); });
       }
       renderPeople();
     }catch(e){ console.warn('cloud load failed:',e); }
@@ -2515,6 +2526,10 @@
     if(logoutBtn)logoutBtn.addEventListener('click',async function(){
       try{ if(sb)await sb.auth.signOut(); }catch(_){}
       currentUser=null;
+      CONTACTS.length=0;
+      DEMO_CONTACTS.forEach(function(c){ CONTACTS.push(Object.assign({},c)); });
+      SELF.name='我'; SELF.type='INFP'; SELF.init='我'; SELF.rel='本人 · 也是 INFP';
+      renderPeople();
       if(logoutBtn)logoutBtn.style.display='none';
       show();
     });
