@@ -121,7 +121,7 @@
 
   /* ── primitives ── */
   .pad{padding-inline:20px;}
-  .app-head{padding:6px 20px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .app-head{padding:6px 20px 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;}
   .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);margin:0 0 5px;}
   .app-head h2{font-family:var(--font-display);font-size:25px;letter-spacing:-0.02em;line-height:1.08;margin:0;}
   .app-note{font-size:11.5px;color:var(--faint);margin:6px 0 0;line-height:1.4;}
@@ -205,10 +205,10 @@
   .fn .fdesc{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.4;}
 
   /* ── people screen ── */
-  .addbtn{margin:0;flex:none;align-self:center;display:flex;width:fit-content;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 15px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--primary) 42%,var(--border));background:var(--primary-soft);color:color-mix(in srgb,var(--primary) 72%,var(--true-black));font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;}
+  .addbtn{margin:0 0 2px;flex:none;display:flex;width:fit-content;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--primary) 32%,var(--border));background:var(--primary-soft);color:color-mix(in srgb,var(--primary) 72%,var(--true-black));font:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap;}
   .addbtn:hover{border-color:color-mix(in srgb,var(--primary) 60%,var(--border));transform:translateY(-1px);}
   .addbtn:active{transform:scale(.97);}
-  .addbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .addbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .pgroup{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.04em;padding:10px 20px 8px;}
   .pempty{margin:2px 20px 12px;border:1.5px dashed color-mix(in srgb,var(--accent) 38%,var(--border));border-radius:18px;background:color-mix(in srgb,var(--accent) 4%,var(--surface));padding:22px 18px;text-align:center;}
   .pempty b{font-size:14px;font-weight:700;}
@@ -713,7 +713,7 @@
           <main class="content page" id="page-people" data-component="PeopleScreen">
             <div class="app-head">
               <div><p class="eyebrow">我标注的人 · 5</p><h2>我的人脉</h2></div>
-              <button class="addbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>标注一个新的人</button>
+              <button class="addbtn"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>标注一个新的人</button>
             </div>
             <div class="ai-entry" data-component="AIGuessEntry" role="button" tabindex="0">
               <span class="spark" aria-hidden></span>
