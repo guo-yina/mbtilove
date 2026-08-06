@@ -620,6 +620,8 @@
   .auth-logout{display:flex;align-items:center;gap:5px;flex:none;align-self:flex-start;margin-top:2px;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--hair);background:transparent;color:var(--muted);font:inherit;font-size:11.5px;font-weight:600;cursor:pointer;transition:.15s;}
   .auth-logout:hover{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--border));}
   .auth-logout svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+  .app-toast{position:absolute;left:50%;bottom:96px;transform:translate(-50%,10px);z-index:80;max-width:80%;box-sizing:border-box;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--fg) 90%,var(--surface));color:var(--surface);font-size:12.5px;line-height:1.5;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;}
+  .app-toast.show{opacity:1;transform:translate(-50%,0);}
 
   /* 手机端全屏：去掉外框/刘海/侧键 */
   @media (max-width:480px){
@@ -1448,7 +1450,7 @@
   }
 
   // ── people list ──
-  const SELF={init:'我',name:'我',rel:'本人 · 也是 INFP',type:'INFP',self:true};
+  const SELF={init:'我',name:'我',rel:'还没测出自己的类型',type:'',typed:false,self:true};
   const CONTACTS=[
     {init:'团',name:'团团',rel:'我的老板',type:'ENTJ',relKind:'hier'},
     {init:'布',name:'阿布',rel:'同事 · 后端',type:'ISTP',relKind:'coworker'},
@@ -1946,21 +1948,33 @@
     return wrap;
   }
   function makeCard(p,self){
-    const t=T[p.type];const tc='var(--c-'+p.type.toLowerCase()+')';
+    const untyped=!!(self&&!p.typed);
+    const t=untyped?null:T[p.type];
+    const tc=untyped?'var(--border)':'var(--c-'+p.type.toLowerCase()+')';
     const card=document.createElement('div');card.className='pcard'+(self?' self':'');card.style.setProperty('--tc',tc);
     const cta=self
-      ? '<button class="pcta" type="button">查看档案</button>'
+      ? (untyped
+          ? '<button class="pcta" type="button">去测一测<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>'
+          : '<button class="pcta" type="button">查看档案</button>')
       : '<button class="pcta" type="button">配对<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>';
     const editBtn='<button class="pedit" type="button" aria-label="编辑资料"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>';
+    const badge=untyped?'未测试':p.type;
+    const mini=untyped?'测出自己的类型后，这里会显示你的关键词':(t.nick+' · '+t.keys.join(' / '));
     card.innerHTML='<div class="pav">'+esc(p.init)+'</div>'
-      +'<div class="pbody"><div class="pnrow"><span class="pn">'+esc(p.name)+'</span><span class="pbadge">'+p.type+'</span></div>'
-      +'<div class="pr">'+esc(p.rel)+'</div><div class="pmini">'+t.nick+' · '+t.keys.join(' / ')+'</div></div>'
+      +'<div class="pbody"><div class="pnrow"><span class="pn">'+esc(p.name)+'</span><span class="pbadge">'+badge+'</span></div>'
+      +'<div class="pr">'+esc(p.rel)+'</div><div class="pmini">'+mini+'</div></div>'
       +'<div class="pacts">'+editBtn+cta+'</div>'
       +(p.note?'<div class="pnote">'+esc(p.note)+'</div>':'');
     const go=()=>{
       if(card._suppressClick)return;
       if(card._swipeWrap&&card._swipeWrap.classList.contains('open')){card._swipeWrap.classList.remove('open');if(openSwipe===card._swipeWrap)openSwipe=null;return;}
-      if(self){selectType(p.type,null);showPage('page-detail');}else{renderCompare(p);showPage('page-compare');}
+      if(self){
+        if(untyped){ if(startMbtiTest)startMbtiTest('self'); return; }
+        selectType(p.type,null);showPage('page-detail');
+      }else{
+        if(!SELF.typed){ showToast('先测出你自己的类型，才能看你们的合拍度'); if(startMbtiTest)startMbtiTest('self'); return; }
+        renderCompare(p);showPage('page-compare');
+      }
     };
     const btn=card.querySelector('.pcta');if(btn)btn.addEventListener('click',e=>{e.stopPropagation();go();});
     const ed=card.querySelector('.pedit');if(ed)ed.addEventListener('click',e=>{e.stopPropagation();if(openPersonEditor)openPersonEditor(p,self);});
@@ -2014,6 +2028,20 @@
   function goBack(){
     if(navStack.length>1){navStack.pop();showPage(navStack[navStack.length-1],false);}
     else showPage('page-explore',false);
+  }
+  // 轻量全局提示（如：还没测自己的类型就去点配对时）
+  let toastTimer=null;
+  function showToast(t){
+    let el=document.getElementById('appToast');
+    if(!el){
+      el=document.createElement('div');el.id='appToast';el.className='app-toast';
+      const scr=document.querySelector('.screen');
+      (scr||document.body).appendChild(el);
+    }
+    el.textContent=t||'';
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){el.classList.remove('show');},2400);
   }
   // 底部三标签：顶层切换
   document.querySelectorAll('.tabbar .tab').forEach(tab=>{
@@ -2107,6 +2135,7 @@
         p.note=note||undefined;
         if(editRef.self){
           p.rel='本人 · 也是 '+selType;
+          SELF.typed=true;
           cloudSaveProfile();
         }else{
           p.rel=((relI&&relI.value)||'').trim()||'联系人';
@@ -2341,6 +2370,7 @@
         if(setFormType)setFormType(resultCode);
       }else{
         SELF.type=resultCode; SELF.rel='本人 · 也是 '+resultCode;
+        SELF.typed=true;
         SELF.init=(SELF.name||'我').charAt(0);
         cloudSaveProfile();
         renderPeople();
@@ -2475,7 +2505,9 @@
   }
   function cloudSaveProfile(){
     if(!sb||!currentUser)return;
-    sb.from('profiles').upsert({id:currentUser.id,self_name:SELF.name,self_type:SELF.type,updated_at:new Date().toISOString()})
+    var row={id:currentUser.id,self_name:SELF.name,updated_at:new Date().toISOString()};
+    if(SELF.typed)row.self_type=SELF.type;
+    sb.from('profiles').upsert(row)
       .then(function(r){ if(r.error)console.warn('profile save:',r.error.message); });
   }
   function cloudSaveContact(p){
@@ -2495,11 +2527,15 @@
       var pr=await sb.from('profiles').select('self_name,self_type').eq('id',currentUser.id).maybeSingle();
       if(pr.data){
         SELF.name=pr.data.self_name||SELF.name;
-        SELF.type=pr.data.self_type||SELF.type;
         SELF.init=(SELF.name||'我').charAt(0);
-        SELF.rel='本人 · 也是 '+SELF.type;
+        if(pr.data.self_type){
+          SELF.type=pr.data.self_type;SELF.typed=true;SELF.rel='本人 · 也是 '+SELF.type;
+        }else{
+          SELF.type='';SELF.typed=false;SELF.rel='还没测出自己的类型';
+        }
       }else{
-        await sb.from('profiles').upsert({id:currentUser.id,self_name:SELF.name,self_type:SELF.type});
+        // 新账号：先不写入任何类型，等 TA 真正测过/选过再存
+        await sb.from('profiles').upsert({id:currentUser.id,self_name:SELF.name});
       }
       var cr=await sb.from('contacts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
       CONTACTS.length=0;
@@ -2580,7 +2616,7 @@
       currentUser=null;
       CONTACTS.length=0;
       DEMO_CONTACTS.forEach(function(c){ CONTACTS.push(Object.assign({},c)); });
-      SELF.name='我'; SELF.type='INFP'; SELF.init='我'; SELF.rel='本人 · 也是 INFP';
+      SELF.name='我'; SELF.type=''; SELF.typed=false; SELF.init='我'; SELF.rel='还没测出自己的类型';
       renderPeople();
       if(logoutBtn)logoutBtn.style.display='none';
       navStack=['page-explore']; showPage('page-explore',false);
