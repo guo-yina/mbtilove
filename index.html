@@ -684,7 +684,7 @@
               <div class="code-lg" id="heroCode">ENTJ</div>
               <div class="nick-lg" id="heroNick">指挥官</div>
               <p class="tagline" id="heroTagline">天生的领导者，果断、高效，擅长把想法变成可执行的计划。</p>
-              <span class="hero-pop" id="heroPop">约占人群 1.8%</span>
+              <span class="hero-pop" id="heroPop">1.8%</span>
             </div>
 
             <div class="overview" data-component="TypeOverview">
@@ -956,7 +956,7 @@
                   <div class="rcode">ENFP</div>
                   <div class="rnick">竞选者</div>
                   <div class="rsub">热情洋溢的自由灵魂</div>
-                  <div class="rpop">约占人群 8.1%</div>
+                  <div class="rpop">8.1%</div>
                 </div>
               </div>
               <p class="rline">TA 的行为高度符合 ENFP：外向的能量、发散的点子、跟随感受的决策与拒绝束缚的生活方式。</p>
@@ -1217,7 +1217,7 @@
       card.className='tcard';
       card.dataset.code=code;
       card.style.setProperty('--tc','var(--c-'+code.toLowerCase()+')');
-      card.innerHTML='<span class="emblem" aria-hidden></span><div class="code">'+code+'</div><div class="nick">'+t.nick+'</div><div class="oneline">'+t.line+'</div><div class="pop">约占人群 '+t.pop+'%</div>';
+      card.innerHTML='<span class="emblem" aria-hidden></span><div class="code">'+code+'</div><div class="nick">'+t.nick+'</div><div class="oneline">'+t.line+'</div><div class="pop">'+t.pop+'%</div>';
       applyPortrait(card.querySelector('.emblem'),code);
       card.addEventListener('click',()=>{selectType(code,card);showPage('page-detail');});
       grid.appendChild(card);
@@ -1240,7 +1240,7 @@
     document.getElementById('heroCode').textContent=code;
     document.getElementById('heroNick').textContent=t.nick;
     document.getElementById('heroTagline').textContent=t.line;
-    const hp=document.getElementById('heroPop'); if(hp)hp.textContent='约占人群 '+t.pop+'%';
+    const hp=document.getElementById('heroPop'); if(hp)hp.textContent=t.pop+'%';
     const ov=document.getElementById('tOverview');
     if(ov){ ov.style.setProperty('--tc',tc); ov.innerHTML=TDESC[code]||t.line; }
     document.getElementById('tKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
@@ -1403,7 +1403,7 @@
       tpSheet.style.setProperty('--tc',tc);
       applyPortrait(document.getElementById('tpEmblem'),code);
       document.getElementById('tpTitle').textContent=code;
-      document.getElementById('tpSub').textContent=t.g+' · '+t.nick+' · 约占人群 '+t.pop+'%';
+      document.getElementById('tpSub').textContent=t.g+' · '+t.nick+' · '+t.pop+'%';
       document.getElementById('tpLine').textContent=t.line;
       document.getElementById('tpKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
       document.getElementById('tpGood').innerHTML=t.good.map(k=>chip(k,'good')).join('');
@@ -2360,7 +2360,7 @@
       const emb=document.getElementById('trEmblem'); if(emb)applyPortrait(emb,r.code);
       if(trNick)trNick.textContent=(T[r.code]&&T[r.code].nick)?T[r.code].nick:'';
       const trPop=document.getElementById('trPop');
-      if(trPop&&T[r.code]&&T[r.code].pop!=null){trPop.textContent='约占人群 '+T[r.code].pop+'%';trPop.hidden=false;}
+      if(trPop&&T[r.code]&&T[r.code].pop!=null){trPop.textContent=T[r.code].pop+'%';trPop.hidden=false;}
       if(trAxes)trAxes.innerHTML=AXES.map(ax=>{
         const a=r.res[ax.dim];
         const winPos=a.winner===ax.pos;
@@ -2442,7 +2442,7 @@
       resultMain.querySelector('.rnick').textContent=d.nickname||'';
       resultMain.querySelector('.rsub').textContent=d.tagline||'';
       const rp=resultMain.querySelector('.rpop');
-      if(rp){ const pv=T[tp]&&T[tp].pop; if(pv!=null){rp.textContent='约占人群 '+pv+'%';rp.style.display='';} else {rp.style.display='none';} }
+      if(rp){ const pv=T[tp]&&T[tp].pop; if(pv!=null){rp.textContent=pv+'%';rp.style.display='';} else {rp.style.display='none';} }
       resultMain.querySelector('.rline').textContent=d.summary||'';
       const dims=Array.isArray(d.dims)?d.dims:[];
       resultMain.querySelectorAll('.ai-dims .adim').forEach((row,i)=>{
