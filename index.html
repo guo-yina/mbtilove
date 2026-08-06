@@ -149,6 +149,7 @@
   .tcard .code{font-family:var(--font-mono);font-weight:700;font-size:17px;letter-spacing:0.04em;color:color-mix(in srgb,var(--tc) 74%,var(--true-black));padding-right:54px;}
   .tcard .nick{font-size:14px;font-weight:600;margin-top:1px;padding-right:54px;}
   .tcard .oneline{font-size:8px;color:var(--muted);line-height:1.5;margin-top:5px;padding-right:46px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;}
+  .tcard .pop{display:inline-block;margin-top:6px;font-family:var(--font-mono);font-size:9px;letter-spacing:.03em;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--tc) 10%,transparent);border:1px solid color-mix(in srgb,var(--tc) 24%,transparent);color:color-mix(in srgb,var(--tc) 80%,var(--true-black));}
   .tcard .emblem{position:absolute;right:-14px;bottom:-10px;width:104px;height:104px;background-image:var(--spr,none);background-size:200% 200%;background-position:var(--spr-pos,0% 0%);background-repeat:no-repeat;pointer-events:none;opacity:.84;-webkit-mask-image:linear-gradient(90deg,transparent 2%,var(--true-black) 46%);mask-image:linear-gradient(90deg,transparent 2%,var(--true-black) 46%);filter:drop-shadow(0 2px 5px color-mix(in srgb,var(--tc) 20%,transparent));}
   .tcard.hidden{display:none;}
 
@@ -171,6 +172,7 @@
   .hero .code-lg{font-family:var(--font-mono);font-weight:700;font-size:34px;letter-spacing:0.06em;position:relative;z-index:2;line-height:1;margin-top:6px;}
   .hero .nick-lg{font-family:var(--font-display);font-size:22px;font-weight:600;margin-top:4px;position:relative;z-index:2;}
   .hero .tagline{font-size:13.5px;color:rgba(255,255,255,.86);margin-top:7px;position:relative;z-index:2;max-width:17ch;}
+  .hero .hero-pop{display:inline-block;margin-top:10px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;background:rgba(255,255,255,.18);padding:5px 11px;border-radius:999px;position:relative;z-index:2;}
 
   .sec-title{font-size:13px;font-weight:700;letter-spacing:.02em;margin:0 0 11px;display:flex;align-items:center;gap:8px;}
   .sec-title .bar{width:4px;height:14px;border-radius:2px;background:var(--primary);}
@@ -282,6 +284,7 @@
   .tr-eyebrow{position:relative;z-index:1;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--tc) 70%,var(--muted));margin:0 0 6px;}
   .tr-type{position:relative;z-index:1;font-family:var(--font-mono);font-weight:800;font-size:50px;letter-spacing:.05em;line-height:1;color:color-mix(in srgb,var(--tc) 82%,var(--true-black));}
   .tr-nick{position:relative;z-index:1;font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--fg);margin-top:8px;}
+  .tr-pop{position:relative;z-index:1;display:inline-block;margin-top:8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--tc) 11%,transparent);border:1px solid color-mix(in srgb,var(--tc) 26%,transparent);color:color-mix(in srgb,var(--tc) 84%,var(--true-black));}
   .tr-axes{display:flex;flex-direction:column;gap:17px;margin-bottom:24px;}
   .tr-ax{text-align:left;}
   .tr-poles{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:7px;}
@@ -438,6 +441,7 @@
   .ai-hero .rcode{font-family:var(--font-mono);font-weight:700;font-size:30px;letter-spacing:.05em;line-height:1;}
   .ai-hero .rnick{font-family:var(--font-display);font-size:16px;font-weight:600;margin-top:3px;}
   .ai-hero .rsub{font-size:11px;color:rgba(255,255,255,.82);margin-top:2px;}
+  .ai-hero .rpop{display:inline-block;margin-top:7px;font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.16);}
   .ai-hero .rline{font-size:12.5px;color:rgba(255,255,255,.9);margin-top:13px;line-height:1.5;position:relative;z-index:1;}
 
   /* ── 单人四维倾向条 ── */
@@ -680,6 +684,7 @@
               <div class="code-lg" id="heroCode">ENTJ</div>
               <div class="nick-lg" id="heroNick">指挥官</div>
               <p class="tagline" id="heroTagline">天生的领导者，果断、高效，擅长把想法变成可执行的计划。</p>
+              <span class="hero-pop" id="heroPop">约占人群 1.8%</span>
             </div>
 
             <div class="overview" data-component="TypeOverview">
@@ -797,6 +802,7 @@
                 <p class="tr-eyebrow">你的类型</p>
                 <div class="tr-type" id="trType"></div>
                 <div class="tr-nick" id="trNick"></div>
+                <div class="tr-pop" id="trPop" hidden></div>
               </div>
               <div class="tr-axes" id="trAxes"></div>
               <button class="cta" id="tsApply"></button>
@@ -950,6 +956,7 @@
                   <div class="rcode">ENFP</div>
                   <div class="rnick">竞选者</div>
                   <div class="rsub">热情洋溢的自由灵魂</div>
+                  <div class="rpop">约占人群 8.1%</div>
                 </div>
               </div>
               <p class="rline">TA 的行为高度符合 ENFP：外向的能量、发散的点子、跟随感受的决策与拒绝束缚的生活方式。</p>
@@ -1136,22 +1143,22 @@
   };
 
   const T = {
-    INTJ:{nick:'建筑师',g:'分析家 · NT',gk:'nt',line:'富有想象力又极具战略的思考者，凡事皆有计划。',keys:['战略','独立','远见'],good:['理性决策','自我驱动','长期视野'],watch:['过度自负','忽略情绪','完美主义'],stack:['Ni','Te','Fi','Se']},
-    INTP:{nick:'逻辑学家',g:'分析家 · NT',gk:'nt',line:'求知欲永不满足的发明家，痴迷于逻辑与理论。',keys:['逻辑','好奇','独创'],good:['深度分析','客观中立','创新思维'],watch:['行动力弱','忽视细节','难以决断'],stack:['Ti','Ne','Si','Fe']},
-    ENTJ:{nick:'指挥官',g:'分析家 · NT',gk:'nt',line:'天生的领导者，果断高效，擅长把想法变成可执行的计划。',keys:['领导','果断','高效'],good:['统筹全局','执行力强','目标坚定'],watch:['过于强势','缺乏耐心','忽略感受'],stack:['Te','Ni','Se','Fi']},
-    ENTP:{nick:'辩论家',g:'分析家 · NT',gk:'nt',line:'机智大胆的思想家，无法抗拒智力上的挑战。',keys:['机智','善辩','创意'],good:['随机应变','点子多','敢于挑战'],watch:['难以专注','爱抬杠','虎头蛇尾'],stack:['Ne','Ti','Fe','Si']},
-    INFJ:{nick:'提倡者',g:'外交家 · NF',gk:'nf',line:'安静而神秘的理想主义者，却总能鼓舞他人。',keys:['理想','洞察','坚定'],good:['富有同理','使命感强','深刻洞察'],watch:['过度理想','易倦怠','敏感内耗'],stack:['Ni','Fe','Ti','Se']},
-    INFP:{nick:'调停者',g:'外交家 · NF',gk:'nf',line:'诗意善良的利他主义者，永远愿意为正当理由挺身而出。',keys:['真诚','共情','理想'],good:['价值坚定','富有创意','善解人意'],watch:['过度理想','回避冲突','自我怀疑'],stack:['Fi','Ne','Si','Te']},
-    ENFJ:{nick:'主人公',g:'外交家 · NF',gk:'nf',line:'富有魅力的领导者，能感召并激励身边的人。',keys:['感召','热忱','利他'],good:['激励他人','沟通力强','有责任感'],watch:['过度付出','在意评价','难说不'],stack:['Fe','Ni','Se','Ti']},
-    ENFP:{nick:'竞选者',g:'外交家 · NF',gk:'nf',line:'热情洋溢又富创造力的自由灵魂，总能找到微笑的理由。',keys:['热情','创意','自由'],good:['感染力强','点子丰富','真诚待人'],watch:['三分钟热度','难专注','情绪化'],stack:['Ne','Fi','Te','Si']},
-    ISTJ:{nick:'物流师',g:'守护者 · SJ',gk:'sj',line:'务实而注重事实的可靠之人，说到做到。',keys:['务实','可靠','严谨'],good:['责任心强','执行稳健','注重细节'],watch:['偏保守','不善变通','情感含蓄'],stack:['Si','Te','Fi','Ne']},
-    ISFJ:{nick:'守卫者',g:'守护者 · SJ',gk:'sj',line:'尽职尽责又温暖的守护者，时刻准备保护所爱之人。',keys:['温暖','尽责','细心'],good:['体贴周到','踏实可靠','乐于奉献'],watch:['过度牺牲','不敢拒绝','害怕改变'],stack:['Si','Fe','Ti','Ne']},
-    ESTJ:{nick:'总经理',g:'守护者 · SJ',gk:'sj',line:'出色的管理者，在管理事务与人员上无人能及。',keys:['组织','务实','果断'],good:['执行高效','原则清晰','善于统筹'],watch:['略显固执','偏刻板','缺乏弹性'],stack:['Te','Si','Ne','Fi']},
-    ESFJ:{nick:'执政官',g:'守护者 · SJ',gk:'sj',line:'极有同情心又受欢迎的人，总是热心帮助他人。',keys:['热心','合群','负责'],good:['善于协调','关心他人','行动可靠'],watch:['在意评价','回避冲突','易被左右'],stack:['Fe','Si','Ne','Ti']},
-    ISTP:{nick:'鉴赏家',g:'探险家 · SP',gk:'sp',line:'大胆而务实的实验家，擅长使用各种工具。',keys:['冷静','动手','灵活'],good:['临场应变','动手能力','逻辑清晰'],watch:['难以承诺','偏冷淡','厌恶束缚'],stack:['Ti','Se','Ni','Fe']},
-    ISFP:{nick:'探险家',g:'探险家 · SP',gk:'sp',line:'灵活迷人的艺术家，随时准备探索新鲜事物。',keys:['艺术','随性','敏感'],good:['审美出众','真诚温和','活在当下'],watch:['易冲动','难规划','回避冲突'],stack:['Fi','Se','Ni','Te']},
-    ESTP:{nick:'企业家',g:'探险家 · SP',gk:'sp',line:'聪明精力充沛的行动派，真心享受活在边缘的感觉。',keys:['果敢','行动','机敏'],good:['反应迅速','敢闯敢拼','善于社交'],watch:['爱冒险','缺乏耐心','忽略长远'],stack:['Se','Ti','Fe','Ni']},
-    ESFP:{nick:'表演者',g:'探险家 · SP',gk:'sp',line:'自发热情的表演者，身边永远不会无聊。',keys:['活力','热情','享受'],good:['气氛担当','乐观外向','善于共情'],watch:['难专注','怕无聊','逃避严肃'],stack:['Se','Fi','Te','Ni']}
+    INTJ:{nick:'建筑师',g:'分析家 · NT',gk:'nt',line:'富有想象力又极具战略的思考者，凡事皆有计划。',keys:['战略','独立','远见'],good:['理性决策','自我驱动','长期视野'],watch:['过度自负','忽略情绪','完美主义'],pop:2.1,stack:['Ni','Te','Fi','Se']},
+    INTP:{nick:'逻辑学家',g:'分析家 · NT',gk:'nt',line:'求知欲永不满足的发明家，痴迷于逻辑与理论。',keys:['逻辑','好奇','独创'],good:['深度分析','客观中立','创新思维'],watch:['行动力弱','忽视细节','难以决断'],pop:3.3,stack:['Ti','Ne','Si','Fe']},
+    ENTJ:{nick:'指挥官',g:'分析家 · NT',gk:'nt',line:'天生的领导者，果断高效，擅长把想法变成可执行的计划。',keys:['领导','果断','高效'],good:['统筹全局','执行力强','目标坚定'],watch:['过于强势','缺乏耐心','忽略感受'],pop:1.8,stack:['Te','Ni','Se','Fi']},
+    ENTP:{nick:'辩论家',g:'分析家 · NT',gk:'nt',line:'机智大胆的思想家，无法抗拒智力上的挑战。',keys:['机智','善辩','创意'],good:['随机应变','点子多','敢于挑战'],watch:['难以专注','爱抬杠','虎头蛇尾'],pop:3.2,stack:['Ne','Ti','Fe','Si']},
+    INFJ:{nick:'提倡者',g:'外交家 · NF',gk:'nf',line:'安静而神秘的理想主义者，却总能鼓舞他人。',keys:['理想','洞察','坚定'],good:['富有同理','使命感强','深刻洞察'],watch:['过度理想','易倦怠','敏感内耗'],pop:1.5,stack:['Ni','Fe','Ti','Se']},
+    INFP:{nick:'调停者',g:'外交家 · NF',gk:'nf',line:'诗意善良的利他主义者，永远愿意为正当理由挺身而出。',keys:['真诚','共情','理想'],good:['价值坚定','富有创意','善解人意'],watch:['过度理想','回避冲突','自我怀疑'],pop:4.4,stack:['Fi','Ne','Si','Te']},
+    ENFJ:{nick:'主人公',g:'外交家 · NF',gk:'nf',line:'富有魅力的领导者，能感召并激励身边的人。',keys:['感召','热忱','利他'],good:['激励他人','沟通力强','有责任感'],watch:['过度付出','在意评价','难说不'],pop:2.5,stack:['Fe','Ni','Se','Ti']},
+    ENFP:{nick:'竞选者',g:'外交家 · NF',gk:'nf',line:'热情洋溢又富创造力的自由灵魂，总能找到微笑的理由。',keys:['热情','创意','自由'],good:['感染力强','点子丰富','真诚待人'],watch:['三分钟热度','难专注','情绪化'],pop:8.1,stack:['Ne','Fi','Te','Si']},
+    ISTJ:{nick:'物流师',g:'守护者 · SJ',gk:'sj',line:'务实而注重事实的可靠之人，说到做到。',keys:['务实','可靠','严谨'],good:['责任心强','执行稳健','注重细节'],watch:['偏保守','不善变通','情感含蓄'],pop:11.6,stack:['Si','Te','Fi','Ne']},
+    ISFJ:{nick:'守卫者',g:'守护者 · SJ',gk:'sj',line:'尽职尽责又温暖的守护者，时刻准备保护所爱之人。',keys:['温暖','尽责','细心'],good:['体贴周到','踏实可靠','乐于奉献'],watch:['过度牺牲','不敢拒绝','害怕改变'],pop:13.8,stack:['Si','Fe','Ti','Ne']},
+    ESTJ:{nick:'总经理',g:'守护者 · SJ',gk:'sj',line:'出色的管理者，在管理事务与人员上无人能及。',keys:['组织','务实','果断'],good:['执行高效','原则清晰','善于统筹'],watch:['略显固执','偏刻板','缺乏弹性'],pop:8.7,stack:['Te','Si','Ne','Fi']},
+    ESFJ:{nick:'执政官',g:'守护者 · SJ',gk:'sj',line:'极有同情心又受欢迎的人，总是热心帮助他人。',keys:['热心','合群','负责'],good:['善于协调','关心他人','行动可靠'],watch:['在意评价','回避冲突','易被左右'],pop:12.3,stack:['Fe','Si','Ne','Ti']},
+    ISTP:{nick:'鉴赏家',g:'探险家 · SP',gk:'sp',line:'大胆而务实的实验家，擅长使用各种工具。',keys:['冷静','动手','灵活'],good:['临场应变','动手能力','逻辑清晰'],watch:['难以承诺','偏冷淡','厌恶束缚'],pop:5.4,stack:['Ti','Se','Ni','Fe']},
+    ISFP:{nick:'探险家',g:'探险家 · SP',gk:'sp',line:'灵活迷人的艺术家，随时准备探索新鲜事物。',keys:['艺术','随性','敏感'],good:['审美出众','真诚温和','活在当下'],watch:['易冲动','难规划','回避冲突'],pop:8.8,stack:['Fi','Se','Ni','Te']},
+    ESTP:{nick:'企业家',g:'探险家 · SP',gk:'sp',line:'聪明精力充沛的行动派，真心享受活在边缘的感觉。',keys:['果敢','行动','机敏'],good:['反应迅速','敢闯敢拼','善于社交'],watch:['爱冒险','缺乏耐心','忽略长远'],pop:4.3,stack:['Se','Ti','Fe','Ni']},
+    ESFP:{nick:'表演者',g:'探险家 · SP',gk:'sp',line:'自发热情的表演者，身边永远不会无聊。',keys:['活力','热情','享受'],good:['气氛担当','乐观外向','善于共情'],watch:['难专注','怕无聊','逃避严肃'],pop:8.5,stack:['Se','Fi','Te','Ni']}
   };
   // 每型「综合解读」：思维方式 × 人际相处 × 优势与盲区，串成一段整体画像
   const TDESC={
@@ -1210,7 +1217,7 @@
       card.className='tcard';
       card.dataset.code=code;
       card.style.setProperty('--tc','var(--c-'+code.toLowerCase()+')');
-      card.innerHTML='<span class="emblem" aria-hidden></span><div class="code">'+code+'</div><div class="nick">'+t.nick+'</div><div class="oneline">'+t.line+'</div>';
+      card.innerHTML='<span class="emblem" aria-hidden></span><div class="code">'+code+'</div><div class="nick">'+t.nick+'</div><div class="oneline">'+t.line+'</div><div class="pop">约占人群 '+t.pop+'%</div>';
       applyPortrait(card.querySelector('.emblem'),code);
       card.addEventListener('click',()=>{selectType(code,card);showPage('page-detail');});
       grid.appendChild(card);
@@ -1233,6 +1240,7 @@
     document.getElementById('heroCode').textContent=code;
     document.getElementById('heroNick').textContent=t.nick;
     document.getElementById('heroTagline').textContent=t.line;
+    const hp=document.getElementById('heroPop'); if(hp)hp.textContent='约占人群 '+t.pop+'%';
     const ov=document.getElementById('tOverview');
     if(ov){ ov.style.setProperty('--tc',tc); ov.innerHTML=TDESC[code]||t.line; }
     document.getElementById('tKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
@@ -1395,7 +1403,7 @@
       tpSheet.style.setProperty('--tc',tc);
       applyPortrait(document.getElementById('tpEmblem'),code);
       document.getElementById('tpTitle').textContent=code;
-      document.getElementById('tpSub').textContent=t.g+' · '+t.nick;
+      document.getElementById('tpSub').textContent=t.g+' · '+t.nick+' · 约占人群 '+t.pop+'%';
       document.getElementById('tpLine').textContent=t.line;
       document.getElementById('tpKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
       document.getElementById('tpGood').innerHTML=t.good.map(k=>chip(k,'good')).join('');
@@ -2351,6 +2359,8 @@
       if(trType)trType.textContent=r.code;
       const emb=document.getElementById('trEmblem'); if(emb)applyPortrait(emb,r.code);
       if(trNick)trNick.textContent=(T[r.code]&&T[r.code].nick)?T[r.code].nick:'';
+      const trPop=document.getElementById('trPop');
+      if(trPop&&T[r.code]&&T[r.code].pop!=null){trPop.textContent='约占人群 '+T[r.code].pop+'%';trPop.hidden=false;}
       if(trAxes)trAxes.innerHTML=AXES.map(ax=>{
         const a=r.res[ax.dim];
         const winPos=a.winner===ax.pos;
@@ -2431,6 +2441,8 @@
       resultMain.querySelector('.rcode').textContent=tp;
       resultMain.querySelector('.rnick').textContent=d.nickname||'';
       resultMain.querySelector('.rsub').textContent=d.tagline||'';
+      const rp=resultMain.querySelector('.rpop');
+      if(rp){ const pv=T[tp]&&T[tp].pop; if(pv!=null){rp.textContent='约占人群 '+pv+'%';rp.style.display='';} else {rp.style.display='none';} }
       resultMain.querySelector('.rline').textContent=d.summary||'';
       const dims=Array.isArray(d.dims)?d.dims:[];
       resultMain.querySelectorAll('.ai-dims .adim').forEach((row,i)=>{
