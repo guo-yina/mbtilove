@@ -1048,12 +1048,10 @@
         <div class="auth-ov" id="authOverlay" aria-hidden="true">
           <div class="abrand">
             <span class="alogo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.35-9.5-8.5C.9 9.6 2.4 5.5 6 5c2-.3 3.6.9 4.5 2.2C11.4 5.9 13 4.7 15 5c3.6.5 5.1 4.6 3.5 7.5C19 16.65 12 21 12 21z"/></svg></span>
-            <div><h2 id="authTitle">登录同步你的人脉</h2><p class="asub" id="authSub">用邮箱登录，你的类型和标注会存到云端，换设备打开也还在。</p></div>
+            <div><h2 id="authTitle">起个昵称，存下你的人脉</h2><p class="asub" id="authSub">不用邮箱和密码。起一个昵称，你标注的人就存在这个名字下；换设备输入同样的昵称，就能找回你的人脉。</p></div>
           </div>
-          <div class="afield"><label for="authEmail">邮箱</label><input id="authEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
-          <div class="afield"><label for="authPass">密码</label><input id="authPass" type="password" autocomplete="current-password" placeholder="至少 6 位" /></div>
-          <button class="aprimary" id="authPrimary" type="button">登录</button>
-          <div class="aswitch" id="authSwitch">还没有账号？<b>注册一个</b></div>
+          <div class="afield"><label for="authNick">昵称</label><input id="authNick" type="text" autocomplete="off" maxlength="20" placeholder="比如：小雨、阿哲、Momo" /></div>
+          <button class="aprimary" id="authPrimary" type="button">进入我的人脉</button>
           <div class="amsg" id="authMsg"></div>
         </div>
         <div class="home-indicator"></div>
@@ -1999,6 +1997,10 @@
   let navStack=['page-explore'];
   function showPage(id,push){
     if(push===undefined)push=true;
+    // 人脉相关页面需要昵称登录：游客点进来时，先弹「起个昵称」
+    if((id==='page-people'||id==='page-addperson')&&!currentUser){
+      if(window.__requireLogin){window.__requireLogin(function(){showPage(id,push);});return;}
+    }
     const el=document.getElementById(id);
     if(!el)return;
     document.querySelectorAll('.content.page').forEach(p=>p.classList.remove('active'));
@@ -2509,59 +2511,79 @@
   (function auth(){
     var ov=document.getElementById('authOverlay');
     if(!ov)return;
-    var emailI=document.getElementById('authEmail');
-    var passI=document.getElementById('authPass');
+    var nickI=document.getElementById('authNick');
     var primary=document.getElementById('authPrimary');
-    var switchEl=document.getElementById('authSwitch');
     var msg=document.getElementById('authMsg');
-    var titleEl=document.getElementById('authTitle');
     var logoutBtn=document.getElementById('authLogout');
-    var mode='signin';
+    var pendingAction=null; // 登录成功后要继续做的事（比如打开人脉页）
     function setMsg(t,ok){ if(msg){ msg.textContent=t||''; msg.className='amsg'+(ok?' ok':''); } }
-    function render(){
-      if(mode==='signin'){ titleEl.textContent='登录同步你的人脉'; primary.textContent='登录'; switchEl.innerHTML='还没有账号？<b>注册一个</b>'; }
-      else{ titleEl.textContent='注册新账号'; primary.textContent='注册'; switchEl.innerHTML='已有账号？<b>去登录</b>'; }
+    function show(){ ov.classList.add('show'); ov.setAttribute('aria-hidden','false'); }
+    function hide(){ ov.classList.remove('show'); ov.setAttribute('aria-hidden','true'); }
+
+    // 游客想进人脉 / 存人脉时，由路由守卫调用：先起个昵称，登录后再继续
+    window.__requireLogin=function(next){
+      pendingAction=(typeof next==='function')?next:null;
       setMsg('');
+      show();
+    };
+
+    // 昵称 → 稳定的合成账号（SHA-256）。同一个昵称永远映射到同一个账号，
+    // 所以换设备输入同样的昵称就能找回人脉，用户无需记邮箱密码。
+    function fallbackHash(str){
+      var h1=5381,h2=52711,i,c;
+      for(i=0;i<str.length;i++){c=str.charCodeAt(i);h1=((h1*33)^c)>>>0;h2=((h2*31)^c)>>>0;}
+      return ('0000000'+h1.toString(16)).slice(-8)+('0000000'+h2.toString(16)).slice(-8);
     }
-    function show(){ ov.classList.add('show'); }
-    function hide(){ ov.classList.remove('show'); }
-    switchEl.addEventListener('click',function(e){ if(e.target&&e.target.tagName==='B'){ mode=(mode==='signin')?'signup':'signin'; render(); } });
+    async function hashHex(str){
+      try{
+        if(window.crypto&&window.crypto.subtle&&window.crypto.subtle.digest){
+          var buf=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+          return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
+        }
+      }catch(e){}
+      return fallbackHash(str)+fallbackHash(str.split('').reverse().join(''));
+    }
+
     async function afterLogin(){
       var u=await sb.auth.getUser();
       currentUser=(u.data&&u.data.user)||null;
       if(!currentUser){ show(); return; }
       hide();
       if(logoutBtn)logoutBtn.style.display='';
-      if(passI)passI.value='';
       await cloudLoadAll();
+      if(pendingAction){ var fn=pendingAction; pendingAction=null; try{fn();}catch(_){} }
     }
+
     async function submit(){
-      var email=(emailI.value||'').trim(), pass=passI.value||'';
-      if(!email||!pass){ setMsg('请填写邮箱和密码'); return; }
-      if(pass.length<6){ setMsg('密码至少 6 位'); return; }
-      primary.disabled=true; setMsg('处理中…',true);
+      var nick=(nickI.value||'').trim();
+      if(!nick){ setMsg('先给自己起个昵称吧'); return; }
+      primary.disabled=true; setMsg('正在为你准备账号…',true);
       try{
-        if(mode==='signup'){
+        var hex=await hashHex(nick.toLowerCase());
+        var email=hex.slice(0,32)+'@mbti.app';
+        var pass='mbti-'+hex.slice(0,26);
+        SELF.name=nick; SELF.init=nick.charAt(0); SELF.rel='本人 · 也是 '+SELF.type;
+        // 先尝试登录已有账号；不存在就注册一个新账号
+        var r=await sb.auth.signInWithPassword({email:email,password:pass});
+        if(r.error){
           var su=await sb.auth.signUp({email:email,password:pass});
           if(su.error) throw su.error;
           if(!su.data.session){
             var si=await sb.auth.signInWithPassword({email:email,password:pass});
-            if(si.error){ setMsg('注册成功，请到邮箱点确认链接后再回来登录。',true); mode='signin'; render(); primary.disabled=false; return; }
+            if(si.error) throw si.error;
           }
-          setMsg('注册成功！',true); await afterLogin();
-        }else{
-          var r=await sb.auth.signInWithPassword({email:email,password:pass});
-          if(r.error) throw r.error;
-          await afterLogin();
         }
+        setMsg('登录成功',true);
+        await afterLogin();
       }catch(err){
-        setMsg((err&&err.message)||'操作失败，请重试');
-      }finally{
-        primary.disabled=false;
-      }
+        var m=(err&&err.message)||'操作失败，请重试';
+        if(/confirm/i.test(m)){ m='这个昵称还差一步邮箱验证。请在 Supabase 后台关闭「Confirm email」后重试。'; }
+        setMsg(m);
+      }finally{ primary.disabled=false; }
     }
+
     primary.addEventListener('click',submit);
-    if(passI)passI.addEventListener('keydown',function(e){ if(e.key==='Enter')submit(); });
+    if(nickI)nickI.addEventListener('keydown',function(e){ if(e.key==='Enter')submit(); });
     if(logoutBtn)logoutBtn.addEventListener('click',async function(){
       try{ if(sb)await sb.auth.signOut(); }catch(_){}
       currentUser=null;
@@ -2570,19 +2592,19 @@
       SELF.name='我'; SELF.type='INFP'; SELF.init='我'; SELF.rel='本人 · 也是 INFP';
       renderPeople();
       if(logoutBtn)logoutBtn.style.display='none';
-      show();
+      navStack=['page-explore']; showPage('page-explore',false);
     });
+
     function init(){
-      if(!window.supabase||!window.supabase.createClient){ console.warn('Supabase SDK 未加载，进入本地演示模式'); return; }
+      if(!window.supabase||!window.supabase.createClient){ console.warn('Supabase SDK 未加载，进入本地模式'); return; }
       try{
         sb=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-      }catch(e){ console.warn('Supabase 初始化失败，进入本地演示模式:',e); sb=null; return; }
-      render();
+      }catch(e){ console.warn('Supabase 初始化失败，进入本地模式:',e); sb=null; return; }
       if(logoutBtn)logoutBtn.style.display='none';
+      // 进入不再强制登录：有历史会话就静默恢复，否则保持游客身份先随便玩
       sb.auth.getSession().then(async function(s){
         if(s.data&&s.data.session){ await afterLogin(); }
-        else{ show(); }
-      }).catch(function(){ show(); });
+      }).catch(function(){});
     }
     init();
   })();
