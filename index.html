@@ -154,7 +154,7 @@
   .tcard.hidden{display:none;}
 
   /* tab bar */
-  .tabbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px 2px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(18px);}
+  .tabbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px 2px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(18px);}
   .screen.auth-open .tabbar{position:relative;z-index:70;}
   .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0 6px;color:var(--faint);font-size:10px;letter-spacing:.02em;background:none;border:0;cursor:pointer;}
   .tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
@@ -506,7 +506,7 @@
   .content.page{position:absolute;inset:0;flex:none;display:none;}
   .content.page.active{display:block;animation:pageIn .28s ease;}
   @keyframes pageIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-  .tabbar{grid-template-columns:repeat(4,1fr);}
+  .tabbar{grid-template-columns:repeat(5,1fr);}
 
   /* ══════════ 八维功能全表 ══════════ */
   #page-functions{padding:0;display:none;flex-direction:column;}
@@ -604,6 +604,31 @@
   #tpCta:hover{background:color-mix(in srgb,var(--tc) 20%,var(--surface));}
 
   /* ── 账号登录浮层 ── */
+  /* ── 字母科普页 ── */
+  .lintro{margin:0 20px 14px;border-radius:16px;padding:13px 15px;font-size:12.5px;line-height:1.7;color:var(--muted);background:color-mix(in srgb,var(--primary) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--primary) 18%,var(--hair));}
+  .letters{padding:0 20px 12px;}
+  .ldim{--dc:var(--primary);margin-bottom:15px;border-radius:20px;padding:15px 14px 14px;background:var(--surface);border:1px solid color-mix(in srgb,var(--dc) 22%,var(--hair));box-shadow:0 16px 32px -28px color-mix(in srgb,var(--dc) 85%,transparent);}
+  .ldim-q{font-size:14.5px;font-weight:700;color:var(--fg);letter-spacing:.01em;}
+  .ldim-pair{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:color-mix(in srgb,var(--dc) 82%,var(--true-black));margin:3px 0 11px;}
+  .lpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .lcard{border-radius:14px;padding:11px 12px 12px;background:color-mix(in srgb,var(--lc) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--lc) 24%,var(--hair));}
+  .lc-top{display:flex;align-items:center;gap:8px;}
+  .lc-k{font-family:var(--font-mono);font-weight:800;font-size:23px;line-height:1;color:color-mix(in srgb,var(--lc) 86%,var(--true-black));}
+  .lc-cn{font-size:13px;font-weight:700;color:var(--fg);line-height:1.15;}
+  .lc-en{font-family:var(--font-mono);font-size:8.5px;letter-spacing:.05em;color:var(--faint);text-transform:uppercase;}
+  .lc-desc{margin:8px 0 9px;font-size:11.5px;line-height:1.65;color:var(--muted);min-height:57px;}
+  .lc-pct{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--lc) 13%,transparent);border:1px solid color-mix(in srgb,var(--lc) 28%,transparent);color:color-mix(in srgb,var(--lc) 88%,var(--true-black));}
+  .lbar{display:flex;height:9px;border-radius:999px;overflow:hidden;margin:13px 0 6px;background:var(--hair);}
+  .lbar i{display:block;height:100%;}
+  .lbar-lab{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:.03em;}
+  .ldiff{margin-top:11px;padding-top:11px;border-top:1px dashed color-mix(in srgb,var(--dc) 26%,var(--hair));font-size:12px;line-height:1.75;color:color-mix(in srgb,var(--fg) 86%,var(--muted));}
+  .ldiff b{font-weight:700;color:color-mix(in srgb,var(--dc) 86%,var(--true-black));}
+  .letters-more{margin:2px 20px 16px;text-align:center;font-size:12px;color:var(--muted);}
+  .letters-more b{color:var(--primary);font-weight:600;cursor:pointer;}
+  .filters-hint{margin:-6px 20px 12px;font-size:11px;color:var(--faint);text-align:center;cursor:pointer;transition:.15s;}
+  .filters-hint b{color:color-mix(in srgb,var(--primary) 82%,var(--true-black));font-weight:600;}
+  .filters-hint:active{opacity:.6;}
+
   .auth-ov{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;justify-content:center;padding:0 30px;background:var(--surface);}
   .auth-ov.show{display:flex;}
   .auth-ov .abrand{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:28px;}
@@ -672,6 +697,7 @@
               <button class="chip" data-dim="F"><span class="k">F</span>情感</button>
               <button class="chip" data-dim="J"><span class="k">J</span>判断</button>
             </div>
+            <p class="filters-hint" id="filtersHint">不认识这 8 个字母？<b>1 分钟看懂 →</b></p>
             <div id="groups"></div>
           </main>
           <main class="content page" id="page-detail" data-component="TypeDetailScreen">
@@ -1017,10 +1043,19 @@
               <table class="fx-table"><thead id="fxHead"></thead><tbody id="fxBody"></tbody></table>
             </section>
           </main>
+          <main class="content page" id="page-letters" data-component="LettersScreen">
+            <div class="app-head">
+              <div><p class="eyebrow">MBTI 基础课</p><h2>8 个字母都是啥</h2></div>
+            </div>
+            <div class="lintro">MBTI 的四个字母，来自四组相反的特质：能量从哪来、接收信息的方式、做决定的依据、生活处事的节奏。看懂这四组，你就入门了。</div>
+            <div class="letters" id="lettersBody"></div>
+            <div class="letters-more">想知道 16 种完整类型？<b id="lettersToExplore">去 16 型图鉴看看 →</b></div>
+          </main>
         </div><!-- /.pages -->
         <nav class="tabbar" data-component="TabBar">
           <button class="tab active" data-target="page-explore"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>探索</button>
           <button class="tab" data-target="page-people"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3.3 2.6-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M17 8h4M19 6v4"/></svg>人脉</button>
+          <button class="tab" data-target="page-letters"><svg viewBox="0 0 24 24"><path d="M12 6.6C10.6 5.3 8.7 4.6 5.5 4.6v13.2c3.2 0 5.1.7 6.5 2 1.4-1.3 3.3-2 6.5-2V4.6c-3.2 0-5.1.7-6.5 2z"/><path d="M12 6.6v13.2"/></svg>字母</button>
           <button class="tab" data-target="page-functions"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg>八维</button>
           <button class="tab" data-target="page-aiin"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>AI 推测</button>
         </nav>
@@ -1225,6 +1260,44 @@
     });
     groupsEl.appendChild(grid);
   });
+
+  // ── 字母科普：四组维度 × 人群占比 ──
+  const DIMS=[
+    {q:'能量从哪里来？',pair:'E × I',
+     a:{k:'E',cn:'外向',en:'Extraversion',pct:49.4,c:'#eb8a2a',desc:'和人在一起时充电：边说边想，越热闹越来劲。'},
+     b:{k:'I',cn:'内向',en:'Introversion',pct:50.6,c:'#8b7bf2',desc:'独处时充电：安静内省回血，社交久了会耗电。'},
+     diff:'<b>E 人</b>先说后想，闷着会没电；<b>I 人</b>先想后说，需要独处回血。内向不等于害羞，只是充电方式不同。'},
+    {q:'接收信息的方式',pair:'S × N',
+     a:{k:'S',cn:'实感',en:'Sensing',pct:73.4,c:'#3a8ae4',desc:'相信具体事实：眼见为实，重细节、重经验。'},
+     b:{k:'N',cn:'直觉',en:'Intuition',pct:26.6,c:'#14b88a',desc:'相信灵感：看到可能性与言外之意，爱想「如果」。'},
+     diff:'<b>S 人</b>讲「发生了什么」，具体实在；<b>N 人</b>聊「可能会怎样」，跳跃发散。每 4 个人里约有 3 个 S，N 相对稀有。'},
+    {q:'做决定的依据',pair:'T × F',
+     a:{k:'T',cn:'思考',en:'Thinking',pct:40.4,c:'#6f5aec',desc:'看逻辑与公平：先问「讲不讲得通」，客观直接。'},
+     b:{k:'F',cn:'情感',en:'Feeling',pct:59.6,c:'#16bd93',desc:'看感受与价值：先问「大家感觉如何」，体贴周到。'},
+     diff:'<b>T 人</b>对事不对人，先解决问题；<b>F 人</b>先照顾人，再处理事。两者都讲道理，只是标准不同。'},
+    {q:'生活处事的节奏',pair:'J × P',
+     a:{k:'J',cn:'判断',en:'Judging',pct:54.3,c:'#2f78dc',desc:'爱计划与确定感：列清单、赶在截止前，定了才安心。'},
+     b:{k:'P',cn:'知觉',en:'Perceiving',pct:45.7,c:'#f0a63e',desc:'爱灵活与临场发挥：留余地、随机应变，太早定死会难受。'},
+     diff:'<b>J 人</b>先做完再玩，计划被打乱会抓狂；<b>P 人</b>灵感来了再做，deadline 前冲刺是常态。'}
+  ];
+  (function renderLetters(){
+    const lb=document.getElementById('lettersBody');
+    if(lb){
+      lb.innerHTML=DIMS.map(d=>{
+        const card=l=>'<div class="lcard" style="--lc:'+l.c+'"><div class="lc-top"><span class="lc-k">'+l.k+'</span><span><span class="lc-cn">'+l.cn+'</span><br><span class="lc-en">'+l.en+'</span></span></div><p class="lc-desc">'+l.desc+'</p><span class="lc-pct">≈ '+l.pct+'%</span></div>';
+        return '<section class="ldim" style="--dc:'+d.a.c+'">'
+          +'<div class="ldim-q">'+d.q+'</div><div class="ldim-pair">'+d.pair+'</div>'
+          +'<div class="lpair">'+card(d.a)+card(d.b)+'</div>'
+          +'<div class="lbar"><i style="width:'+d.a.pct+'%;background:'+d.a.c+'"></i><i style="flex:1;background:'+d.b.c+'"></i></div>'
+          +'<div class="lbar-lab"><span>'+d.a.k+' · '+d.a.pct+'%</span><span>'+d.b.k+' · '+d.b.pct+'%</span></div>'
+          +'<div class="ldiff">'+d.diff+'</div></section>';
+      }).join('');
+    }
+    const fHint=document.getElementById('filtersHint');
+    if(fHint)fHint.addEventListener('click',()=>showPage('page-letters'));
+    const lte=document.getElementById('lettersToExplore');
+    if(lte)lte.addEventListener('click',()=>showPage('page-explore'));
+  })();
 
   // ── detail render ──
   function chip(txt,cls){return '<span class="ttag'+(cls?' '+cls:'')+'">'+txt+'</span>';}
@@ -2018,7 +2091,7 @@
   renderPeople();
 
   // ── 单屏 App 页面路由 ──
-  const TAB_OF={'page-explore':'page-explore','page-detail':'page-explore','page-people':'page-people','page-addperson':'page-people','page-compare':'page-people','page-test':'page-people','page-functions':'page-functions','page-aiin':'page-aiin','aiResult':'page-aiin'};
+  const TAB_OF={'page-explore':'page-explore','page-detail':'page-explore','page-people':'page-people','page-addperson':'page-people','page-compare':'page-people','page-test':'page-people','page-letters':'page-letters','page-functions':'page-functions','page-aiin':'page-aiin','aiResult':'page-aiin'};
   let navStack=['page-explore'];
   function showPage(id,push){
     if(push===undefined)push=true;
