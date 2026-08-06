@@ -630,6 +630,20 @@
   .filters-hint b{color:color-mix(in srgb,var(--primary) 82%,var(--true-black));font-weight:600;}
   .filters-hint:active{opacity:.6;}
 
+  /* 字母卡片可点 + 深度弹层 */
+  .lcard{cursor:pointer;transition:transform .15s;}
+  .lcard:active{transform:scale(.97);}
+  .lc-foot{display:flex;align-items:center;justify-content:space-between;}
+  .lc-more{font-size:10px;color:var(--faint);letter-spacing:.02em;}
+  .lt-letter{flex:0 0 auto;width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:800;font-size:27px;background:color-mix(in srgb,var(--lc) 14%,var(--surface));color:color-mix(in srgb,var(--lc) 88%,var(--true-black));border:1px solid color-mix(in srgb,var(--lc) 28%,var(--hair));}
+  .lt-points{margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:7px;list-style:none;}
+  .lt-points li{position:relative;padding-left:14px;font-size:12.5px;line-height:1.6;color:color-mix(in srgb,var(--fg) 88%,var(--muted));}
+  .lt-points li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:99px;background:color-mix(in srgb,var(--lc) 72%,var(--surface));}
+  .lt-quote{margin-top:16px;display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:13px;background:color-mix(in srgb,var(--lc) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--lc) 20%,var(--hair));}
+  .lt-quote span{font-size:10px;color:var(--faint);flex:0 0 auto;}
+  .lt-quote b{font-size:13px;color:color-mix(in srgb,var(--lc) 86%,var(--true-black));font-weight:600;}
+  .lt-get{margin:8px 0 0;font-size:12.5px;line-height:1.75;color:var(--muted);}
+
   .auth-ov{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;justify-content:center;padding:0 30px;background:var(--surface);}
   .auth-ov.show{display:flex;}
   .auth-ov .abrand{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:28px;}
@@ -1091,6 +1105,23 @@
             <button class="fns-close" type="button" data-close>收起</button>
           </div>
         </div>
+        <div class="fnsheet" id="ltSheet" aria-hidden="true">
+          <div class="scrim" data-close></div>
+          <div class="card" role="dialog" aria-modal="true" aria-labelledby="ltTitle">
+            <div class="grip"></div>
+            <div class="tps-head">
+              <span class="lt-letter" id="ltLetter">S</span>
+              <div class="tps-h-txt"><h3 id="ltTitle"></h3><p id="ltSub"></p></div>
+            </div>
+            <p class="tps-line" id="ltLine"></p>
+            <div class="tps-sec"><span class="fns-sub">日常长这样</span><ul class="lt-points" id="ltLooks"></ul></div>
+            <div class="tps-sec"><span class="fns-sub">亮点</span><div class="tps-tags" id="ltGood"></div></div>
+            <div class="tps-sec"><span class="fns-sub">容易被误会</span><div class="tps-tags" id="ltWatch"></div></div>
+            <div class="lt-quote"><span>口头禅</span><b id="ltQuote"></b></div>
+            <div class="tps-sec"><span class="fns-sub">和 TA 相处小贴士</span><p class="lt-get" id="ltGet"></p></div>
+            <button class="fns-close" type="button" data-close>收起</button>
+          </div>
+        </div>
         <div class="auth-ov" id="authOverlay" aria-hidden="true">
           <div class="abrand">
             <span class="alogo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.35-9.5-8.5C.9 9.6 2.4 5.5 6 5c2-.3 3.6.9 4.5 2.2C11.4 5.9 13 4.7 15 5c3.6.5 5.1 4.6 3.5 7.5C19 16.65 12 21 12 21z"/></svg></span>
@@ -1285,7 +1316,7 @@
     const lb=document.getElementById('lettersBody');
     if(lb){
       lb.innerHTML=DIMS.map(d=>{
-        const card=l=>'<div class="lcard" style="--lc:'+l.c+'"><div class="lc-top"><span class="lc-k">'+l.k+'</span><div class="lc-names"><span class="lc-cn">'+l.cn+'</span><span class="lc-en">'+l.en+'</span></div></div><p class="lc-desc">'+l.desc+'</p><span class="lc-pct">≈ '+l.pct+'%</span></div>';
+        const card=l=>'<div class="lcard" style="--lc:'+l.c+'" data-letter="'+l.k+'"><div class="lc-top"><span class="lc-k">'+l.k+'</span><div class="lc-names"><span class="lc-cn">'+l.cn+'</span><span class="lc-en">'+l.en+'</span></div></div><p class="lc-desc">'+l.desc+'</p><div class="lc-foot"><span class="lc-pct">≈ '+l.pct+'%</span><span class="lc-more">详情 ›</span></div></div>';
         return '<section class="ldim" style="--dc:'+d.a.c+'">'
           +'<div class="ldim-q">'+d.q+'</div><div class="ldim-pair">'+d.pair+'</div>'
           +'<div class="lpair">'+card(d.a)+card(d.b)+'</div>'
@@ -1298,6 +1329,79 @@
     if(fHint)fHint.addEventListener('click',()=>showPage('page-letters'));
     const lte=document.getElementById('lettersToExplore');
     if(lte)lte.addEventListener('click',()=>showPage('page-explore'));
+  })();
+
+  // ── 字母深度解读：点半屏拉起 ──
+  (function letterSheet(){
+    const LDET={
+      E:{line:'能量指向外部世界：人、事、活动都是充电口。',
+         looks:['边说边想，把想法说出口才理得清','人多的场合反而更来精神','太久独处、一直闷着会觉得没电','反应快，喜欢立刻回应、马上行动'],
+         good:['自来熟','表达力强','行动快'],watch:['容易冲动','话说太快','坐不住'],
+         quote:'走，一起聊聊！',
+         get:'多给回应和互动，有活动叫上 TA；别让 TA 一个人闷太久，TA 会肉眼可见地没电。'},
+      I:{line:'能量指向内心世界：独处与深思才是充电口。',
+         looks:['先观察、想清楚了再开口','聚会之后需要独处「回血」','朋友不多，但每一段都很深','内心戏丰富，外表却安静'],
+         good:['专注','善倾听','关系深'],watch:['显得冷淡','慢热','回避热闹'],
+         quote:'我先想想。',
+         get:'给 TA 留独处空间，别硬拉社交；约会提前说，临时突袭会让 TA 压力很大。'},
+      S:{line:'用五官和经验认识世界：看得见、摸得着的才靠谱。',
+         looks:['讲话按顺序、摆细节，很具体','关心「实际怎么操作」','对经历过的细节记得牢','偏好被验证过的方法'],
+         good:['踏实','重细节','执行力'],watch:['不够远见','抗拒空想','偏保守'],
+         quote:'就事论事。',
+         get:'和 TA 沟通讲具体、给步骤，少跳跃少画饼；答应的事说到做到，TA 会很信任你。'},
+      N:{line:'用直觉和联想认识世界：总能看见「背后」和「远方」。',
+         looks:['聊天爱跳跃、爱打比方','常凭直觉「秒懂」','喜欢畅想未来和可能性','重复琐碎的事容易腻'],
+         good:['洞察强','创意多','看趋势'],watch:['易飘','漏细节','三分钟热度'],
+         quote:'如果这样…会不会很好玩？',
+         get:'认真对待 TA 的脑洞，先接住再聊落地；别急着泼冷水，TA 的灵感需要被看见。'},
+      T:{line:'用逻辑和标准做判断：先问对不对，再谈感受。',
+         looks:['爱辩理，觉得辩清楚才是尊重','对事不对人，直接指出问题','决策前喜欢列利弊','重效率，讨厌绕弯子'],
+         good:['客观','分析强','抗情绪'],watch:['显得不近人情','忽略感受','爱较真'],
+         quote:'逻辑上讲…',
+         get:'和 TA 讲理由、摆事实，直说别暗示；被 TA 反驳不代表否定你，只是 TA 的表达方式。'},
+      F:{line:'用价值和感受做判断：先问人心，再谈对错。',
+         looks:['先察觉别人的情绪和需求','不太好意思拒绝','重视气氛，主动打圆场','容易被故事和细节打动'],
+         good:['共情强','暖心','粘合剂'],watch:['难拒绝','回避冲突','情绪背负多'],
+         quote:'你感觉怎么样？',
+         get:'先接住 TA 的情绪，再讨论事情本身；多给肯定和感谢，TA 的付出需要被看见。'},
+      J:{line:'喜欢有计划、有结论的生活：确定了才安心。',
+         looks:['爱列清单、排行程','先做完再玩，心里才踏实','对突发变动会不适','时间观念强，讨厌迟到'],
+         good:['自律','推进强','靠谱'],watch:['不够灵活','易焦虑','要求高'],
+         quote:'先定下来吧。',
+         get:'提前同步计划、别临时变卦；答应的时间点守约，TA 会把你的靠谱记在心里。'},
+      P:{line:'喜欢开放、灵活的生活：保留选择，随机应变。',
+         looks:['deadline 前冲刺型选手','不喜欢太早把事情定死','临场发挥好，点子随境生','计划常写着「看情况」'],
+         good:['适应快','松弛','惊喜多'],watch:['易拖延','缺时间感','难坚持'],
+         quote:'到时候再说～',
+         get:'给 TA 一点弹性和空间，别事事管控；关键节点温柔提醒一下，TA 会很感激你。'}
+    };
+    const ls=document.getElementById('ltSheet');
+    if(!ls)return;
+    function close(){ ls.classList.remove('show'); ls.setAttribute('aria-hidden','true'); }
+    function openLetter(k){
+      let l=null,q='';
+      DIMS.forEach(d=>{ if(d.a.k===k){l=d.a;q=d.q;} if(d.b.k===k){l=d.b;q=d.q;} });
+      const det=LDET[k];
+      if(!l||!det)return;
+      ls.style.setProperty('--lc',l.c);
+      document.getElementById('ltLetter').textContent=k;
+      document.getElementById('ltTitle').textContent=l.cn;
+      document.getElementById('ltSub').textContent=l.en.toUpperCase()+' · '+q+' · 约 '+l.pct+'% 的人';
+      document.getElementById('ltLine').textContent=det.line;
+      document.getElementById('ltLooks').innerHTML=det.looks.map(x=>'<li>'+x+'</li>').join('');
+      document.getElementById('ltGood').innerHTML=det.good.map(x=>chip(x)).join('');
+      document.getElementById('ltWatch').innerHTML=det.watch.map(x=>chip(x,'watch')).join('');
+      document.getElementById('ltQuote').textContent='「'+det.quote+'」';
+      document.getElementById('ltGet').textContent=det.get;
+      ls.classList.add('show'); ls.setAttribute('aria-hidden','false');
+    }
+    ls.addEventListener('click',e=>{ if(e.target.hasAttribute('data-close'))close(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape')close(); });
+    const lb=document.getElementById('lettersBody');
+    if(lb)lb.addEventListener('click',e=>{
+      const c=e.target.closest('.lcard');
+      if(c&&c.dataset.letter)openLetter(c.dataset.letter);
+    });
   })();
 
   // ── detail render ──
