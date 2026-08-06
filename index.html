@@ -155,6 +155,7 @@
 
   /* tab bar */
   .tabbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px 2px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(18px);}
+  .screen.auth-open .tabbar{position:relative;z-index:70;}
   .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0 6px;color:var(--faint);font-size:10px;letter-spacing:.02em;background:none;border:0;cursor:pointer;}
   .tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
   .tab.active{color:var(--primary);}
@@ -2053,7 +2054,7 @@
   }
   // 底部三标签：顶层切换
   document.querySelectorAll('.tabbar .tab').forEach(tab=>{
-    tab.addEventListener('click',()=>{const t=tab.dataset.target;navStack=[t];showPage(t,false);});
+    tab.addEventListener('click',()=>{ if(window.__authClose)window.__authClose(); const t=tab.dataset.target;navStack=[t];showPage(t,false);});
   });
   // AI 入口卡片 → AI 推测
   document.querySelectorAll('.ai-entry').forEach(e=>e.addEventListener('click',()=>showPage('page-aiin')));
@@ -2576,8 +2577,8 @@
       else{ titleEl.textContent='注册新账号'; primary.textContent='注册'; switchEl.innerHTML='已有账号？<b>去登录</b>'; }
       setMsg('');
     }
-    function show(){ ov.classList.add('show'); ov.setAttribute('aria-hidden','false'); render(); }
-    function hide(){ ov.classList.remove('show'); ov.setAttribute('aria-hidden','true'); }
+    function show(){ ov.classList.add('show'); ov.setAttribute('aria-hidden','false'); var s=ov.closest('.screen'); if(s)s.classList.add('auth-open'); render(); }
+    function hide(){ ov.classList.remove('show'); ov.setAttribute('aria-hidden','true'); var s=ov.closest('.screen'); if(s)s.classList.remove('auth-open'); }
 
     // 游客想进人脉 / 存人脉时，由路由守卫调用：先弹登录，登录成功后再继续
     window.__requireLogin=function(next){
@@ -2585,6 +2586,8 @@
       mode='signin';
       show();
     };
+    // 点底部标签栏退出登录页：放弃待办动作，直接收起浮层
+    window.__authClose=function(){ pendingAction=null; hide(); };
 
     async function afterLogin(){
       var u=await sb.auth.getUser();
