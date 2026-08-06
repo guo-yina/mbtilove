@@ -612,10 +612,11 @@
   .ldim-pair{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:color-mix(in srgb,var(--dc) 82%,var(--true-black));margin:3px 0 11px;}
   .lpair{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
   .lcard{border-radius:14px;padding:11px 12px 12px;background:color-mix(in srgb,var(--lc) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--lc) 24%,var(--hair));}
-  .lc-top{display:flex;align-items:center;gap:8px;}
-  .lc-k{font-family:var(--font-mono);font-weight:800;font-size:23px;line-height:1;color:color-mix(in srgb,var(--lc) 86%,var(--true-black));}
-  .lc-cn{font-size:13px;font-weight:700;color:var(--fg);line-height:1.15;}
-  .lc-en{font-family:var(--font-mono);font-size:8.5px;letter-spacing:.05em;color:var(--faint);text-transform:uppercase;}
+  .lc-top{display:flex;align-items:center;gap:10px;}
+  .lc-k{font-family:var(--font-mono);font-weight:800;font-size:36px;line-height:1;color:color-mix(in srgb,var(--lc) 86%,var(--true-black));flex:0 0 auto;}
+  .lc-names{display:flex;flex-direction:column;gap:2px;}
+  .lc-cn{font-size:14px;font-weight:700;color:var(--fg);line-height:1.2;}
+  .lc-en{font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;color:var(--faint);text-transform:uppercase;}
   .lc-desc{margin:8px 0 9px;font-size:11.5px;line-height:1.65;color:var(--muted);min-height:57px;}
   .lc-pct{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--lc) 13%,transparent);border:1px solid color-mix(in srgb,var(--lc) 28%,transparent);color:color-mix(in srgb,var(--lc) 88%,var(--true-black));}
   .lbar{display:flex;height:9px;border-radius:999px;overflow:hidden;margin:13px 0 6px;background:var(--hair);}
@@ -1284,7 +1285,7 @@
     const lb=document.getElementById('lettersBody');
     if(lb){
       lb.innerHTML=DIMS.map(d=>{
-        const card=l=>'<div class="lcard" style="--lc:'+l.c+'"><div class="lc-top"><span class="lc-k">'+l.k+'</span><span><span class="lc-cn">'+l.cn+'</span><br><span class="lc-en">'+l.en+'</span></span></div><p class="lc-desc">'+l.desc+'</p><span class="lc-pct">≈ '+l.pct+'%</span></div>';
+        const card=l=>'<div class="lcard" style="--lc:'+l.c+'"><div class="lc-top"><span class="lc-k">'+l.k+'</span><div class="lc-names"><span class="lc-cn">'+l.cn+'</span><span class="lc-en">'+l.en+'</span></div></div><p class="lc-desc">'+l.desc+'</p><span class="lc-pct">≈ '+l.pct+'%</span></div>';
         return '<section class="ldim" style="--dc:'+d.a.c+'">'
           +'<div class="ldim-q">'+d.q+'</div><div class="ldim-pair">'+d.pair+'</div>'
           +'<div class="lpair">'+card(d.a)+card(d.b)+'</div>'
