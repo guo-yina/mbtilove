@@ -285,6 +285,8 @@
   .tr-eyebrow{position:relative;z-index:1;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--tc) 70%,var(--muted));margin:0 0 6px;}
   .tr-type{position:relative;z-index:1;font-family:var(--font-mono);font-weight:800;font-size:50px;letter-spacing:.05em;line-height:1;color:color-mix(in srgb,var(--tc) 82%,var(--true-black));}
   .tr-nick{position:relative;z-index:1;font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--fg);margin-top:8px;}
+  .tr-gtag{position:relative;z-index:1;display:inline-block;margin-top:7px;font-size:11px;font-weight:600;letter-spacing:.02em;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--tc) 14%,transparent);border:1px solid color-mix(in srgb,var(--tc) 28%,transparent);color:color-mix(in srgb,var(--tc) 78%,var(--true-black));}
+  .tr-line{position:relative;z-index:1;font-size:12.5px;line-height:1.55;color:color-mix(in srgb,var(--fg) 82%,var(--muted));margin:9px 0 0;max-width:220px;}
   .tr-pop{position:relative;z-index:1;display:inline-block;margin-top:8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--tc) 11%,transparent);border:1px solid color-mix(in srgb,var(--tc) 26%,transparent);color:color-mix(in srgb,var(--tc) 84%,var(--true-black));}
   .tr-axes{display:flex;flex-direction:column;gap:17px;margin-bottom:24px;}
   .tr-ax{text-align:left;}
@@ -883,6 +885,8 @@
                 <p class="tr-eyebrow">你的类型</p>
                 <div class="tr-type" id="trType"></div>
                 <div class="tr-nick" id="trNick"></div>
+                <div class="tr-gtag" id="trGtag"></div>
+                <p class="tr-line" id="trCardLine"></p>
                 <div class="tr-pop" id="trPop" hidden></div>
               </div>
               <div class="tr-axes" id="trAxes"></div>
@@ -2606,6 +2610,10 @@
       if(trType)trType.textContent=r.code;
       const emb=document.getElementById('trEmblem'); if(emb)applyPortrait(emb,r.code);
       if(trNick)trNick.textContent=(T[r.code]&&T[r.code].nick)?T[r.code].nick:'';
+      const trGtag=document.getElementById('trGtag');
+      if(trGtag&&T[r.code]&&T[r.code].g)trGtag.textContent=T[r.code].g;
+      const trCardLine=document.getElementById('trCardLine');
+      if(trCardLine&&T[r.code]&&T[r.code].line)trCardLine.textContent=T[r.code].line;
       const trPop=document.getElementById('trPop');
       if(trPop&&T[r.code]&&T[r.code].pop!=null){trPop.textContent=T[r.code].pop+'%';trPop.hidden=false;}
       if(trAxes)trAxes.innerHTML=AXES.map(ax=>{
