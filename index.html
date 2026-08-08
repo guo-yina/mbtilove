@@ -541,12 +541,13 @@
   .pages{flex:1 1 auto;position:relative;overflow:hidden;}
   .content.page{position:absolute;inset:0;flex:none;display:none;}
   .content.page.active{display:block;animation:pageIn .28s ease;}
+  #page-functions.active{position:relative;inset:auto;display:flex;flex-direction:column;height:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .pages:has(#page-functions.active){overflow-y:auto;-webkit-overflow-scrolling:touch;}
   @keyframes pageIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
   .tabbar{grid-template-columns:repeat(5,1fr);}
 
   /* ══════════ 八维功能全表 ══════════ */
   #page-functions{padding:0;display:none;flex-direction:column;}
-  #page-functions.active{display:flex;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .fx-head{padding:18px 18px 12px;flex:none;}
   .fx-head h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:2px 0 4px;}
   .fx-head p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0;}
