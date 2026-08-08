@@ -390,6 +390,16 @@
   .test-entry .arw{flex:0 0 auto;color:var(--faint);}
   .test-entry .arw svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
+  .btest{margin:24px 20px 32px;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--g-nf) 8%,var(--surface)),color-mix(in srgb,var(--g-nt) 6%,var(--surface)));border:1px solid color-mix(in srgb,var(--g-nf) 22%,var(--hair));cursor:pointer;transition:.18s;}
+  .btest:hover{border-color:color-mix(in srgb,var(--g-nf) 45%,var(--border));transform:translateY(-1px);box-shadow:0 4px 16px -6px color-mix(in srgb,var(--g-nf) 20%,transparent);}
+  .btest .aicon{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--g-nf) 16%,var(--surface));display:grid;place-items:center;flex:0 0 auto;}
+  .btest .aicon svg{width:21px;height:21px;stroke:color-mix(in srgb,var(--g-nf) 80%,var(--true-black));fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .btest .atx{flex:1 1 auto;}
+  .btest .atx b{font-size:14px;font-weight:700;display:block;color:var(--fg);}
+  .btest .atx span{font-size:12px;color:var(--muted);}
+  .btest .arw{flex:0 0 auto;color:color-mix(in srgb,var(--g-nf) 60%,var(--faint));}
+  .btest .arw svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
   /* ── 子页头部 ── */
   .subhead{display:flex;align-items:center;gap:12px;padding:10px 20px 8px;}
   .subhead .back2{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
@@ -714,6 +724,11 @@
             </div>
             <p class="filters-hint" id="filtersHint">不认识这 8 个字母？<b>1 分钟看懂 →</b></p>
             <div id="groups"></div>
+            <div class="btest" role="button" tabindex="0">
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+              <span class="atx"><b>还不确定自己的类型？</b><span>速测 20 题，或精准 48 题</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
           </main>
           <main class="content page" id="page-detail" data-component="TypeDetailScreen">
             <div class="hero" id="heroBox">
@@ -983,6 +998,11 @@
             <button class="cta" id="aiRun"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 4.7L18.6 9l-4.7 1.3L12 15l-1.9-4.7L5.4 9l4.7-1.3L12 3z"/><path d="M18.5 13.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>让 AI 开始分析</button>
             <p class="ai-status" id="aiStatus" style="display:none"></p>
             <p class="subhint">AI 会综合你的描述给出最可能的类型，仅供参考，最终仍以真实了解为准。</p>
+            <div class="btest" role="button" tabindex="0">
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+              <span class="atx"><b>想直接做测试？</b><span>速测 20 题，或精准 48 题</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
           </main>
           <main class="content page" id="aiResult" data-component="AIGuessResult">
             <div class="ai-hero">
@@ -1057,6 +1077,11 @@
               <p class="helper" style="padding:0 2px 8px;margin:0;">点左侧类型名看「这是什么样的人」，点任意功能字母看它在这个类型第几位、什么意思。</p>
               <table class="fx-table"><thead id="fxHead"></thead><tbody id="fxBody"></tbody></table>
             </section>
+            <div class="btest" role="button" tabindex="0">
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+              <span class="atx"><b>想看自己的八维排序？</b><span>先测出你的 MBTI 类型</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
           </main>
           <main class="content page" id="page-letters" data-component="LettersScreen">
             <div class="app-head">
@@ -1065,6 +1090,11 @@
             <div class="lintro">MBTI 的四个字母，来自四组相反的特质：能量从哪来、接收信息的方式、做决定的依据、生活处事的节奏。看懂这四组，你就入门了。</div>
             <div class="letters" id="lettersBody"></div>
             <div class="letters-more">想知道 16 种完整类型？<b id="lettersToExplore">去 16 型图鉴看看 →</b></div>
+            <div class="btest" role="button" tabindex="0">
+              <span class="aicon" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+              <span class="atx"><b>想知道你是哪 4 个字母？</b><span>速测 20 题，或精准 48 题</span></span>
+              <span class="arw" aria-hidden><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
           </main>
         </div><!-- /.pages -->
         <nav class="tabbar" data-component="TabBar">
@@ -2571,6 +2601,7 @@
     startMbtiTest=function(m){ mode=m||'self'; showChooser(); showPage('page-test'); };
     const selfEntry=document.getElementById('selfTestEntry');
     if(selfEntry)selfEntry.addEventListener('click',()=>startMbtiTest('self'));
+    document.querySelectorAll('.btest').forEach(el=>el.addEventListener('click',()=>startMbtiTest('self')));
   })();
   // 返回按钮
   const backDetail=document.querySelector('#page-detail .back');if(backDetail)backDetail.addEventListener('click',goBack);
