@@ -296,19 +296,29 @@
   .tr-ax.rev .tr-track{justify-content:flex-end;}
   .tr-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--ax) 78%,var(--surface)),var(--ax));transition:width .5s cubic-bezier(.22,1,.36,1);}
 
-  /* ── 丰富结果区 ── */
+  /* ── 丰富结果区（对标详情页） ── */
   .tr-rich{margin-top:6px;padding:0 2px;text-align:left;}
   .tr-rich[hidden]{display:none;}
-  .tr-line{font-size:14.5px;line-height:1.65;color:var(--fg);margin:0 0 22px;padding:16px 18px;border-radius:16px;background:color-mix(in srgb,var(--tc) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 18%,var(--hair));}
-  .tr-sec{margin-bottom:18px;}
-  .tr-sec-lab{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,var(--tc) 70%,var(--muted));margin-bottom:9px;}
+  .tr-sec-title{display:flex;align-items:center;gap:8px;margin:22px 0 12px;font-size:15px;font-weight:700;color:var(--fg);}
+  .tr-sec-title:first-child{margin-top:0;}
+  .tr-bar{display:inline-block;width:3px;height:16px;border-radius:2px;background:var(--tc);}
+  .tr-ocard{background:color-mix(in srgb,var(--tc) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 20%,var(--hair));border-radius:16px;padding:15px 16px;line-height:1.78;font-size:13.5px;color:color-mix(in srgb,var(--fg) 90%,var(--muted));}
+  .tr-ocard b{color:color-mix(in srgb,var(--tc) 78%,var(--true-black));font-weight:700;}
+  .tr-grouplabel{font-size:11.5px;font-weight:600;color:var(--muted);margin:12px 0 8px;}
+  .tr-grouplabel:first-of-type{margin-top:14px;}
   .tr-tags{display:flex;flex-wrap:wrap;gap:7px;}
   .tr-tags .ttag{font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:999px;background:color-mix(in srgb,var(--tc) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 22%,var(--hair));color:color-mix(in srgb,var(--tc) 82%,var(--true-black));}
   .tr-tags .ttag.watch{background:color-mix(in srgb,var(--g-sj) 7%,var(--surface));border-color:color-mix(in srgb,var(--g-sj) 22%,var(--hair));color:color-mix(in srgb,var(--g-sj) 80%,var(--true-black));}
-  .tr-stack{display:flex;gap:8px;}
-  .tr-stack .st{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;background:color-mix(in srgb,var(--tc) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 16%,var(--hair));}
-  .tr-stack .st .fn{font-family:var(--font-mono);font-size:14px;font-weight:800;color:color-mix(in srgb,var(--tc) 85%,var(--true-black));}
-  .tr-stack .st .lv{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.02em;}
+  #trFnList{display:flex;flex-direction:column;gap:10px;}
+  #trFnList .fn{background:color-mix(in srgb,var(--tc) 5%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 16%,var(--hair));border-radius:14px;padding:12px 14px;}
+  #trFnList .flabel{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+  #trFnList .lvl{font-size:11px;font-weight:700;color:color-mix(in srgb,var(--tc) 75%,var(--muted));}
+  #trFnList .fcode{font-family:var(--font-mono);font-size:11px;opacity:.6;}
+  #trFnList .fmain{display:flex;align-items:baseline;gap:8px;margin-bottom:4px;}
+  #trFnList .fmain .fcode{font-family:var(--font-mono);font-size:15px;font-weight:800;color:color-mix(in srgb,var(--tc) 85%,var(--true-black));opacity:1;}
+  #trFnList .fmain .fcn{font-size:13px;font-weight:600;color:var(--fg);}
+  #trFnList .fdesc{font-size:12.5px;line-height:1.6;color:var(--muted);}
+  .tr-subhint{font-size:11.5px;color:var(--faint);margin-top:14px;line-height:1.5;}
   .ts-result .cta{margin:0 0 12px;width:100%;background:linear-gradient(135deg,color-mix(in srgb,var(--tc) 88%,var(--true-black)),var(--tc));box-shadow:0 16px 30px -14px color-mix(in srgb,var(--tc) 72%,transparent);}
   .ts-retry{margin:0;width:100%;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
   .ts-chooser{padding:26px 24px;display:flex;flex-direction:column;gap:14px;}
@@ -877,11 +887,18 @@
               </div>
               <div class="tr-axes" id="trAxes"></div>
               <div class="tr-rich" id="trRich" hidden>
-                <p class="tr-line" id="trLine"></p>
-                <div class="tr-sec"><span class="tr-sec-lab">你的关键词</span><div class="tr-tags" id="trKeys"></div></div>
-                <div class="tr-sec"><span class="tr-sec-lab">你的超能力</span><div class="tr-tags" id="trGood"></div></div>
-                <div class="tr-sec"><span class="tr-sec-lab">要注意的地方</span><div class="tr-tags" id="trWatch"></div></div>
-                <div class="tr-sec"><span class="tr-sec-lab">你的认知功能排序</span><div class="tr-stack" id="trStack"></div></div>
+                <div class="tr-sec-title"><span class="tr-bar"></span>综合解读</div>
+                <div class="tr-ocard" id="trOverview"></div>
+                <div class="tr-sec-title"><span class="tr-bar"></span>主要特征</div>
+                <p class="tr-grouplabel">核心关键词</p>
+                <div class="tr-tags" id="trKeys"></div>
+                <p class="tr-grouplabel">突出优势</p>
+                <div class="tr-tags" id="trGood"></div>
+                <p class="tr-grouplabel">需要留意</p>
+                <div class="tr-tags" id="trWatch"></div>
+                <div class="tr-sec-title"><span class="tr-bar"></span>认知功能栈</div>
+                <div id="trFnList"></div>
+                <p class="tr-subhint">功能栈由 主导 → 辅助 → 第三 → 劣势 排列，决定一个人思考与决策的默认顺序。</p>
               </div>
               <button class="cta" id="tsApply"></button>
               <button class="ap-del ts-retry" id="tsRetry" type="button">重新测一次</button>
@@ -2601,22 +2618,27 @@
           +'<div class="tr-track"><i style="width:'+a.pct+'%"></i></div>'
           +'</div>';
       }).join('');
-      // 丰富结果区
+      // 丰富结果区（对标详情页）
       const tr=T[r.code];
       const trRich=document.getElementById('trRich');
       if(trRich&&tr){
         trRich.hidden=false;
-        const trLine=document.getElementById('trLine');
-        if(trLine)trLine.textContent=tr.line||'';
+        const trOverview=document.getElementById('trOverview');
+        if(trOverview){trOverview.style.setProperty('--tc','var(--c-'+r.code.toLowerCase()+')');trOverview.innerHTML=TDESC[r.code]||tr.line;}
         const trKeys=document.getElementById('trKeys');
         if(trKeys)trKeys.innerHTML=(tr.keys||[]).map(k=>'<span class="ttag">'+k+'</span>').join('');
         const trGood=document.getElementById('trGood');
         if(trGood)trGood.innerHTML=(tr.good||[]).map(k=>'<span class="ttag">'+k+'</span>').join('');
         const trWatch=document.getElementById('trWatch');
         if(trWatch)trWatch.innerHTML=(tr.watch||[]).map(k=>'<span class="ttag watch">'+k+'</span>').join('');
-        const trStack=document.getElementById('trStack');
-        const LV4=['主导','辅助','第三','劣势'];
-        if(trStack)trStack.innerHTML=(tr.stack||[]).map((f,i)=>'<div class="st"><span class="fn">'+f+'</span><span class="lv">'+LV4[i]+'</span></div>').join('');
+        const trFnList=document.getElementById('trFnList');
+        const LV={n:'主导',a:'辅助',t:'第三',i:'劣势'};
+        if(trFnList)trFnList.innerHTML=(tr.stack||[]).map((f,i)=>{
+          const meta=FUNC[f],lv=LV[f.charAt(1)]||['主导','辅助','第三','劣势'][i];
+          return '<div class="fn" style="--tc:var(--c-'+r.code.toLowerCase()+')"><div class="flabel"><span class="lvl">'+lv+'</span><span class="fcode">'+(i+1)+'/4</span></div>'
+            +'<div class="fmain"><span class="fcode">'+f+'</span><span class="fcn">'+meta.cn+'</span></div>'
+            +'<div class="fdesc">'+((ROLE[f]&&ROLE[f][i])||meta.desc)+'</div></div>';
+        }).join('');
       }
       if(applyBtn)applyBtn.textContent=(mode==='form')?'使用这个类型':'设为我的类型';
     }
