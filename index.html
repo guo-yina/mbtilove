@@ -644,13 +644,6 @@
   .lt-quote b{font-size:13px;color:color-mix(in srgb,var(--lc) 86%,var(--true-black));font-weight:600;}
   .lt-get{margin:8px 0 0;font-size:12.5px;line-height:1.75;color:var(--muted);}
 
-  /* 个性化：你的类型 / 你的字母 高亮 */
-  .tcard .me{position:absolute;top:9px;right:9px;font-size:9px;font-weight:700;letter-spacing:.06em;color:#fff;background:var(--primary);padding:2.5px 8px;border-radius:999px;box-shadow:0 4px 10px -4px color-mix(in srgb,var(--primary) 70%,transparent);z-index:1;}
-  .lcard{position:relative;}
-  .lcard.mine{border-color:color-mix(in srgb,var(--lc) 55%,var(--hair));}
-  .lcard.mine::after{content:'你';position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;color:#fff;background:color-mix(in srgb,var(--lc) 82%,var(--true-black));padding:2.5px 7px;border-radius:999px;}
-  #heroMe{background:rgba(255,255,255,.92);color:color-mix(in srgb,var(--tc) 80%,var(--true-black));font-weight:700;margin-left:6px;}
-
   .auth-ov{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;justify-content:center;padding:0 30px;background:var(--surface);}
   .auth-ov.show{display:flex;}
   .auth-ov .abrand{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:28px;}
@@ -733,7 +726,7 @@
               <div class="code-lg" id="heroCode">ENTJ</div>
               <div class="nick-lg" id="heroNick">指挥官</div>
               <p class="tagline" id="heroTagline">天生的领导者，果断、高效，擅长把想法变成可执行的计划。</p>
-              <span class="hero-pop" id="heroPop">1.8%</span><span class="hero-pop" id="heroMe" hidden>这是你</span>
+              <span class="hero-pop" id="heroPop">1.8%</span>
             </div>
 
             <div class="overview" data-component="TypeOverview">
@@ -1124,8 +1117,8 @@
             <div class="tps-sec"><span class="fns-sub">日常长这样</span><ul class="lt-points" id="ltLooks"></ul></div>
             <div class="tps-sec"><span class="fns-sub">亮点</span><div class="tps-tags" id="ltGood"></div></div>
             <div class="tps-sec"><span class="fns-sub">容易被误会</span><div class="tps-tags" id="ltWatch"></div></div>
-            <div class="lt-quote"><span id="ltQuoteLab">口头禅</span><b id="ltQuote"></b></div>
-            <div class="tps-sec"><span class="fns-sub" id="ltGetLab">和 TA 相处小贴士</span><p class="lt-get" id="ltGet"></p></div>
+            <div class="lt-quote"><span>口头禅</span><b id="ltQuote"></b></div>
+            <div class="tps-sec"><span class="fns-sub">和 TA 相处小贴士</span><p class="lt-get" id="ltGet"></p></div>
             <button class="fns-close" type="button" data-close>收起</button>
           </div>
         </div>
@@ -1393,10 +1386,7 @@
       ls.style.setProperty('--lc',l.c);
       document.getElementById('ltLetter').textContent=k;
       document.getElementById('ltTitle').textContent=l.cn;
-      const mine=SELF.typed&&SELF.type.indexOf(k)>-1;
-      document.getElementById('ltSub').textContent=l.en.toUpperCase()+' · '+q+' · 约 '+l.pct+'% 的人'+(mine?' · 你的字母':'');
-      const ql=document.getElementById('ltQuoteLab'); if(ql)ql.textContent=mine?'你的口头禅可能是':'口头禅';
-      const gl=document.getElementById('ltGetLab'); if(gl)gl.textContent=mine?'把这份说明书转给身边的人':'和 TA 相处小贴士';
+      document.getElementById('ltSub').textContent=l.en.toUpperCase()+' · '+q+' · 约 '+l.pct+'% 的人';
       document.getElementById('ltLine').textContent=det.line;
       document.getElementById('ltLooks').innerHTML=det.looks.map(x=>'<li>'+x+'</li>').join('');
       document.getElementById('ltGood').innerHTML=det.good.map(x=>chip(x)).join('');
@@ -1414,21 +1404,6 @@
     });
   })();
 
-  // ── 个性化高亮：你的类型卡挂「你」徽标，你的字母挂角标 ──
-  function markSelf(){
-    document.querySelectorAll('.tcard').forEach(c=>{
-      const isMe=SELF.typed&&c.dataset.code===SELF.type;
-      let b=c.querySelector('.me');
-      if(isMe&&!b){ b=document.createElement('span'); b.className='me'; b.textContent='你'; c.appendChild(b); }
-      else if(!isMe&&b)b.remove();
-    });
-  }
-  function markLetterSelf(){
-    document.querySelectorAll('.lcard').forEach(c=>{
-      c.classList.toggle('mine',!!(SELF.typed&&SELF.type.indexOf(c.dataset.letter)>-1));
-    });
-  }
-
   // ── detail render ──
   function chip(txt,cls){return '<span class="ttag'+(cls?' '+cls:'')+'">'+txt+'</span>';}
   function selectType(code,cardEl){
@@ -1445,7 +1420,6 @@
     document.getElementById('heroNick').textContent=t.nick;
     document.getElementById('heroTagline').textContent=t.line;
     const hp=document.getElementById('heroPop'); if(hp)hp.textContent=t.pop+'%';
-    const hm=document.getElementById('heroMe'); if(hm)hm.hidden=!(SELF.typed&&code===SELF.type);
     const ov=document.getElementById('tOverview');
     if(ov){ ov.style.setProperty('--tc',tc); ov.innerHTML=TDESC[code]||t.line; }
     document.getElementById('tKeys').innerHTML=t.keys.map(k=>chip(k)).join('');
@@ -2218,7 +2192,6 @@
       members.forEach(p=>pl.appendChild(makeSwipeCard(p)));
     });
     if(peopleCountEl)peopleCountEl.textContent='我标注的人 · '+(CONTACTS.length+1);
-    markSelf();markLetterSelf();
   }
   renderPeople();
 
