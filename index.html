@@ -2395,7 +2395,7 @@
         p.name=name;p.type=selType;p.init=name.charAt(0);
         p.note=note||undefined;
         if(editRef.self){
-          p.rel='本人 · 也是 '+selType;
+          p.rel='本人';
           SELF.typed=true;
           cloudSaveProfile();
         }else{
@@ -2656,7 +2656,7 @@
         goBack();
         if(setFormType)setFormType(resultCode);
       }else{
-        SELF.type=resultCode; SELF.rel='本人 · 也是 '+resultCode;
+        SELF.type=resultCode; SELF.rel='本人';
         SELF.typed=true;
         SELF.init=(SELF.name||'我').charAt(0);
         cloudSaveProfile();
@@ -2819,7 +2819,7 @@
         SELF.name=pr.data.self_name||SELF.name;
         SELF.init=(SELF.name||'我').charAt(0);
         if(pr.data.self_type){
-          SELF.type=pr.data.self_type;SELF.typed=true;SELF.rel='本人 · 也是 '+SELF.type;
+          SELF.type=pr.data.self_type;SELF.typed=true;SELF.rel='本人';
         }else{
           SELF.type='';SELF.typed=false;SELF.rel='还没测出自己的类型';
         }
